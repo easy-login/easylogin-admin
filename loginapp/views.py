@@ -9,4 +9,12 @@ def index(request):
 def login_page(request):
 	template = loader.get_template('loginapp/page-login.html')
 	return HttpResponse(template.render())
-	
+
+def register_page(request):
+	template = loader.get_template('loginapp/page-register.html')
+	return HttpResponse(template.render())
+
+def recover_page(request):
+	template = loader.get_template('loginapp/page-recoverpw.html')
+	return HttpResponse(template.render())
+
