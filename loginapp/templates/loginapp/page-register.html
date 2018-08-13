@@ -1,3 +1,6 @@
+{% load widget_tweaks %}
+{% load static %}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -5,7 +8,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
         <meta name="author" content="SocialPlus">
-        {% load static %}
         <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
         <title>SocialPlus - Responsive Admin Dashboard Template</title>
@@ -33,54 +35,85 @@
                     <h4 class="text-uppercase font-bold m-b-0">Register</h4>
                 </div>
                 <div class="p-20">
-                    <form class="form-horizontal m-t-20" action="index.html">
-
-						<div class="form-group ">
-							<div class="col-xs-12">
-								<input id="email" class="form-control" type="email" required="" placeholder="Email">
+                    {% block content %}
+                    <form class="form-horizontal m-t-20" method="post" action="" >
+                        {% csrf_token %}
+                        <div class="form-group ">
+							<div class="col-xs-12">                                
+                                {% render_field form.email class='form-control' placeholder='Email' %}
+                                {% if form.email.errors %} 
+                                    <ul class="parsley-errors-list filled">
+                                    {% for error in form.email.errors %}
+                                        <li class="">{{ error  }}</li>
+                                    {% endfor%}
+                                    </ul> 
+                                {% endif %}
 							</div>
 						</div>
 
 						<div class="form-group ">
 							<div class="col-xs-12">
-								<input id="username" class="form-control" type="text" required="" placeholder="Username">
-							</div>
+                                {% render_field form.username class='form-control' placeholder='Username' %}
+                                    {% if form.username.errors %} 
+                                        <ul class="parsley-errors-list filled">
+                                        {% for error in form.username.errors %}
+                                            <li class="">{{ error  }}</li>
+                                        {% endfor%}
+                                        </ul> 
+                                    {% endif %}
+                            </div>
 						</div>
 
 						<div class="form-group">
 							<div class="col-xs-12">
-								<input id="password" class="form-control" type="password" required="" placeholder="Password">
+                                {% render_field form.password class='form-control' placeholder='Password' %}
+                                {% if form.password.errors %} 
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.password.errors %}
+                                            <li class="">{{ error  }}</li>
+                                        {% endfor%}
+                                    </ul> 
+                                {% endif %}
+
 							</div>
 						</div>
 
                         <div class="form-group ">
-                            <div class="col-xs-12">
-                                <input id="phone" class="form-control" type="text" placeholder="Phone">
+                            <div class="col-xs-12">                                
+                                {% render_field form.phone class='form-control' placeholder='Phone' %}
+                                {{ form.phone.errors}}
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <div class="col-sm-6">                                
+                                {% render_field form.first_name class='form-control' placeholder='First Name' %}
+                                {{ form.first_name.errors}}
+                            </div>
+                             <div class="col-sm-6">                                
+                                {% render_field form.last_name class='form-control' placeholder='Last Name' %}
+                                {{ form.last_name.errors}}
                             </div>
                         </div>
 
                         <div class="form-group ">
-                            <div class="col-xs-12">
-                                <input id="fullname" class="form-control" type="text" placeholder="Fullname">
-                            </div>
-                        </div>
-
-                        <div class="form-group ">
-                            <div class="col-xs-12">
-                                <input id="address" class="form-control" type="text" placeholder="Address">
+                            <div class="col-xs-12">                                
+                                {% render_field form.address class='form-control' placeholder='Address' %}
+                                {{ form.address.errors}}
                             </div>
                         </div>   
 
                         <div class="form-group">
-                            <div class="col-xs-12">
-                                <input id="company" class="form-control" type="text" placeholder="Company">
+                            <div class="col-xs-12">                                
+                                {% render_field form.company class='form-control' placeholder='Company' %}
+                                {{ form.company.errors}}
                             </div>
                         </div>                     
 
 						<div class="form-group">
 							<div class="col-xs-12">
-								<div class="checkbox checkbox-custom">
-									<input id="checkbox-signup" type="checkbox" checked="checked">
+								<div class="checkbox checkbox-custom parsley-error">
+									<input id="checkbox-signup" type="checkbox" checked="checked" required="">
 									<label for="checkbox-signup">I accept <a href="#">Terms and Conditions</a></label>
 								</div>
 							</div>
@@ -95,7 +128,7 @@
 						</div>
 
 					</form>
-
+{% endblock %}
                 </div>
             </div>
             <!-- end card-box -->
@@ -123,6 +156,14 @@
         <script src="{% static 'js/jquery.nicescroll.js' %}"></script>
         <script src="{% static 'js/jquery.slimscroll.js' %}"></script>
         <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+
+        <!-- Validation form-->
+        <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('form').parsley();
+            });
+        </script>
 
         <!-- App js -->
         <script src="{% static 'js/jquery.core.js' %}"></script>
