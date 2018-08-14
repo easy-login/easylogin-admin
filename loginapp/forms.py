@@ -20,11 +20,11 @@ class RegisterForm(ModelForm):
  		fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company',)
 
 
-class LoginForm(forms.Form):
-	email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
-	password = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, widget=forms.PasswordInput, strip=False, required=True)
+# class LoginForm(forms.Form):
+# 	email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
+# 	password = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, widget=forms.PasswordInput, strip=False, required=True)
 
-	class Meta:
- 		model = User
- 		model._meta.get_field('username')._unique = False
- 		fields = ('email', 'password', )
+# 	class Meta:
+#  		model = User
+#  		model._meta.get_field('username')._unique = False
+#  		fields = ('email', 'password', )

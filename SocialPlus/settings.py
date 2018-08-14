@@ -118,6 +118,8 @@ PASSWORD_HASHERS = (
 
 AUTH_USER_MODEL = 'loginapp.User'
 
+AUTHENTICATION_BACKENDS = ['loginapp.backends.AuthenticationWithEmailBackend']
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
