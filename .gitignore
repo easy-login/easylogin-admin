@@ -1,2 +1,18 @@
 # Created by .ignore support plugin (hsz.mobi)
-.idea
+*.pyc
+*.pyo
+.venv/
+.vscode/
+.idea/
+.DS_Store
+
+__pycache__/
+
+instance/
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+dist/
+build/
