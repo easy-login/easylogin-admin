@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import loader
 
 from loginapp.forms import RegisterForm
-from django.contrib.auth import login as signin, authenticate
+from django.contrib.auth import login as signin, logout as signout, authenticate
 from loginapp.backends import AuthenticationWithEmailBackend
 
 
@@ -15,19 +16,25 @@ def index(request):
 
 
 def login(request):
-    message = ""
+    message = ''
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(username=email, password=password)
-        print(user)
+        user = AuthenticationWithEmailBackend.authenticate(None, username=email, password=password)
         if user is not None:
+            request.session.set_expiry(86400)
             signin(request, user)
-            redirect('index')
+            return redirect(request, 'index')
         else:
-            message = "Email or Password Incorrect !"
+            message = 'Email or Password Incorrect !'
 
     return render(request, 'loginapp/page-login.html', {'message': message})
+
+
+@login_required
+def logout(request):
+    signout(request)
+    return redirect('index')
 
 
 def register(request):
@@ -49,6 +56,12 @@ def register(request):
 
 def recover(request):
     template = loader.get_template('loginapp/page-recoverpw.html')
+    return HttpResponse(template.render())
+
+
+@login_required
+def dashboard(request):
+    template = loader.get_template('loginapp/page-dashboard.html')
     return HttpResponse(template.render())
 
 
