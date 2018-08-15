@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-from loginapp.models import User
+
 
 class AuthenticationWithEmailBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
+        print("donnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnne")
         UserModel = get_user_model()
         try:
             user = UserModel.objects.get(email=username)
@@ -15,13 +16,12 @@ class AuthenticationWithEmailBackend(ModelBackend):
             if user.check_password(password):
                 return user
             else:
-                print ("Password incorrect!")
+                print("Password incorrect!")
                 return None
 
     def get_user(self, user_id):
         UserModel = get_user_model()
         try:
             return UserModel.objects.get(pk=user_id)
-        except:
-            UserModel.DoesNotExist
+        except UserModel.DoesNotExist:
             return None

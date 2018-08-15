@@ -4,6 +4,7 @@ from django.template import loader
 
 from loginapp.forms import RegisterForm
 from django.contrib.auth import login as signin, authenticate
+from loginapp.backends import AuthenticationWithEmailBackend
 
 
 # Create your views here.
@@ -19,6 +20,7 @@ def login(request):
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(username=email, password=password)
+        print(user)
         if user is not None:
             signin(request, user)
             redirect('index')
