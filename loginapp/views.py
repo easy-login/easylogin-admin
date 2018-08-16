@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import loader
 
-from loginapp.forms import RegisterForm
+from loginapp.forms import RegisterForm, UpdateProfileForm
 from django.contrib.auth import login as signin, logout as signout, authenticate
 from loginapp.backends import AuthenticationWithEmailBackend
 
@@ -37,12 +37,16 @@ def logout(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             password = form.cleaned_data.get('password')
+            email = form.cleaned_data.get('email')
             user.set_password(password)
+            user.email = email
             user.save()
             return redirect('login')
         else:
@@ -51,7 +55,6 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'loginapp/page-register.html', {'form': form})
-
 
 def recover(request):
     template = loader.get_template('loginapp/page-recoverpw.html')
@@ -65,7 +68,21 @@ def dashboard(request):
 
 @login_required
 def profile(request):
-    return render(request, 'loginapp/profile.html')
+    if request.method == 'POST':
+        form = UpdateProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            email = form.cleaned_data.get('email')
+            user.email = email
+            user.save()
+
+            return redirect('profile')
+        else:
+            print(form.errors)
+    else:
+        form = UpdateProfileForm()
+
+    return render(request, 'loginapp/profile.html', {'form': form})
 
 
 def error404(request):
