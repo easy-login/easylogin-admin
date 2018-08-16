@@ -11,8 +11,7 @@ from loginapp.backends import AuthenticationWithEmailBackend
 # Create your views here.
 
 def index(request):
-    template = loader.get_template('loginapp/index.html')
-    return HttpResponse(template.render())
+    return render(request, 'loginapp/index.html')
 
 
 def login(request):
@@ -24,7 +23,7 @@ def login(request):
         if user is not None:
             request.session.set_expiry(86400)
             signin(request, user)
-            return redirect(request, 'index')
+            return redirect('index')
         else:
             message = 'Email or Password Incorrect !'
 
