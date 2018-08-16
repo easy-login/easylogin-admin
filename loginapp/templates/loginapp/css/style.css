@@ -1,7 +1,7 @@
 /*
 Template Name: SocialPlus Dashboard
 Author: SocialPlus
-Email: SocialPlus$gmail.com
+Email: SocialPlus@gmail.com
 File: Core
 */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
@@ -10,7 +10,7 @@ File: Core
 /*
 Template Name: UBold Dashboard
 Author: SocialPlus
-Email: SocialPlus$gmail.com
+Email: SocialPlus@gmail.com
 File: Core
 */
 /* =============
@@ -6521,3 +6521,9 @@ File: Responsive
   }
 }
 /*# sourceMappingURL=style.css.map */
+
+
+/* My CSS*/
+.create-site-button{
+    margin-top: 20px;
+}

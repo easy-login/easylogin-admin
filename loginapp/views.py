@@ -60,8 +60,12 @@ def recover(request):
 
 @login_required
 def dashboard(request):
-    template = loader.get_template('loginapp/page-dashboard.html')
-    return HttpResponse(template.render())
+    return render(request, 'loginapp/dashboard.html')
+
+
+@login_required
+def profile(request):
+    return render(request, 'loginapp/profile.html')
 
 
 def error404(request):

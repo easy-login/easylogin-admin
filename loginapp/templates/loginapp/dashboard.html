@@ -1,0 +1,64 @@
+{% extends 'loginapp/base.html' %}
+<!-- Page title -->
+{% block topbar%}
+
+<ul class="nav navbar-nav list-inline navbar-left">
+    <li class="list-inline-item">
+        <button class="button-menu-mobile open-left">
+            <i class="mdi mdi-menu"></i>
+        </button>
+    </li>
+    <li class="list-inline-item">
+        <div class="create-site-button">
+            <button type="button"
+                    class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
+                    class="fas fa-plus"></i> Add Site
+            </button>
+        </div>
+    </li>
+</ul>
+
+<nav class="navbar-custom">
+
+    <ul class="list-unstyled topbar-right-menu float-right mb-0">
+
+        <li class="hide-phone">
+            <form class="app-search">
+                <input type="text" placeholder="Search..."
+                       class="form-control">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </li>
+
+    </ul>
+</nav>
+{% endblock %}
+
+
+{% block sidemenu %}
+<li>
+    <a href="{% url 'dashboard' %}" class="waves-effect"><i class="mdi mdi-web"></i><span> Your Sites </span>
+    </a>
+</li>
+
+<li>
+    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
+    </a>
+</li>
+
+<li>
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
+        <span> Change Password </span> </a>
+</li>
+
+<li>
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-television-guide"></i> <span> Guid </span> </a>
+</li>
+{% endblock %}
+
+
+<!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+{% block content%}
+{% endblock %}

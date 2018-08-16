@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^recover/$', views.recover, name='recover'),
 
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^profile/$', views.profile, name='profile'),
 ]
