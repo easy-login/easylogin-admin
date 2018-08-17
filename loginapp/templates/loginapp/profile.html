@@ -45,7 +45,7 @@
 </li>
 
 <li>
-    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
+    <a href="{% url 'change_password' %}" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
         <span> Change Password </span> </a>
 </li>
 
@@ -63,6 +63,14 @@
                     <!--<h4 class="m-0">{{ request.user.username }}</h4>-->
                 </div>
                 <div class="col-md-9 profile-info-detail">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <strong> {{ message }} </strong>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     <div class="p-20">
                         <form class="form-horizontal m-t-20" method="post" action="">
                             {% csrf_token %}

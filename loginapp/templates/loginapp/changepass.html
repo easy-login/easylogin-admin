@@ -1,0 +1,149 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+<!-- Page title -->
+{% block topbar%}
+<!-- Page title -->
+<ul class="nav navbar-nav list-inline navbar-left">
+    <li class="list-inline-item">
+        <button class="button-menu-mobile open-left">
+            <i class="mdi mdi-menu"></i>
+        </button>
+    </li>
+    <li class="list-inline-item">
+        <h4 class="page-title">Profile</h4>
+    </li>
+</ul>
+
+<nav class="navbar-custom">
+
+    <ul class="list-unstyled topbar-right-menu float-right mb-0">
+
+        <li class="hide-phone">
+            <form class="app-search">
+                <input type="text" placeholder="Search..."
+                       class="form-control">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </li>
+
+    </ul>
+</nav>
+{% endblock %}
+
+
+{% block sidemenu %}
+<li>
+    <a href="{% url 'dashboard' %}" class="waves-effect"><i class="mdi mdi-web"></i><span> Your Sites </span>
+    </a>
+</li>
+
+<li>
+    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
+    </a>
+</li>
+
+<li>
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
+        <span> Change Password </span> </a>
+</li>
+
+<li>
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-television-guide"></i> <span> Guid </span> </a>
+</li>
+{% endblock %}
+
+
+{% block content%}
+<div class="row card-box profile-info-name justify-content-md-center">
+    <div class="col-md-6 profile-info-detail ">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error'%}danger{% else %}success{% endif %} alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="p-20">
+            <form class="form-horizontal m-t-20" method="post" action="">
+                {% csrf_token %}
+                <div class="form-group row ">
+                    <label for="id_old_password" class="col-md-4 col-form-label">Old Password</label>
+                    <div class="col-md-8">
+                        {% render_field form.old_password class='form-control' placeholder='Old Password' %}
+                        {% if form.old_password.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.old_password.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="id_new_password" class="col-md-4 col-form-label">New Password</label>
+                    <div class="col-md-8">
+                        {{ form.new_password|attr:'class:form-control'|attr:'placeholder:New Password' }}
+                        {% if form.new_password.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.new_password.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="id_confirm_password" class="col-md-4 col-form-label">Confirm Password</label>
+                    <div class="col-md-8">
+                        {% render_field form.confirm_password class='form-control' placeholder='Confirm Password' data-parsley-equalto='#id_new_password' %}
+                        {% if form.confirm_password.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.confirm_password.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group text-center m-t-40 row">
+                    <div class="col-md-12">
+                        <button class="btn btn-success btn-block waves-effect waves-light"
+                                type="submit">
+                            Change
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!--/ meta -->
+{% endblock %}
+
+{% block js %}
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<script type="text/javascript">
+            $(document).ready(function() {
+                $('form').parsley();
+            });
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

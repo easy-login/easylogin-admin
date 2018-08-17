@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, render_to_response
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import loader
+from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
+from django.contrib import messages
 
-from loginapp.forms import RegisterForm, UpdateProfileForm
-from django.contrib.auth import login as signin, logout as signout, authenticate
+from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm
 from loginapp.backends import AuthenticationWithEmailBackend
 
 
@@ -56,6 +57,7 @@ def register(request):
 
     return render(request, 'loginapp/page-register.html', {'form': form})
 
+
 def recover(request):
     template = loader.get_template('loginapp/page-recoverpw.html')
     return HttpResponse(template.render())
@@ -75,7 +77,7 @@ def profile(request):
             email = form.cleaned_data.get('email')
             user.email = email
             user.save()
-
+            messages.success(request, 'Your profile was successfully updated!')
             return redirect('profile')
         else:
             print(form.errors)
@@ -83,6 +85,31 @@ def profile(request):
         form = UpdateProfileForm()
 
     return render(request, 'loginapp/profile.html', {'form': form})
+
+
+@login_required
+def changepassword(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST, instance=request.user)
+        if form.is_valid():
+            old_password = request.POST['old_password']
+            if request.user.check_password(old_password):
+                user = form.save(commit=False)
+                password = form.cleaned_data.get('new_password')
+                user.set_password(password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Password Updated!')
+                return redirect('change_password')
+            else:
+                messages.error(request, 'Old Password Incorrect!')
+        else:
+            print(form.errors)
+
+    else:
+        form = ChangePasswordForm()
+
+    return render(request, 'loginapp/changepass.html', {'form': form})
 
 
 def error404(request):

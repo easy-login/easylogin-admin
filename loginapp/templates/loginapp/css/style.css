@@ -6527,3 +6527,7 @@ File: Responsive
 .create-site-button{
     margin-top: 20px;
 }
+
+.success-messages{
+    margin-bottom: 0px;
+}
