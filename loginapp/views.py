@@ -58,26 +58,27 @@ def register(request):
     return render(request, 'loginapp/page-register.html', {'form': form})
 
 
-def password_reset_email(request):
-    if request.method == 'POST':
-        form = PasswordResetEmailForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            return redirect('password_reset_email_done')
-        else:
-            print(form.errors)
-    else:
-        form = PasswordResetEmailForm()
-
-    return render(request, 'loginapp/password_reset_email.html', {'form': form})
-
-
-def password_reset_email_done(request):
-    return render(request, 'loginapp/password_reset_email_done.html')
-
-
-def password_reset_confirm(request):
-    return render(request, 'loginapp/password_reset_confirm.html')
+# def password_reset_email(request):
+#     if request.method == 'POST':
+#         form = PasswordResetEmailForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data.get('email')
+#             print(email)
+#             return redirect('password-reset-email-done')
+#         else:
+#             print(form.errors)
+#     else:
+#         form = PasswordResetEmailForm()
+#
+#     return render(request, 'loginapp/password_reset_email.html', {'form': form})
+#
+#
+# def password_reset_email_done(request):
+#     return render(request, 'loginapp/password_reset_email_done.html')
+#
+#
+# def password_reset_confirm(request):
+#     return render(request, 'loginapp/password_reset_confirm.html')
 
 
 @login_required
