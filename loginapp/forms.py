@@ -62,7 +62,7 @@ class ChangePasswordForm(ModelForm):
 
 
 class PasswordResetEmailForm(forms.Form):
-    email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=true)
+    email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
 
 
 # class LoginForm(forms.Form):

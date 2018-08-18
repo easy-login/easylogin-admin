@@ -105,7 +105,7 @@ def profile(request):
 
 
 @login_required
-def changepassword(request):
+def change_password_profile(request):
     if request.method == 'POST':
         form = ChangePasswordForm(request.POST, instance=request.user)
         if form.is_valid():

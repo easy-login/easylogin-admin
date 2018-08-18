@@ -13,5 +13,5 @@ urlpatterns = [
 
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^profile/$', views.profile, name='profile'),
-    url(r'^changepassword/$', views.changepassword, name='change_password'),
+    url(r'^change-password/$', views.change_password_profile, name='change_password'),
 ]
