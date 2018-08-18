@@ -5,7 +5,7 @@ from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
 
-from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm
+from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, PasswordResetEmailForm
 from loginapp.backends import AuthenticationWithEmailBackend
 
 
@@ -58,9 +58,26 @@ def register(request):
     return render(request, 'loginapp/page-register.html', {'form': form})
 
 
-def recover(request):
-    template = loader.get_template('loginapp/page-recoverpw.html')
-    return HttpResponse(template.render())
+def password_reset_email(request):
+    if request.method == 'POST':
+        form = PasswordResetEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            return redirect('password_reset_email_done')
+        else:
+            print(form.errors)
+    else:
+        form = PasswordResetEmailForm()
+
+    return render(request, 'loginapp/password_reset_email.html', {'form': form})
+
+
+def password_reset_email_done(request):
+    return render(request, 'loginapp/password_reset_email_done.html')
+
+
+def password_reset_confirm(request):
+    return render(request, 'loginapp/password_reset_confirm.html')
 
 
 @login_required

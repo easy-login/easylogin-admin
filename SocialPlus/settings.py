@@ -116,12 +116,23 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.CryptPasswordHasher',
 )
 
+# User authentication
 AUTH_USER_MODEL = 'loginapp.User'
 
 AUTHENTICATION_BACKENDS = ['loginapp.backends.AuthenticationWithEmailBackend']
 
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+# Email host
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'parsifal_app'
+# EMAIL_HOST_PASSWORD = 'mys3cr3tp4ssw0rd'
+# EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

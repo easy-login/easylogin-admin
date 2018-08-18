@@ -60,6 +60,11 @@ class ChangePasswordForm(ModelForm):
                 "New password and confirm password does not match",]
             })
 
+
+class PasswordResetEmailForm(forms.Form):
+    email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=true)
+
+
 # class LoginForm(forms.Form):
 # 	email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
 # 	password = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, widget=forms.PasswordInput, strip=False, required=True)
