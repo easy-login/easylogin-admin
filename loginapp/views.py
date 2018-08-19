@@ -5,7 +5,7 @@ from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
 
-from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm
+from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AddAppForm
 from loginapp.backends import AuthenticationWithEmailBackend
 
 
@@ -107,6 +107,23 @@ def change_password_profile(request):
     return render(request, 'loginapp/changepass.html', {'form': form})
 
 
+# application, provider, channel
+@login_required
+def add_app(request):
+    if request.method == 'POST':
+        form = AddAppForm(request)
+        if form.is_valid():
+            app = form.save(commit=False)
+            app.owner_id = request.user.id
+            return redirect('dashboard')
+        else:
+            print(form.errors)
+
+    else:
+        form = AddAppForm()
+    return render(request, 'loginapp/add_app.html', {'form': form})
+
+# link not found
 def error404(request):
     template = loader.get_template('loginapp/page-404.html')
     return HttpResponse(template.render())

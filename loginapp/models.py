@@ -25,3 +25,30 @@ class User(AbstractUser):
     address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD)
 
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
+
+
+class Provider(models.Model):
+    id = models.CharField(max_length=15, primary_key=True)
+    version = models.CharField(max_length=7)
+    permission = models.CharField(max_length=1023)
+
+
+class App(models.Model):
+    created_at = models.DateTimeField()
+    modified_at = models.DateTimeField(auto_now_add=True)
+    domain = models.CharField(max_length=67)
+    api_key = models.CharField(max_length=127)
+    callback_uri = models.URLField(max_length=2047)
+    allowed_ips = models.CharField(max_length=127)
+    description = models.TextField()
+    owner_id = models.IntegerField()
+    # owner_id = models.Foreignkey(User, on_delete=models.CASCADE)
+
+
+class Channel(models.Model):
+    created_at = models.DateTimeField()
+    modified_at = models.DateTimeField(auto_now_add=True)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    client_id = models.CharField(max_length=255)
+    client_secret = models.CharField(max_length=255)
+    permissions = models.CharField(max_length=1023)

@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth import password_validation
 
-from loginapp.models import User
+from loginapp.models import User, App
 from loginapp import models
 
 
@@ -73,3 +73,16 @@ class ChangePasswordForm(ModelForm):
                 password_validation.validate_password(new_password, self.instance)
             except forms.ValidationError as error:
                 self.add_error('new_password', error)
+
+
+# application, provider, channel
+class AddAppForm(ModelForm):
+    domain = forms.CharField(max_length=67, required=True)
+    api_key = forms.CharField(max_length=127, required=True)
+    callback_uri = forms.URLField(max_length=2047, required=True)
+    allowed_ips = forms.CharField(max_length=127, required=True)
+    description = forms.CharField(widget=forms.Textarea)
+
+    class Meta:
+        model = App
+        fields = ('domain', 'api_key', 'callback_uri', 'allowed_ips', 'description')

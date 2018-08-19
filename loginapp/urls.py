@@ -36,4 +36,6 @@ urlpatterns = [
     url(r'^profile/$', views.profile, name='profile'),
 
     url(r'^change_password/$', views.change_password_profile, name='change_password'),
+
+    url(r'^new_app/$', views.add_app, name='add_app'),
 ]
