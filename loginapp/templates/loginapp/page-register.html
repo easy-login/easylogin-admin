@@ -39,7 +39,11 @@
                 {% csrf_token %}
                 <div class="form-group ">
                     <div class="col-xs-12">
+                        {% if form.email.errors %}
+                        {% render_field form.email class='form-control parsley-error' placeholder='Email' %}
+                        {% else %}
                         {% render_field form.email class='form-control' placeholder='Email' %}
+                        {% endif %}
                         {% if form.email.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.email.errors %}
@@ -65,7 +69,12 @@
 
                 <div class="form-group">
                     <div class="col-xs-12">
+                        {% if form.password.errors %}
+                        {% render_field form.password class='form-control parsley-error' placeholder='Password' %}
+                        {% else %}
                         {% render_field form.password class='form-control' placeholder='Password' %}
+                        {% endif %}
+
                         {% if form.password.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.password.errors %}
@@ -130,8 +139,7 @@
                         {% render_field form.company class='form-control' placeholder='Company' %}
                         {% if form.company.errors %}
                         <ul class="parsley-errors-list filled">
-                            {% for error in
-                            <form action="" class="company"></form>.errors %}
+                            {% for error in form.company.errors %}
                             <li class="">{{ error }}</li>
                             {% endfor%}
                         </ul>

@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from django import forms
+from django.contrib.auth import password_validation
 
 from loginapp.models import User
 from loginapp import models
@@ -20,6 +21,14 @@ class RegisterForm(ModelForm):
         model = User
         model._meta.get_field('username')._unique = False
         fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company',)
+
+    def clean(self):
+        cleaned_data = super(RegisterForm, self).clean()
+        try:
+            password = cleaned_data.get('password')
+            password_validation.validate_password(password, self.instance)
+        except forms.ValidationError as error:
+            self.add_error('password', error)
 
 
 class UpdateProfileForm(ModelForm):
@@ -57,19 +66,10 @@ class ChangePasswordForm(ModelForm):
 
         if new_password != confirm_password:
             raise forms.ValidationError({'confirm_password': [
-                "New password and confirm password does not match",]
+                "New password and confirm password does not match", ]
             })
-
-
-class PasswordResetEmailForm(forms.Form):
-    email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
-
-
-# class LoginForm(forms.Form):
-# 	email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
-# 	password = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, widget=forms.PasswordInput, strip=False, required=True)
-
-# 	class Meta:
-#  		model = User
-#  		model._meta.get_field('username')._unique = False
-#  		fields = ('email', 'password', )
+        else:
+            try:
+                password_validation.validate_password(new_password, self.instance)
+            except forms.ValidationError as error:
+                self.add_error('new_password', error)
