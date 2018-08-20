@@ -81,7 +81,7 @@ class AddAppForm(ModelForm):
     api_key = forms.CharField(max_length=127, required=True)
     callback_uri = forms.URLField(max_length=2047, required=True)
     allowed_ips = forms.CharField(max_length=127, required=True)
-    description = forms.CharField(widget=forms.Textarea)
+    description = forms.CharField(widget=forms.Textarea, required=False)
 
     class Meta:
         model = App

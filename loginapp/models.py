@@ -28,7 +28,7 @@ class User(AbstractUser):
 
 
 class Provider(models.Model):
-    id = models.CharField(max_length=15, primary_key=True)
+    id = models.CharField(max_length=30, primary_key=True)
     version = models.CharField(max_length=7)
     permission = models.CharField(max_length=1023)
 
@@ -41,14 +41,15 @@ class App(models.Model):
     callback_uri = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)
     description = models.TextField()
-    owner_id = models.IntegerField()
-    # owner_id = models.Foreignkey(User, on_delete=models.CASCADE)
+    # owner_id = models.IntegerField()
+    owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Channel(models.Model):
     created_at = models.DateTimeField()
     modified_at = models.DateTimeField(auto_now_add=True)
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    provider = models.CharField(max_length=30)
     client_id = models.CharField(max_length=255)
     client_secret = models.CharField(max_length=255)
     permissions = models.CharField(max_length=1023)
+    app_id = models.ForeignKey(App, on_delete=models.CASCADE)
