@@ -39,5 +39,7 @@ urlpatterns = [
 
     url(r'^new_app/$', views.add_app, name='add_app'),
 
-    url(r'^get_api_key/$', views.get_api_key, name='get_api_key')
+    url(r'^get_api_key/$', views.get_api_key, name='get_api_key'),
+
+    url(r'^app/<int:app_id>/$', views.app_detail, name='app_detail')
 ]

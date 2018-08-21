@@ -77,7 +77,7 @@ class ChangePasswordForm(ModelForm):
 
 # application, provider, channel
 class AddAppForm(ModelForm):
-    domain = forms.CharField(max_length=67, required=True)
+    name = forms.CharField(max_length=67, required=True)
     api_key = forms.CharField(max_length=127, required=True)
     callback_uri = forms.URLField(max_length=2047, required=True)
     allowed_ips = forms.CharField(max_length=127, required=True)
@@ -85,4 +85,4 @@ class AddAppForm(ModelForm):
 
     class Meta:
         model = App
-        fields = ('domain', 'api_key', 'callback_uri', 'allowed_ips', 'description',)
+        fields = ('name', 'api_key', 'callback_uri', 'allowed_ips', 'description',)

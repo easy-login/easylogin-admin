@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect, render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import loader
@@ -8,7 +8,7 @@ from django.contrib import messages
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AddAppForm
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.utils import generateApiKey
-
+from loginapp.models import App
 import string
 import random
 import datetime
@@ -67,7 +67,9 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'loginapp/dashboard.html')
+    apps = App.objects.all().filter(owner_id=request.user.id)
+    print (len(apps))
+    return render(request, 'loginapp/dashboard.html', {'apps': apps})
 
 
 @login_required
@@ -122,7 +124,7 @@ def add_app(request):
         if form.is_valid():
             app = form.save(commit=False)
             app.owner_id = request.user
-            app.created_at= datetime.datetime.now()
+            app.created_at = datetime.datetime.now()
             app.save()
             return redirect('dashboard')
         else:
@@ -134,11 +136,17 @@ def add_app(request):
 
 
 @login_required
+def app_detail(request, app_id):
+    app = get_object_or_404(App, pk=app_id)
+    return render(request, 'loginapp/app_detail.html', {'app': app})
+
+
+@login_required
 def get_api_key(request):
     try:
         return HttpResponse(generateApiKey(
             ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)).encode('utf-8')),
-                            content_type='text/plain')
+            content_type='text/plain')
     except Exception as e:
         return HttpResponse(e, status=404)
 

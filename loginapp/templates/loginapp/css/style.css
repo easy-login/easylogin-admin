@@ -4546,6 +4546,7 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
 
 .project-box {
   position: relative;
+  padding-bottom: 0px;
 }
 
 .project-box .badge {
@@ -4556,8 +4557,6 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
 .project-box h4 {
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: block;
-  width: 100%;
   overflow: hidden;
   font-weight: 600;
 }

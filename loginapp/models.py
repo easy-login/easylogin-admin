@@ -36,7 +36,7 @@ class Provider(models.Model):
 class App(models.Model):
     created_at = models.DateTimeField()
     modified_at = models.DateTimeField(auto_now_add=True)
-    domain = models.CharField(max_length=67)
+    name = models.CharField(max_length=67)
     api_key = models.CharField(max_length=127)
     callback_uri = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)
