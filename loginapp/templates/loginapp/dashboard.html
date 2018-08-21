@@ -85,7 +85,7 @@
 
 <div class="row">
     {% for app in apps %}
-    <div class="col-xl-4">
+    <div class="col-md-4">
         <div class="card-box project-box p-b-0">
             <div class="dropdown pull-right">
                 <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
@@ -93,7 +93,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Detail And Edit</a>
+                    <a href="{% url 'app_detail' app.id %}" class="dropdown-item">Detail And Edit</a>
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item">Add Channel</a>
                     <!-- item-->
@@ -119,14 +119,14 @@
             <hr>
             <ul class="text-primary list-inline m-b-0">
                 <li class="list-inline-item">
-                    <h5 class="font-600 m-b-5">Create Time</h5>
+                    <h5 class="m-b-5">Create Time</h5>
                     <p> {{ app.created_at|date:'N j,Y' }}
                         <small class="text-muted">{{ app.created_at|date:'P' }}</small>
                     </p>
                 </li>
 
                 <li class="list-inline-item">
-                    <h5 class="font-600 m-b-5">Last Modify</h5>
+                    <h5 class="m-b-5">Last Modify</h5>
                     <p> {{ app.modified_at|date:'N j,Y' }}
                         <small class="text-muted">{{ app.modified_at|date:'P' }}</small>
                     </p>

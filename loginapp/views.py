@@ -68,7 +68,7 @@ def register(request):
 @login_required
 def dashboard(request):
     apps = App.objects.all().filter(owner_id=request.user.id)
-    print (len(apps))
+    print(len(apps))
     return render(request, 'loginapp/dashboard.html', {'apps': apps})
 
 
@@ -138,7 +138,8 @@ def add_app(request):
 @login_required
 def app_detail(request, app_id):
     app = get_object_or_404(App, pk=app_id)
-    return render(request, 'loginapp/app_detail.html', {'app': app})
+    form = AddAppForm()
+    return render(request, 'loginapp/app_detail.html', {'app': app, 'form': form})
 
 
 @login_required
