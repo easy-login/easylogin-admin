@@ -85,4 +85,4 @@ class AddAppForm(ModelForm):
 
     class Meta:
         model = App
-        fields = ('domain', 'api_key', 'callback_uri', 'allowed_ips', 'description')
+        fields = ('domain', 'api_key', 'callback_uri', 'allowed_ips', 'description',)

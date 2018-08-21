@@ -48,110 +48,110 @@
 
 
 {% block content%}
-        <div class="row card-box profile-info-name">
-                <div class="col-md-12 profile-info-detail">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-success alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <strong> {{ message }} </strong>
+<div class="row card-box profile-info-name">
+    <div class="col-md-12 profile-info-detail">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="p-20">
+            <form class="form-horizontal m-t-20" method="post" action="">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="id_domain" class="col-md-2 col-form-label">Domain</label>
+                    <div class="col-md-8">
+                        {% render_field form.domain class='form-control' placeholder='Domain' %}
+                        {% if form.domain.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.domain.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
                     </div>
-                    {% endfor %}
-                    {% endif %}
-                    <div class="p-20">
-                        <form class="form-horizontal m-t-20" method="post" action="">
-                            {% csrf_token %}
-                            <div class="form-group row">
-                                    <label for="id_domain" class="col-md-2 col-form-label">Domain</label>
-                                    <div class="col-md-8">
-                                        {% render_field form.domain class='form-control' placeholder='Domain' %}
-                                        {% if form.domain.errors %}
-                                        <ul class="parsley-errors-list filled">
-                                            {% for error in form.domain.errors %}
-                                            <li class="">{{ error }}</li>
-                                            {% endfor%}
-                                        </ul>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                            <div class="form-group row">
-                                <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
-                                <div class="col-md-6">
-                                    {% render_field form.api_key class='form-control' placeholder='API Key' disabled='true' %}
-                                    {% if form.api_key.errors %}
-                                    <ul class="parsley-errors-list filled">
-                                        {% for error in form.api_key.errors %}
-                                        <li class="">{{ error }}</li>
-                                        {% endfor%}
-                                    </ul>
-                                    {% endif %}
-                                </div>
-                                 <div class="col-md-2">
-                                    <button class="btn btn-success btn-block waves-effect waves-light" type="button">
-                                        Generate Key
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
-                                <div class="col-md-8">
-                                    {% render_field form.callback_uri class='form-control' placeholder='Callback URI' %}
-                                    {% if form.callback_uri.errors %}
-                                    <ul class="parsley-errors-list filled">
-                                        {% for error in form.callback_uri.errors %}
-                                        <li class="">{{ error }}</li>
-                                        {% endfor%}
-                                    </ul>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="form-group row ">
-                                <label for="id_allowed_ips" class="col-md-2 col-form-label">First Name</label>
-                                <div class="col-md-8">
-                                    {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' %}
-                                    {% if form.allowed_ips.errors %}
-                                    <ul class="parsley-errors-list filled">
-                                        {% for error in form.allowed_ips.errors %}
-                                        <li class="">{{ error }}</li>
-                                        {% endfor%}
-                                    </ul>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="form-group row ">
-                                <label for="id_description" class="col-md-2 col-form-label">Description</label>
-                                <div class="col-md-8">
-                                    {% render_field form.description class='form-control' placeholder='Description' %}
-                                    {% if form.description.errors %}
-                                    <ul class="parsley-errors-list filled">
-                                        {% for error in form.description.errors %}
-                                        <li class="">{{ error }}</li>
-                                        {% endfor%}
-                                    </ul>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="form-group text-center m-t-40 row">
-                                 <div class="col-md-2"></div>
-                                <div class="col-md-8">
-                                    <button class="btn btn-success btn-block waves-effect waves-light"
-                                            type="submit">
-                                        Add
-                                    </button>
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
-
-                    <div class="clearfix"></div>
                 </div>
-            </div>
-        <!--/ meta -->
+
+                <div class="form-group row">
+                    <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
+                    <div class="col-md-6">
+                        {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' %}
+                        {% if form.api_key.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.api_key.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-success btn-block waves-effect waves-light" type="button" onclick="getApiKey()">
+                            Generate Key
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
+                    <div class="col-md-8">
+                        {% render_field form.callback_uri class='form-control' placeholder='Callback URI' %}
+                        {% if form.callback_uri.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.callback_uri.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row ">
+                    <label for="id_allowed_ips" class="col-md-2 col-form-label">First Name</label>
+                    <div class="col-md-8">
+                        {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' %}
+                        {% if form.allowed_ips.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.allowed_ips.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group row ">
+                    <label for="id_description" class="col-md-2 col-form-label">Description</label>
+                    <div class="col-md-8">
+                        {% render_field form.description class='form-control' placeholder='Description' %}
+                        {% if form.description.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.description.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group text-center m-t-40 row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <button class="btn btn-success btn-block waves-effect waves-light"
+                                type="submit">
+                            Add
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!--/ meta -->
 {% endblock %}
 
 {% block js %}
@@ -162,6 +162,24 @@
                 $('form').parsley();
             });
 
+function getApiKey(){
+//$('#img-loading').show()
+$.ajax({
+    url: '{% url 'get_api_key' %}',
+    data: {},
+    type: 'get',
+    cache: false,
+    success: function(key){
+        $('#id_api_key').val(key)
+        //$('#img-loading').hide()
+    },
+    error: function(message){
+        alert("get api-key failed!")
+        //$('#img-loading').hide()
+    }
+
+})
+}
 
 </script>
 {% endblock %}

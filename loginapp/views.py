@@ -7,6 +7,11 @@ from django.contrib import messages
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AddAppForm
 from loginapp.backends import AuthenticationWithEmailBackend
+from loginapp.utils import generateApiKey
+
+import string
+import random
+import datetime
 
 
 # Create your views here.
@@ -16,6 +21,8 @@ def index(request):
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     message = ''
     if request.method == 'POST':
         email = request.POST['email']
@@ -111,10 +118,12 @@ def change_password_profile(request):
 @login_required
 def add_app(request):
     if request.method == 'POST':
-        form = AddAppForm(request)
+        form = AddAppForm(request.POST)
         if form.is_valid():
             app = form.save(commit=False)
-            app.owner_id = request.user.id
+            app.owner_id = request.user
+            app.created_at= datetime.datetime.now()
+            app.save()
             return redirect('dashboard')
         else:
             print(form.errors)
@@ -122,6 +131,17 @@ def add_app(request):
     else:
         form = AddAppForm()
     return render(request, 'loginapp/add_app.html', {'form': form})
+
+
+@login_required
+def get_api_key(request):
+    try:
+        return HttpResponse(generateApiKey(
+            ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)).encode('utf-8')),
+                            content_type='text/plain')
+    except Exception as e:
+        return HttpResponse(e, status=404)
+
 
 # link not found
 def error404(request):
