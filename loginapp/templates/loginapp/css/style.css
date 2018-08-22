@@ -5630,7 +5630,7 @@ File: Menu
 }
 
 .navbar-default .dropdown-toggle:after {
-  content: initial;
+   //content: initial;
 }
 
 .navbar-default .menu-left {
@@ -6533,3 +6533,4 @@ File: Responsive
 .success-messages{
     margin-bottom: 0px;
 }
+

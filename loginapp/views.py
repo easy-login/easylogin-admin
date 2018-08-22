@@ -5,7 +5,7 @@ from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
 
-from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AddAppForm
+from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.utils import generateApiKey
 from loginapp.models import App
@@ -121,7 +121,7 @@ def change_password_profile(request):
 @login_required
 def add_app(request):
     if request.method == 'POST':
-        form = AddAppForm(request.POST)
+        form = AppForm(request.POST)
         if form.is_valid():
             app = form.save(commit=False)
             app.owner_id = request.user
@@ -131,7 +131,7 @@ def add_app(request):
             print(form.errors)
 
     else:
-        form = AddAppForm()
+        form = AppForm()
     return render(request, 'loginapp/add_app.html', {'form': form})
 
 
@@ -139,7 +139,7 @@ def add_app(request):
 def app_detail(request, app_id):
     if request.method == 'POST':
         app = get_object_or_404(App, pk=app_id)
-        form = AddAppForm(request.POST, instance=app)
+        form = AppForm(request.POST, instance=app)
         if form.is_valid():
             app_update = form.save(commit=False)
             app_update.modified_at = datetime.datetime.now();
@@ -147,8 +147,11 @@ def app_detail(request, app_id):
             return redirect('app_detail', app_id=app_id)
 
     app = get_object_or_404(App, pk=app_id)
-    form = AddAppForm()
-    return render(request, 'loginapp/app_detail.html', {'app': app, 'form': form})
+    apps = App.objects.all().filter(owner_id=request.user.id)
+    form = AppForm()
+    channel_form = ChannelForm()
+    return render(request, 'loginapp/app_detail.html',
+                  {'app': app, 'apps': apps, 'form': form, 'channel_form': channel_form})
 
 
 @login_required

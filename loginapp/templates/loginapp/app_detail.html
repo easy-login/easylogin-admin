@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 <!-- Page title -->
-{% block topbar%}
+{% block topbar %}
 <!-- Page title -->
 <ul class="nav navbar-nav list-inline navbar-left">
     <li class="list-inline-item">
@@ -22,24 +22,27 @@
 
         <li class="list-inline-item">
             <div class="create-app-button">
-                <a href="{% url 'add_app' %}" type="button"
-                   class="btn btn-purple btn-rounded w-md waves-effect waves-light m-b-5"><i
+                <button data-toggle="modal" data-target="#add-channel-modal" type="button"
+                   class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
                         class="fas fa-plus"></i> <span>Add Channel</span>
-                </a>
+                </button>
             </div>
         </li>
         <li class="list-inline-item">
             <div class="app-list-select">
-                <select class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select>
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
+                            data-toggle="dropdown" aria-expanded="false">{{ app.name }}
+                    </button>
+                    <div class="dropdown-menu">
+                        <!-- item-->
+                        {% for option in apps %}
+                        <a href="{% url 'app_detail' option.id %}" class="dropdown-item">{{ option.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </li>
-
     </ul>
 </nav>
 {% endblock %}
@@ -91,7 +94,7 @@
                     <div class="form-group row">
                         <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
                         <div class="col-md-6">
-                            {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
+{% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
                             {% if form.api_key.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.api_key.errors %}
@@ -101,7 +104,7 @@
                             {% endif %}
                         </div>
                         <div class="col-md-4">
-                            <button class="btn btn-success btn-block waves-effect waves-light" type="button"
+                            <button class="btn btn-pink btn-block waves-effect waves-light" type="button"
                                     onclick="getApiKey()">
                                 Generate Key
                             </button>
@@ -111,7 +114,7 @@
                     <div class="form-group row">
                         <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
                         <div class="col-md-10">
-                            {% render_field form.callback_uri class='form-control' placeholder='Callback URI' value=app.callback_uri %}
+{% render_field form.callback_uri class='form-control' placeholder='Callback URI' value=app.callback_uri %}
                             {% if form.callback_uri.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.callback_uri.errors %}
@@ -125,7 +128,7 @@
                     <div class="form-group row ">
                         <label for="id_allowed_ips" class="col-md-2 col-form-label">Allowed IPs</label>
                         <div class="col-md-10">
-                            {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' value=app.allowed_ips %}
+{% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' value=app.allowed_ips %}
                             {% if form.allowed_ips.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.allowed_ips.errors %}
@@ -182,13 +185,96 @@
 
         </div>
     </div>
+
+    <!--Add channel modal-->
+    <div id="add-channel-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">New Channel</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal m-t-20" method="post" action="">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
+                        <div class="col-md-10">
+                            {% render_field channel_form.provider class='form-control' placeholder='Provider'%}
+                            {% if channel_form.provider.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in channel_form.provider.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
+                        <div class="col-md-10">
+{% render_field channel_form.client_id class='form-control' placeholder='Client ID' %}
+                            {% if channel_form.client_id.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in channel_form.client_id.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
+                        <div class="col-md-10">
+{% render_field channel_form.client_secret class='form-control' placeholder='Client Secret' %}
+                            {% if channel_form.client_secret.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in channel_form.client_secret.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label for="id_permission" class="col-md-2 col-form-label">Permission</label>
+                        <div class="col-md-10">
+{% render_field channel_form.permission class='form-control' placeholder='Permission' %}
+                            {% if channel_form.permission.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in channel_form.permission.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 </div>
-<!--/ meta -->
+    <!--/ meta -->
 {% endblock %}
 
 {% block js %}
 <!-- Validation form-->
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+
+<!--&lt;!&ndash; Modal-Effect &ndash;&gt;-->
+<!--<script src="assets/plugins/custombox/dist/custombox.min.js"></script>-->
+<!--<script src="assets/plugins/custombox/dist/legacy.min.js"></script>-->
+
+<!--My js-->
 <script type="text/javascript">
             $(document).ready(function() {
                 $('form').parsley();
@@ -212,12 +298,5 @@ $.ajax({
 
 })
 }
-
-
-
-
-
-
-
 </script>
 {% endblock %}

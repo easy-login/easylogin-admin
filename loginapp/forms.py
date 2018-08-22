@@ -76,7 +76,7 @@ class ChangePasswordForm(ModelForm):
 
 
 # application, provider, channel
-class AddAppForm(ModelForm):
+class AppForm(ModelForm):
     name = forms.CharField(max_length=67, required=True)
     api_key = forms.CharField(max_length=127, required=True)
     callback_uri = forms.URLField(max_length=2047, required=True)
