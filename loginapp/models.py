@@ -34,7 +34,7 @@ class Provider(models.Model):
 
 
 class App(models.Model):
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=67)
     api_key = models.CharField(max_length=127)
@@ -46,7 +46,7 @@ class App(models.Model):
 
 
 class Channel(models.Model):
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
     provider = models.CharField(max_length=30)
     client_id = models.CharField(max_length=255)

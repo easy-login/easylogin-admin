@@ -124,7 +124,6 @@ def add_app(request):
         if form.is_valid():
             app = form.save(commit=False)
             app.owner_id = request.user
-            app.created_at = datetime.datetime.now()
             app.save()
             return redirect('dashboard')
         else:
@@ -137,6 +136,15 @@ def add_app(request):
 
 @login_required
 def app_detail(request, app_id):
+    if request.method == 'POST':
+        app = get_object_or_404(App, pk=app_id)
+        form = AddAppForm(request.POST, instance=app)
+        if form.is_valid():
+            app_update = form.save(commit=False)
+            app_update.modified_at = datetime.datetime.now();
+            app_update.save()
+            return redirect('app_detail', app_id=app_id)
+
     app = get_object_or_404(App, pk=app_id)
     form = AddAppForm()
     return render(request, 'loginapp/app_detail.html', {'app': app, 'form': form})
