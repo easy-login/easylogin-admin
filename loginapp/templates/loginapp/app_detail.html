@@ -20,12 +20,24 @@
 
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
 
-        <li class="hide-phone">
-            <form class="app-search">
-                <input type="text" placeholder="Search..."
-                       class="form-control">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
+        <li class="list-inline-item">
+            <div class="create-app-button">
+                <a href="{% url 'add_app' %}" type="button"
+                   class="btn btn-purple btn-rounded w-md waves-effect waves-light m-b-5"><i
+                        class="fas fa-plus"></i> <span>Add Channel</span>
+                </a>
+            </div>
+        </li>
+        <li class="list-inline-item">
+            <div class="app-list-select">
+                <select class="form-control">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
         </li>
 
     </ul>
@@ -126,7 +138,8 @@
                     <div class="form-group row ">
                         <label for="id_description" class="col-md-2 col-form-label">Description</label>
                         <div class="col-md-10">
-                            <textarea name="description" rows="10" class="form-control" placeholder="Description" id="id_description">{{ app.description }}</textarea>
+                            <textarea name="description" rows="10" class="form-control" placeholder="Description"
+                                      id="id_description">{{ app.description }}</textarea>
                             {% if form.description.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.description.errors %}
@@ -165,115 +178,8 @@
     </div>
     <div class="col-md-4">
         <div class="card-box">
-            <div class="dropdown pull-right">
-                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
-                    <i class="mdi mdi-dots-vertical"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Action</a>
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Another action</a>
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Something else</a>
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Separated link</a>
-                </div>
-            </div>
 
-            <h4 class="header-title m-t-0 m-b-30">Comments (6)</h4>
-            <div>
-                <div class="media m-b-20">
-                    <div class="d-flex mr-3">
-                        <a href="#"> <img class="media-object rounded-circle thumb-sm" alt="64x64"
-                                          src="assets/images/users/avatar-1.jpg"> </a>
-                    </div>
-                    <div class="media-body">
-                        <h5 class="mt-0">Mat Helme</h5>
-                        <p class="font-13 text-muted mb-0">
-                            <a href="" class="text-primary">@Michael</a>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                            ante sollicitudin commodo. Cras purus odio.
-                        </p>
-                        <a href="" class="text-success font-13">Reply</a>
-                    </div>
-                </div>
 
-                <div class="media m-b-20">
-                    <div class="d-flex mr-3">
-                        <a href="#"> <img class="media-object rounded-circle thumb-sm" alt="64x64"
-                                          src="assets/images/users/avatar-2.jpg"> </a>
-                    </div>
-                    <div class="media-body">
-                        <h5 class="mt-0">Media heading</h5>
-                        <p class="font-13 text-muted mb-0">
-                            <a href="" class="text-primary">@Michael</a>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                            ante sollicitudin commodo. Cras purus odio.
-                        </p>
-                        <a href="" class="text-success font-13">Reply</a>
-
-                        <div class="media m-t-20 m-b-20">
-                            <div class="d-flex mr-3">
-                                <a href="#"> <img class="media-object rounded-circle thumb-sm" alt="64x64"
-                                                  src="assets/images/users/avatar-3.jpg"> </a>
-                            </div>
-                            <div class="media-body">
-                                <h5 class="mt-0">Nested media heading</h5>
-                                <p class="font-13 text-muted mb-0">
-                                    <a href="" class="text-primary">@Michael</a>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                                    ante sollicitudin commodo. Cras purus odio.
-                                </p>
-                                <a href="" class="text-success font-13">Reply</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="media m-b-20">
-                    <div class="d-flex mr-3">
-                        <a href="#"> <img class="media-object rounded-circle thumb-sm" alt="64x64"
-                                          src="assets/images/users/avatar-1.jpg"> </a>
-                    </div>
-                    <div class="media-body">
-                        <h5 class="mt-0">Mat Helme</h5>
-                        <p class="font-13 text-muted mb-0">
-                            <a href="" class="text-primary">@Michael</a>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                            ante sollicitudin commodo. Cras purus odio.
-                        </p>
-                        <a href="" class="text-success font-13">Reply</a>
-                    </div>
-                </div>
-
-                <div class="media m-b-20">
-                    <div class="d-flex mr-3">
-                        <a href="#"> <img class="media-object rounded-circle thumb-sm" alt="64x64"
-                                          src="assets/images/users/avatar-1.jpg"> </a>
-                    </div>
-                    <div class="media-body">
-                        <h5 class="mt-0">Mat Helme</h5>
-                        <p class="font-13 text-muted mb-0">
-                            <a href="" class="text-primary">@Michael</a>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                            ante sollicitudin commodo. Cras purus odio.
-                        </p>
-                        <a href="" class="text-success font-13">Reply</a>
-                    </div>
-                </div>
-
-                <div class="media m-b-20">
-                    <div class="d-flex mr-3">
-                        <a href="#"> <img class="media-object rounded-circle thumb-sm" alt="64x64"
-                                          src="assets/images/users/avatar-1.jpg"> </a>
-                    </div>
-                    <div class="media-body">
-                        <input type="text" class="form-control input-sm" placeholder="Some text value...">
-                    </div>
-                </div>
-
-            </div>
         </div>
     </div>
 </div>
@@ -306,6 +212,9 @@ $.ajax({
 
 })
 }
+
+
+
 
 
 

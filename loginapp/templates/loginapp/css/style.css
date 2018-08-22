@@ -6523,10 +6523,13 @@ File: Responsive
 
 
 /* My CSS*/
-.create-site-button{
+.create-app-button{
     margin-top: 20px;
 }
-
+.app-list-select{
+    min-width: 150px;
+    margin-top: 20px;
+}
 .success-messages{
     margin-bottom: 0px;
 }

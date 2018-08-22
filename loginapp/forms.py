@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth import password_validation
 
-from loginapp.models import User, App
+from loginapp.models import User, App, Channel
 from loginapp import models
 
 
@@ -86,3 +86,15 @@ class AddAppForm(ModelForm):
     class Meta:
         model = App
         fields = ('name', 'api_key', 'callback_uri', 'allowed_ips', 'description',)
+
+
+class ChannelForm(ModelForm):
+    CHOICES = (('label1', 'value1'),('label2', 'value2'),('label3', 'value3'))
+    provider = forms.ChoiceField(choices=CHOICES, required=True)
+    client_id = forms.CharField(max_length=255, required=True)
+    client_secret = forms.CharField(max_length=255, required=True)
+    permission = forms.ChoiceField(choices=CHOICES,  widget=forms.RadioSelect(), required=True)
+
+    class Meta:
+        model=Channel
+        fields = ('provider', 'client_id', 'client_secret', 'permission',)

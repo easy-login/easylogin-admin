@@ -117,6 +117,7 @@ def change_password_profile(request):
 
 
 # application, provider, channel
+# Application
 @login_required
 def add_app(request):
     if request.method == 'POST':
@@ -159,6 +160,10 @@ def get_api_key(request):
     except Exception as e:
         return HttpResponse(e, status=404)
 
+
+# Channel
+# @login_required
+# def add_channel(request):
 
 # link not found
 def error404(request):
