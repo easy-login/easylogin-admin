@@ -23,7 +23,7 @@
         <li class="list-inline-item">
             <div class="create-app-button">
                 <button data-toggle="modal" data-target="#add-channel-modal" type="button"
-                   class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
+                        class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
                         class="fas fa-plus"></i> <span>Add Channel</span>
                 </button>
             </div>
@@ -94,7 +94,7 @@
                     <div class="form-group row">
                         <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
                         <div class="col-md-6">
-{% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
+                            {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
                             {% if form.api_key.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.api_key.errors %}
@@ -114,7 +114,7 @@
                     <div class="form-group row">
                         <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
                         <div class="col-md-10">
-{% render_field form.callback_uri class='form-control' placeholder='Callback URI' value=app.callback_uri %}
+                            {% render_field form.callback_uri class='form-control' placeholder='Callback URI' value=app.callback_uri %}
                             {% if form.callback_uri.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.callback_uri.errors %}
@@ -128,7 +128,7 @@
                     <div class="form-group row ">
                         <label for="id_allowed_ips" class="col-md-2 col-form-label">Allowed IPs</label>
                         <div class="col-md-10">
-{% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' value=app.allowed_ips %}
+                            {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' value=app.allowed_ips %}
                             {% if form.allowed_ips.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.allowed_ips.errors %}
@@ -195,75 +195,92 @@
                     <h4 class="modal-title" id="myModalLabel">New Channel</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
-                <div class="modal-body">
-                    <form class="form-horizontal m-t-20" method="post" action="">
+                <form class="form-horizontal m-t-20" method="post" action="{% url 'add_channel' %}">
                     {% csrf_token %}
-                    <div class="form-group row">
-                        <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
-                        <div class="col-md-10">
-                            {% render_field channel_form.provider class='form-control' placeholder='Provider'%}
-                            {% if channel_form.provider.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in channel_form.provider.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                {% render_field channel_form.app_id class='form-control' value=app.id %}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
-                        <div class="col-md-10">
-{% render_field channel_form.client_id class='form-control' placeholder='Client ID' %}
-                            {% if channel_form.client_id.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in channel_form.client_id.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
+                        <div class="form-group row">
+                            <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
+                            <div class="col-md-10">
+                                {% render_field channel_form.provider class='form-control' placeholder='Provider'%}
+                                {% if channel_form.provider.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.provider.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
-                        <div class="col-md-10">
-{% render_field channel_form.client_secret class='form-control' placeholder='Client Secret' %}
-                            {% if channel_form.client_secret.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in channel_form.client_secret.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
+                        <div class="form-group row">
+                            <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
+                            <div class="col-md-10">
+                                {% render_field channel_form.client_id class='form-control' placeholder='Client ID' %}
+                                {% if channel_form.client_id.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.client_id.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group row ">
-                        <label for="id_permission" class="col-md-2 col-form-label">Permission</label>
-                        <div class="col-md-10">
-{% render_field channel_form.permission class='form-control' placeholder='Permission' %}
-                            {% if channel_form.permission.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in channel_form.permission.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
+                        <div class="form-group row">
+                            <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
+                            <div class="col-md-10">
+                                {% render_field channel_form.client_secret class='form-control' placeholder='Client Secret' %}
+                                {% if channel_form.client_secret.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.client_secret.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
                         </div>
+
+                        <div class="form-group row ">
+                            <label for="id_permission" class="col-md-2 col-form-label">Permission</label>
+                            <div class="col-md-10">
+                                {% for provider in providers %}
+                                <div class="provider-permission " id="id-{{ provider.id }}" style="display: none;">
+                                    {% for permission in provider.permission_as_list %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ permission }}" name="permission" data-parsley-multiple="groups" data-parsley-mincheck="1"
+                                               type="checkbox" value="{{ permission }}"disabled>
+                                        <label class="" for="{{ permission }}"> {{ permission }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                                {% if channel_form.permission.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.permission.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Add Channel</button>
                     </div>
                 </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary waves-effect waves-light">Save changes</button>
-                </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
 </div>
-    <!--/ meta -->
+<!--/ meta -->
 {% endblock %}
 
 {% block js %}
@@ -276,9 +293,17 @@
 
 <!--My js-->
 <script type="text/javascript">
-            $(document).ready(function() {
-                $('form').parsley();
-            });
+$(document).ready(function() {
+    $('form').parsley();
+    $('#id-'+ $('#id_provider').val()).show();
+    $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+    $('#id_provider').change(function(){
+        $('.provider-permission').hide();
+        $('.provider-permission input').prop('disabled', true)
+        $('#id-'+ $('#id_provider').val()).show();
+        $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+    })
+});
 
 function getApiKey(){
 //$('#img-loading').show()
@@ -295,8 +320,8 @@ $.ajax({
         alert("get api-key failed!")
         //$('#img-loading').hide()
     }
-
 })
 }
+
 </script>
 {% endblock %}

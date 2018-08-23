@@ -1,8 +1,9 @@
 from django.forms import ModelForm
+from django.forms import ModelChoiceField
 from django import forms
 from django.contrib.auth import password_validation
 
-from loginapp.models import User, App, Channel
+from loginapp.models import User, App, Channel, Provider
 from loginapp import models
 
 
@@ -88,13 +89,20 @@ class AppForm(ModelForm):
         fields = ('name', 'api_key', 'callback_uri', 'allowed_ips', 'description',)
 
 
+# Custom ModelChoiceField Label
+class ProviderModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.id
+
+
 class ChannelForm(ModelForm):
-    CHOICES = (('label1', 'value1'),('label2', 'value2'),('label3', 'value3'))
-    provider = forms.ChoiceField(choices=CHOICES, required=True)
+    CHOICES = (('label1', 'value1'), ('label2', 'value2'), ('label3', 'value3'))
+    provider = ProviderModelChoiceField(Provider.objects.all(), to_field_name='id', required=True, empty_label=None)
     client_id = forms.CharField(max_length=255, required=True)
     client_secret = forms.CharField(max_length=255, required=True)
-    permission = forms.ChoiceField(choices=CHOICES,  widget=forms.RadioSelect(), required=True)
+    # permission = forms.CharField(max_length=1023, required=True)
+    app_id = forms.IntegerField(required=True)
 
     class Meta:
-        model=Channel
-        fields = ('provider', 'client_id', 'client_secret', 'permission',)
+        model = Channel
+        fields = ('provider', 'client_id', 'client_secret',)

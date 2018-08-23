@@ -32,6 +32,9 @@ class Provider(models.Model):
     version = models.CharField(max_length=7)
     permission = models.CharField(max_length=1023)
 
+    def permission_as_list(self):
+        return self.permission.split(",")
+
 
 class App(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

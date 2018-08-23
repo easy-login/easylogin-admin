@@ -4,11 +4,12 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
+from django import forms
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.utils import generateApiKey
-from loginapp.models import App
+from loginapp.models import App, Provider
 import string
 import random
 import datetime
@@ -147,11 +148,31 @@ def app_detail(request, app_id):
             return redirect('app_detail', app_id=app_id)
 
     app = get_object_or_404(App, pk=app_id)
-    apps = App.objects.all().filter(owner_id=request.user.id)
+    apps = App.objects.filter(owner_id=request.user.id)
+    providers = Provider.objects.all()
+
     form = AppForm()
     channel_form = ChannelForm()
+    channel_form.fields['app_id'].widget = forms.HiddenInput()
+
     return render(request, 'loginapp/app_detail.html',
-                  {'app': app, 'apps': apps, 'form': form, 'channel_form': channel_form})
+                  {'app': app, 'apps': apps, 'providers': providers, 'form': form, 'channel_form': channel_form})
+
+
+@login_required
+def add_channel(request):
+    if request.method == 'POST':
+        form = ChannelForm(request.POST)
+        if form.is_valid():
+            channel = form.save(commit=False)
+            permissions = request.POST.getlist('permission')
+            print (permissions)
+            app_id = request.POST['app_id']
+            return redirect('app_detail', app_id=app_id)
+        else:
+            print(form.errors)
+
+    return redirect('index')
 
 
 @login_required

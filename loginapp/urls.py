@@ -37,9 +37,11 @@ urlpatterns = [
 
     url(r'^change_password/$', views.change_password_profile, name='change_password'),
 
-    url(r'^new_app/$', views.add_app, name='add_app'),
+    url(r'^add_app/$', views.add_app, name='add_app'),
 
     url(r'^get_api_key/$', views.get_api_key, name='get_api_key'),
 
-    path('app/<int:app_id>/', views.app_detail, name='app_detail')
+    path('app/<int:app_id>/', views.app_detail, name='app_detail'),
+
+    url(r'^add_channel/$', views.add_channel, name='add_channel'),
 ]
