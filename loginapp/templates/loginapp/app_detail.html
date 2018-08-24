@@ -64,6 +64,27 @@
 
 {% block content%}
 <div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
     <div class="col-md-8">
         <div class="card-box">
             {% if messages %}
@@ -260,16 +281,8 @@
                                     {% endfor %}
                                 </div>
                                 {% endfor %}
-                                {% if channel_form.permission.errors %}
-                                <ul class="parsley-errors-list filled">
-                                    {% for error in channel_form.permission.errors %}
-                                    <li class="">{{ error }}</li>
-                                    {% endfor%}
-                                </ul>
-                                {% endif %}
                             </div>
                         </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>

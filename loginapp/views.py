@@ -166,8 +166,15 @@ def add_channel(request):
         if form.is_valid():
             channel = form.save(commit=False)
             permissions = request.POST.getlist('permission')
-            print (permissions)
             app_id = request.POST['app_id']
+            if len(permissions) == 0:
+                messages.error(request, "Add channel failed: permission is required!")
+                return redirect('app_detail', app_id=app_id)
+
+            if app_id is None:
+                messages.error(request, "Add channel failed: App ID is required!")
+                return redirect('dashboard')
+
             return redirect('app_detail', app_id=app_id)
         else:
             print(form.errors)
