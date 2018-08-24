@@ -64,7 +64,11 @@
                 <div class="form-group row">
                     <label for="id_name" class="col-md-2 col-form-label">Name</label>
                     <div class="col-md-8">
+                        {% if form.name.errors %}
+                        {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
+                        {% else %}
                         {% render_field form.name class='form-control' placeholder='Name' %}
+                        {% endif %}
                         {% if form.name.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.name.errors %}
@@ -78,8 +82,11 @@
                 <div class="form-group row">
                     <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
                     <div class="col-md-6">
-                        {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' %}
                         {% if form.api_key.errors %}
+                        {% render_field form.api_key class='form-control parsley-error' placeholder='API Key' %}
+                        {% else %}
+                        {% render_field form.api_key class='form-control' placeholder='API Key' %}
+                        {% endif %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.api_key.errors %}
                             <li class="">{{ error }}</li>
@@ -97,7 +104,11 @@
                 <div class="form-group row">
                     <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
                     <div class="col-md-8">
+                        {% if form.callback_uri.errors %}
+                        {% render_field form.callback_uri class='form-control parsley-error' placeholder='Callback URI' %}
+                        {% else %}
                         {% render_field form.callback_uri class='form-control' placeholder='Callback URI' %}
+                        {% endif %}
                         {% if form.callback_uri.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.callback_uri.errors %}

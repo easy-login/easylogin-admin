@@ -143,15 +143,20 @@ def app_detail(request, app_id):
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
             app_update = form.save(commit=False)
-            app_update.modified_at = datetime.datetime.now();
+            app_update.modified_at = datetime.datetime.now()
             app_update.save()
             return redirect('app_detail', app_id=app_id)
+        else:
+            # print(type(form.errors.as_data()))
+            for key, val in form.errors.as_data().items():
+                for error in val:
+                    messages.error(request, error)
+    else:
+        form = AppForm()
 
     app = get_object_or_404(App, pk=app_id)
     apps = App.objects.filter(owner_id=request.user.id)
     providers = Provider.objects.all()
-
-    form = AppForm()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
 
