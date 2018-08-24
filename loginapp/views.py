@@ -9,7 +9,7 @@ from django import forms
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.utils import generateApiKey
-from loginapp.models import App, Provider
+from loginapp.models import App, Provider, Channel
 import string
 import random
 import datetime
@@ -145,6 +145,7 @@ def app_detail(request, app_id):
             app_update = form.save(commit=False)
             app_update.modified_at = datetime.datetime.now()
             app_update.save()
+            messages.success(request, "Application was successfully updated!")
             return redirect('app_detail', app_id=app_id)
         else:
             # print(type(form.errors.as_data()))
@@ -156,12 +157,14 @@ def app_detail(request, app_id):
 
     app = get_object_or_404(App, pk=app_id)
     apps = App.objects.filter(owner_id=request.user.id)
+    channels = Channel.objects.filter(app_id=app_id)
     providers = Provider.objects.all()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/app_detail.html',
-                  {'app': app, 'apps': apps, 'providers': providers, 'form': form, 'channel_form': channel_form})
+                  {'app': app, 'apps': apps, 'channels': channels, 'providers': providers, 'form': form,
+                   'channel_form': channel_form})
 
 
 @login_required
@@ -175,16 +178,32 @@ def add_channel(request):
             if len(permissions) == 0:
                 messages.error(request, "Add channel failed: permission is required!")
                 return redirect('app_detail', app_id=app_id)
-
+            else:
+                perm_value = ''
+                for perm in permissions:
+                    perm_value += perm + ","
+                perm_value = perm_value[:-1]
+                channel.permissions = perm_value
             if app_id is None:
                 messages.error(request, "Add channel failed: App ID is required!")
                 return redirect('dashboard')
-
+            else:
+                channel.app_id = App.objects.get(pk=app_id)
+            messages.success(request, "Channel was successfully created!")
+            channel.save()
             return redirect('app_detail', app_id=app_id)
         else:
             print(form.errors)
 
     return redirect('index')
+
+
+@login_required
+def delete_channel(request, app_id, channel_id):
+    channel = get_object_or_404(Channel, pk=channel_id)
+    channel.delete()
+    messages.success(request, "Channel was deleted!")
+    return redirect('app_detail', app_id=app_id)
 
 
 @login_required

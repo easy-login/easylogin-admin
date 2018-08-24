@@ -44,4 +44,6 @@ urlpatterns = [
     path('app/<int:app_id>/', views.app_detail, name='app_detail'),
 
     url(r'^add_channel/$', views.add_channel, name='add_channel'),
+
+    path('delete_channel/<int:app_id>/<int:channel_id>/', views.delete_channel, name='delete_channel')
 ]

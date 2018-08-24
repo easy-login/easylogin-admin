@@ -59,20 +59,12 @@
             <div class="project-sort-item">
                 <form class="form-inline">
                     <div class="form-group">
-                        <label>Phase :</label>
-                        <select class="form-control ml-2 form-control-sm">
-                            <option>All Projects(6)</option>
-                            <option>Complated</option>
-                            <option>Progress</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label>Sort :</label>
                         <select class="form-control ml-2 form-control-sm">
                             <option>Date</option>
                             <option>Name</option>
-                            <option>End date</option>
-                            <option>Start Date</option>
+                            <option>Date Created </option>
+                            <option>Date Modified</option>
                         </select>
                     </div>
                 </form>
@@ -94,8 +86,6 @@
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
                     <a href="{% url 'app_detail' app.id %}" class="dropdown-item">Detail And Edit</a>
-                    <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Add Channel</a>
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item">Delete</a>
                     <!-- item-->

@@ -35,6 +35,9 @@ class Provider(models.Model):
     def permission_as_list(self):
         return self.permission.split(",")
 
+    def __str__(self):
+        return u'{0}'.format(self.id)
+
 
 class App(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

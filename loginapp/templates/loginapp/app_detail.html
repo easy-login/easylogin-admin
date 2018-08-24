@@ -17,9 +17,7 @@
 </ul>
 
 <nav class="navbar-custom">
-
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
-
         <li class="list-inline-item">
             <div class="create-app-button">
                 <button data-toggle="modal" data-target="#add-channel-modal" type="button"
@@ -87,14 +85,6 @@
     </div>
     <div class="col-md-8">
         <div class="card-box">
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-success alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <strong> {{ message }} </strong>
-            </div>
-            {% endfor %}
-            {% endif %}
             <div class="p-20">
                 <form class="form-horizontal m-t-20" method="post" action="">
                     {% csrf_token %}
@@ -193,7 +183,6 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
 
@@ -201,19 +190,49 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card-box">
+        {% for channel in channels %}
+        <div class="card-box project-box p-b-0">
+            <div class="dropdown pull-right">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown"
+                   aria-expanded="false">
+                    <i class="mdi mdi-dots-vertical"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <!-- item-->
+                    <a data-toggle="modal" data-target="#update-channel-modal-{{ channel.id }}"  href="" class="dropdown-item">Detail And Edit</a>
+                    <!-- item-->
+                    <a href="{% url 'delete_channel' app.id channel.id %}" class="dropdown-item">Delete</a>
+                    <!-- item-->
+                </div>
+            </div>
+            <h4 class="mt-0"><a href="{% url 'app_detail' app.id %}" class="text-white">{{ channel.provider }}</a></h4>
+            <hr>
+            <ul class="text-primary list-inline m-b-0">
+                <li class="list-inline-item">
+                    <h5 class="m-b-5">Create Time</h5>
+                    <p class="font-10"> {{ channel.created_at|date:'N j,Y' }}
+                        <!--<small class="text-muted">{{ channel.created_at|date:'P' }}</small>-->
+                    </p>
+                </li>
 
-
+                <li class="list-inline-item">
+                    <h5 class="m-b-5">Last Modify</h5>
+                    <p class="font-10"> {{ channel.modified_at|date:'N j,Y' }}
+                        <!--<small class="text-muted">{{ channel.modified_at|date:'P' }}</small>-->
+                    </p>
+                </li>
+            </ul>
         </div>
+        {% endfor %}
     </div>
 
     <!--Add channel modal-->
-    <div id="add-channel-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <div id="add-channel-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addChannelModal"
          style="display: none;" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">New Channel</h4>
+                    <h4 class="modal-title" id="addChannelModal">New Channel</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <form class="form-horizontal m-t-20" method="post" action="{% url 'add_channel' %}">
@@ -228,7 +247,7 @@
                         <div class="form-group row">
                             <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
                             <div class="col-md-10">
-                                {% render_field channel_form.provider class='form-control' placeholder='Provider'%}
+                                {% render_field channel_form.provider class='form-control' %}
                                 {% if channel_form.provider.errors %}
                                 <ul class="parsley-errors-list filled">
                                     {% for error in channel_form.provider.errors %}
@@ -275,7 +294,7 @@
                                     {% for permission in provider.permission_as_list %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ permission }}" name="permission" data-parsley-multiple="groups" data-parsley-mincheck="1"
-                                               type="checkbox" value="{{ permission }}"disabled>
+                                               type="checkbox" value="{{ permission }}" disabled>
                                         <label class="" for="{{ permission }}"> {{ permission }} </label>
                                     </div>
                                     {% endfor %}
