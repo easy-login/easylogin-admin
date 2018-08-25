@@ -125,7 +125,7 @@
                     <div class="form-group row">
                         <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
                         <div class="col-md-10">
-                            {% render_field form.callback_uri class='form-control' placeholder='Callback URI' value=app.callback_uri %}
+                            {% render_field form.callback_uri class='form-control' placeholder='Callback URI' value=app.callback_uri parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
                             {% if form.callback_uri.errors %}
                             <ul class="parsley-errors-list filled">
                                 {% for error in form.callback_uri.errors %}

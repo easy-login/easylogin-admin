@@ -148,13 +148,9 @@ def app_detail(request, app_id):
             messages.success(request, "Application was successfully updated!")
             return redirect('app_detail', app_id=app_id)
         else:
-            # print(type(form.errors.as_data()))
-            for key, val in form.errors.as_data().items():
-                for error in val:
-                    messages.error(request, error)
-    else:
-        form = AppForm()
+            push_messages_error(request, form)
 
+    form = AppForm()
     app = get_object_or_404(App, pk=app_id)
     apps = App.objects.filter(owner_id=request.user.id)
     channels = Channel.objects.filter(app_id=app_id)
@@ -193,6 +189,7 @@ def add_channel(request):
             channel.save()
             return redirect('app_detail', app_id=app_id)
         else:
+            push_messages_error(request, form)
             print(form.errors)
 
     return redirect('index')
@@ -219,6 +216,16 @@ def get_api_key(request):
 # Channel
 # @login_required
 # def add_channel(request):
+
+# pass messages error
+def push_messages_error(request, form):
+    for key, val in form.errors.as_data().items():
+        key = key.replace("_", " ").capitalize()
+        for validError in val:
+            errors = validError.messages
+            for error in errors:
+                messages.error(request, "Update failed! " + key + ": " + error)
+
 
 # link not found
 def error404(request):

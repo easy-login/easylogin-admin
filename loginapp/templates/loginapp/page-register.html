@@ -91,7 +91,7 @@
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        {% render_field form.phone class='form-control' placeholder='Phone' %}
+                        {% render_field form.phone class='form-control' placeholder='Phone' parsley-type="phone" %}
                         {% if form.phone.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.phone.errors %}

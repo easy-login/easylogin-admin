@@ -87,6 +87,7 @@
                         {% else %}
                         {% render_field form.api_key class='form-control' placeholder='API Key' %}
                         {% endif %}
+                        {% if form.api_key.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.api_key.errors %}
                             <li class="">{{ error }}</li>
