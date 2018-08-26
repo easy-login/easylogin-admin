@@ -5,6 +5,7 @@ from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
 from django import forms
+from django.urls import reverse
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
@@ -24,7 +25,6 @@ def index(request):
 def login(request):
     if request.user.is_authenticated:
         return redirect('index')
-    message = ''
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -32,11 +32,13 @@ def login(request):
         if user is not None:
             request.session.set_expiry(86400)
             signin(request, user)
-            return redirect('index')
+            print(request.POST.get('next'))
+            next_redirect = request.POST.get('next') if request.POST.get('next') else 'dashboard'
+            return redirect(next_redirect)
         else:
-            message = 'Email or Password Incorrect !'
+            messages.error(request, 'Email or Password Incorrect !')
 
-    return render(request, 'loginapp/page-login.html', {'message': message})
+    return render(request, 'loginapp/page-login.html')
 
 
 @login_required
@@ -85,9 +87,10 @@ def profile(request):
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('profile')
         else:
+            push_messages_error(request, form)
             print(form.errors)
-    else:
-        form = UpdateProfileForm()
+
+    form = UpdateProfileForm()
 
     return render(request, 'loginapp/profile.html', {'form': form})
 
@@ -127,8 +130,10 @@ def add_app(request):
             app = form.save(commit=False)
             app.owner_id = request.user
             app.save()
+            messages.success(request, "App was successfully created!")
             return redirect('dashboard')
         else:
+            push_messages_error(request, form)
             print(form.errors)
 
     else:
@@ -138,8 +143,8 @@ def add_app(request):
 
 @login_required
 def app_detail(request, app_id):
+    app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
     if request.method == 'POST':
-        app = get_object_or_404(App, pk=app_id)
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
             app_update = form.save(commit=False)
@@ -151,7 +156,6 @@ def app_detail(request, app_id):
             push_messages_error(request, form)
 
     form = AppForm()
-    app = get_object_or_404(App, pk=app_id)
     apps = App.objects.filter(owner_id=request.user.id)
     channels = Channel.objects.filter(app_id=app_id)
     providers = Provider.objects.all()
@@ -161,6 +165,18 @@ def app_detail(request, app_id):
     return render(request, 'loginapp/app_detail.html',
                   {'app': app, 'apps': apps, 'channels': channels, 'providers': providers, 'form': form,
                    'channel_form': channel_form})
+
+
+@login_required
+def delete_app(request, app_id):
+    if request.method == 'POST':
+        app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+        app.delete()
+        messages.success(request, "App was deleted!")
+        return redirect('dashboard')
+    else:
+        messages.error(request, 'Delete failed APP!')
+        return redirect('app_detail', app_id=app_id)
 
 
 @login_required
@@ -184,23 +200,71 @@ def add_channel(request):
                 messages.error(request, "Add channel failed: App ID is required!")
                 return redirect('dashboard')
             else:
-                channel.app_id = App.objects.get(pk=app_id)
+                channel.app_id = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
             messages.success(request, "Channel was successfully created!")
+            app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+            app.modified_at = datetime.datetime.now()
+            app.save()
             channel.save()
             return redirect('app_detail', app_id=app_id)
         else:
             push_messages_error(request, form)
             print(form.errors)
 
-    return redirect('index')
+    return redirect('dashboard')
+
+
+@login_required
+def channel_detail(request, app_id, channel_id):
+    app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+    channel = get_object_or_404(Channel, pk=channel_id, app_id=app_id)
+    if request.method == 'POST':
+        form = ChannelForm(request.POST, instance=channel)
+        if form.is_valid():
+            channel_update = form.save(commit=False)
+            channel_update.modified_at = datetime.datetime.now()
+
+            permissions = request.POST.getlist('permission')
+            if len(permissions) == 0:
+                messages.error(request, "Add channel failed: permission is required!")
+                return redirect('app_detail', app_id=app_id)
+            else:
+                perm_value = ''
+                for perm in permissions:
+                    perm_value += perm + ","
+                perm_value = perm_value[:-1]
+                channel.permissions = perm_value
+
+                channel.app_id = app
+            messages.success(request, "Channel was successfully updated!")
+            app.modified_at = datetime.datetime.now()
+            app.save()
+            channel.save()
+            return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
+        else:
+            push_messages_error(request, form)
+            print(form.errors)
+
+    channels = Channel.objects.filter(app_id=app_id)
+    providers = Provider.objects.all()
+    form = ChannelForm()
+    form.fields['app_id'].widget = forms.HiddenInput()
+
+    return render(request, 'loginapp/channel_detail.html',
+                  {"app": app, 'channel': channel, 'channels': channels, 'providers': providers, 'form': form})
 
 
 @login_required
 def delete_channel(request, app_id, channel_id):
-    channel = get_object_or_404(Channel, pk=channel_id)
-    channel.delete()
-    messages.success(request, "Channel was deleted!")
-    return redirect('app_detail', app_id=app_id)
+    if request.method == 'POST':
+        get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+        channel = get_object_or_404(Channel, pk=channel_id, app_id=app_id)
+        channel.delete()
+        messages.success(request, "Channel was deleted!")
+        return redirect('app_detail', app_id=app_id)
+    else:
+        messages.error(request, "Delete failed Channel!")
+        return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
 
 
 @login_required

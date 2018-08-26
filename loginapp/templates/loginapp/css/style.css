@@ -6534,3 +6534,8 @@ File: Responsive
     margin-bottom: 0px;
 }
 
+.checkbox-handler-error{
+    border: 2px solid;
+    border-color: transparent;
+    border-radius: 4px;
+}

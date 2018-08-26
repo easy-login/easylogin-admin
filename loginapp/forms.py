@@ -5,6 +5,9 @@ from django.contrib.auth import password_validation
 
 from loginapp.models import User, App, Channel, Provider
 from loginapp import models
+from loginapp import utils
+
+from urllib.parse import urlparse
 
 
 class RegisterForm(ModelForm):
@@ -87,6 +90,14 @@ class AppForm(ModelForm):
     class Meta:
         model = App
         fields = ('name', 'api_key', 'callback_uri', 'allowed_ips', 'description',)
+
+    def clean(self):
+        cleaned_data = super(AppForm, self).clean()
+        callback_uri = cleaned_data.get('callback_uri')
+        if not utils.validateURL(callback_uri):
+            raise forms.ValidationError({'callback_uri': [
+                "Enter a valid URL.", ]
+            })
 
 
 # Custom ModelChoiceField Label

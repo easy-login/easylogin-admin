@@ -1,5 +1,10 @@
 {% extends 'loginapp/base.html' %}
 <!-- Page title -->
+{% load static %}
+{% block css %}
+<!-- Sweet Alert css -->
+        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
 {% block topbar%}
 
 <ul class="nav navbar-nav list-inline navbar-left">
@@ -61,9 +66,8 @@
                     <div class="form-group">
                         <label>Sort :</label>
                         <select class="form-control ml-2 form-control-sm">
-                            <option>Date</option>
                             <option>Name</option>
-                            <option>Date Created </option>
+                            <option selected>Date Created </option>
                             <option>Date Modified</option>
                         </select>
                     </div>
@@ -76,6 +80,27 @@
 
 
 <div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
     {% for app in apps %}
     <div class="col-md-4">
         <div class="card-box project-box p-b-0">
@@ -87,7 +112,10 @@
                     <!-- item-->
                     <a href="{% url 'app_detail' app.id %}" class="dropdown-item">Detail And Edit</a>
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item">Delete</a>
+                    <form method="POST" action="{% url 'delete_app' app.id %}">
+                        {% csrf_token %}
+                    <button  class="dropdown-item" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
+                    </form>
                     <!-- item-->
                 </div>
             </div>
@@ -130,6 +158,8 @@
 {% endblock %}
 
 {% block js %}
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <script type="text/javascript">
 $(document).ready(function() {
    $(".app-description").each(function(){
@@ -139,5 +169,26 @@ $(document).ready(function() {
         }
     });
 });
+
+function deleteConfirm(event){
+    event.preventDefault();
+    var form = event.target.form;
+    swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4fa7f3',
+                cancelButtonColor: '#d57171',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function () {
+            form.submit();
+                swal(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                );
+            });
+}
 </script>
 {% endblock %}

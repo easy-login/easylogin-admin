@@ -59,3 +59,6 @@ class Channel(models.Model):
     client_secret = models.CharField(max_length=255)
     permissions = models.CharField(max_length=1023)
     app_id = models.ForeignKey(App, on_delete=models.CASCADE)
+
+    def permission_as_list(self):
+        return self.permissions.split(",")

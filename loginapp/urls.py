@@ -43,7 +43,11 @@ urlpatterns = [
 
     path('app/<int:app_id>/', views.app_detail, name='app_detail'),
 
+    path('delete_app/<int:app_id>/', views.delete_app, name='delete_app'),
+
     url(r'^add_channel/$', views.add_channel, name='add_channel'),
 
-    path('delete_channel/<int:app_id>/<int:channel_id>/', views.delete_channel, name='delete_channel')
+    path('app/<int:app_id>/channel/<int:channel_id>/', views.channel_detail, name='channel_detail'),
+
+    path('delete_channel/<int:app_id>/<int:channel_id>/', views.delete_channel, name='delete_channel'),
 ]

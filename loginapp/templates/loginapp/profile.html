@@ -54,20 +54,31 @@
 
 {% block content%}
         <div class="row card-box profile-info-name">
-                <div class="col-md-3">
-                    <img src="{% static 'images/ninja.png' %}"
-                         class="img-thumbnail" alt="{{ request.user.username }}">
-                    <!--<h4 class="m-0">{{ request.user.username }}</h4>-->
+            <div class="col-md-3">
+                <img src="{% static 'images/ninja.png' %}"
+                     class="img-thumbnail" alt="{{ request.user.username }}">
+                <!--<h4 class="m-0">{{ request.user.username }}</h4>-->
+            </div>
+            <div class="col-md-9 profile-info-detail">
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <strong> {{ message }} </strong>
                 </div>
-                <div class="col-md-9 profile-info-detail">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-success alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <strong> {{ message }} </strong>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
+                {% endif %}
+                {% endfor %}
+
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <strong> {{ message }} </strong>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
                     <div class="p-20">
                         <form class="form-horizontal m-t-20" method="post" action="">
                             {% csrf_token %}
@@ -102,7 +113,7 @@
                             <div class="form-group row">
                                 <label for="id_phone" class="col-md-2 col-form-label">Phone</label>
                                 <div class="col-md-8">
-                                    {% render_field form.phone class='form-control' placeholder='Phone' value=request.user.phone %}
+                                    {% render_field form.phone class='form-control' placeholder='Phone' value=request.user.phone type='tel' parsley-type="phone" %}
                                     {% if form.phone.errors %}
                                     <ul class="parsley-errors-list filled">
                                         {% for error in form.phone.errors %}
@@ -182,7 +193,7 @@
 
                     <div class="clearfix"></div>
                 </div>
-            </div>
+        </div>
         <!--/ meta -->
 {% endblock %}
 

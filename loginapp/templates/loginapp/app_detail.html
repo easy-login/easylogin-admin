@@ -2,6 +2,10 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block css %}
+<!-- Sweet Alert css -->
+        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
 <!-- Page title -->
 {% block topbar %}
 <!-- Page title -->
@@ -173,20 +177,20 @@
                             </button>
                         </div>
                     </div>
-
-                    <div class="form-group text-center m-t-40 row">
+                </form>
+                <form method="POST" action="{% url 'delete_app' app.id %}">
+                    {% csrf_token %}
+                     <div class="form-group text-center m-t-40 row">
                         <div class="col-md-2"></div>
                         <div class="col-md-10">
                             <button class="btn btn-danger btn-block waves-effect waves-light"
-                                    type="button">
+                                    type="button" onclick="deleteConfirm(event)">
                                 Delete This App
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
-
-            <div class="clearfix"></div>
         </div>
     </div>
     <div class="col-md-4">
@@ -199,13 +203,16 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a data-toggle="modal" data-target="#update-channel-modal-{{ channel.id }}"  href="" class="dropdown-item">Detail And Edit</a>
+                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item">Detail And Edit</a>
                     <!-- item-->
-                    <a href="{% url 'delete_channel' app.id channel.id %}" class="dropdown-item">Delete</a>
+                    <form method="POST" action="{% url 'delete_channel' app.id channel.id %}">
+                        {% csrf_token %}
+                    <button  class="dropdown-item" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
+                    </form>
                     <!-- item-->
                 </div>
             </div>
-            <h4 class="mt-0"><a href="{% url 'app_detail' app.id %}" class="text-white">{{ channel.provider }}</a></h4>
+            <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="text-white">{{ channel.provider }}</a></h4>
             <hr>
             <ul class="text-primary list-inline m-b-0">
                 <li class="list-inline-item">
@@ -289,12 +296,17 @@
                         <div class="form-group row ">
                             <label for="id_permission" class="col-md-2 col-form-label">Permission</label>
                             <div class="col-md-10">
+                                <div id="checkbox-error"></div>
                                 {% for provider in providers %}
-                                <div class="provider-permission " id="id-{{ provider.id }}" style="display: none;">
+                                <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
                                     {% for permission in provider.permission_as_list %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ permission }}" name="permission" data-parsley-multiple="groups" data-parsley-mincheck="1"
-                                               type="checkbox" value="{{ permission }}" disabled>
+                                        <input id="{{ permission }}" name="permission" data-parsley-multiple="groups"
+                                               data-parsley-mincheck="1"
+                                               type="checkbox" value="{{ permission }}" required disabled
+                                               data-parsley-errors-container="#checkbox-error"
+                                               data-parsley-error-message="Permission value is required."
+                                               data-parsley-class-handler=".checkbox-handler-error">
                                         <label class="" for="{{ permission }}"> {{ permission }} </label>
                                     </div>
                                     {% endfor %}
@@ -311,6 +323,7 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
+    <div class="clearfix"></div>
 </div>
 <!--/ meta -->
 {% endblock %}
@@ -318,7 +331,8 @@
 {% block js %}
 <!-- Validation form-->
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
-
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <!--&lt;!&ndash; Modal-Effect &ndash;&gt;-->
 <!--<script src="assets/plugins/custombox/dist/custombox.min.js"></script>-->
 <!--<script src="assets/plugins/custombox/dist/legacy.min.js"></script>-->
@@ -326,16 +340,18 @@
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function() {
-    $('form').parsley();
-
     $('#id-'+ $('#id_provider').val()).show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
     $('#id_provider').change(function(){
         $('.provider-permission').hide();
+
+        $('.provider-permission input').prop("checked", false)
         $('.provider-permission input').prop('disabled', true)
+
         $('#id-'+ $('#id_provider').val()).show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
     })
+    $('form').parsley({excluded: 'input[disabled]'});
 });
 
 function getApiKey(){
@@ -355,6 +371,26 @@ $.ajax({
     }
 })
 }
+function deleteConfirm(event){
+    event.preventDefault();
+    var form = event.target.form;
+    swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4fa7f3',
+                cancelButtonColor: '#d57171',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function () {
+            form.submit();
+                swal(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                );
+            });
 
+}
 </script>
 {% endblock %}

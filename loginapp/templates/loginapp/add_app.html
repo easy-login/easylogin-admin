@@ -58,7 +58,9 @@
         </div>
         {% endfor %}
         {% endif %}
-        <div class="p-20">
+    </div>
+    <div class="col-md-12">
+    <div class="p-20">
             <form class="form-horizontal m-t-20" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group row">
@@ -83,9 +85,9 @@
                     <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
                     <div class="col-md-6">
                         {% if form.api_key.errors %}
-                        {% render_field form.api_key class='form-control parsley-error' placeholder='API Key' %}
+                        {% render_field form.api_key class='form-control parsley-error' readonly='readonly' placeholder='API Key' %}
                         {% else %}
-                        {% render_field form.api_key class='form-control' placeholder='API Key' %}
+                        {% render_field form.api_key class='form-control' readonly='readonly' placeholder='API Key' %}
                         {% endif %}
                         {% if form.api_key.errors %}
                         <ul class="parsley-errors-list filled">
@@ -106,7 +108,7 @@
                     <label for="id_callback_uri" class="col-md-2 col-form-label">Callback URI</label>
                     <div class="col-md-8">
                         {% if form.callback_uri.errors %}
-                        {% render_field form.callback_uri class='form-control parsley-error' placeholder='Callback URI' %}
+                        {% render_field form.callback_uri class='form-control parsley-error' placeholder='Callback URI' parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
                         {% else %}
                         {% render_field form.callback_uri class='form-control' placeholder='Callback URI' %}
                         {% endif %}
@@ -159,9 +161,8 @@
 
             </form>
         </div>
-
-        <div class="clearfix"></div>
     </div>
+    <div class="clearfix"></div>
 </div>
 <!--/ meta -->
 {% endblock %}
