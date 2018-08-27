@@ -83,21 +83,21 @@ class ChangePasswordForm(ModelForm):
 class AppForm(ModelForm):
     name = forms.CharField(max_length=67, required=True)
     api_key = forms.CharField(max_length=127, required=True)
-    callback_uri = forms.CharField(max_length=2047, required=True)
+    callback_uris = forms.CharField(max_length=2047, required=True)
     allowed_ips = forms.CharField(max_length=127, required=True)
     description = forms.CharField(widget=forms.Textarea, required=False)
 
     class Meta:
         model = App
-        fields = ('name', 'api_key', 'callback_uri', 'allowed_ips', 'description',)
+        fields = ('name', 'api_key', 'description',)
 
-    def clean(self):
-        cleaned_data = super(AppForm, self).clean()
-        callback_uri = cleaned_data.get('callback_uri')
-        if not utils.validateURL(callback_uri):
-            raise forms.ValidationError({'callback_uri': [
-                "Enter a valid URL.", ]
-            })
+    # def clean(self):
+    #     cleaned_data = super(AppForm, self).clean()
+    #     callback_uri = cleaned_data.get('callback_uri')
+    #     if not utils.validateURL(callback_uri):
+    #         raise forms.ValidationError({'callback_uri': [
+    #             "Enter a valid URL.", ]
+    #         })
 
 
 # Custom ModelChoiceField Label
