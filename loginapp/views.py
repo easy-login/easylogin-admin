@@ -70,7 +70,7 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    apps = App.objects.all().filter(owner_id=request.user.id)
+    apps = App.objects.all().filter(owner_id=request.user.id).order_by('-created_at')
     print(len(apps))
     return render(request, 'loginapp/dashboard.html', {'apps': apps})
 
@@ -157,7 +157,7 @@ def app_detail(request, app_id):
 
     form = AppForm()
     apps = App.objects.filter(owner_id=request.user.id)
-    channels = Channel.objects.filter(app_id=app_id)
+    channels = Channel.objects.filter(app_id=app_id).order_by('-created_at')
     providers = Provider.objects.all()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
@@ -229,13 +229,9 @@ def channel_detail(request, app_id, channel_id):
                 messages.error(request, "Add channel failed: permission is required!")
                 return redirect('app_detail', app_id=app_id)
             else:
-                perm_value = ''
-                for perm in permissions:
-                    perm_value += perm + ","
-                perm_value = perm_value[:-1]
-                channel.permissions = perm_value
+                channel.set_permissions(permissions)
 
-                channel.app_id = app
+            channel.app_id = app
             messages.success(request, "Channel was successfully updated!")
             app.modified_at = datetime.datetime.now()
             app.save()
