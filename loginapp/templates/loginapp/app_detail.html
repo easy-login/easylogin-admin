@@ -126,32 +126,78 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label for="id_callback_uris" class="col-md-2 col-form-label">Callback URI</label>
-                        <div class="col-md-10">
-                            {% render_field form.callback_uris class='form-control' placeholder='Callback URI' value=app.callback_uris parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
-                            {% if form.callback_uris.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in form.callback_uris.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
+                    <div id="multi-callback-uri">
+                        {% with callback_uris=app.callback_uri_as_list %}
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Callback URIs</label>
+                            <div class="col-md-6">
+                                <input name="callback_uris" class="form-control" data-parsley-pattern="https?://.+"
+                                       placeholder="Callback URI" data-parsley-trigger="change" required=""
+                                       maxlength="2047" data-parsley-error-message="This value should be a valid URI"
+                                       value="{{ callback_uris.0 }}" type="text">
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
+                        {% for callback_uri in callback_uris|slice:"1:" %}
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label"></label>
+                            <div class="col-md-6">
+                                <input name="callback_uris" class="form-control" data-parsley-pattern="https?://.+"
+                                       placeholder="Callback URI" data-parsley-trigger="change" required=""
+                                       maxlength="2047" data-parsley-error-message="This value should be a valid URI"
+                                       value="{{ callback_uri }}" type="text">
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
+                            </div>
+                            <div class="col-xs-1 remove-input">
+                                <button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button"
+                                        onclick="removeItself(this)"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endwith %}
                     </div>
 
-                    <div class="form-group row ">
-                        <label for="id_allowed_ips" class="col-md-2 col-form-label">Allowed IPs</label>
-                        <div class="col-md-10">
-                            {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' value=app.allowed_ips %}
-                            {% if form.allowed_ips.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in form.allowed_ips.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
+                    <div id="multi-allowed-ips">
+                        {% with allowed_ips=app.allowed_ips_as_list %}
+                        <div class="form-group row ">
+                            <label class="col-md-2 col-form-label">Allowed IPs</label>
+                            <div class="col-md-6">
+                                <input name="allowed_ips" data-parsley-trigger="change"
+                                       data-parsley-pattern="^(([0-9])+\.){3}([0-9])+$" class="form-control"
+                                       required=""
+                                       value="{{ allowed_ips.0 }}"
+                                       data-parsley-error-message="This value should be a valid IP"
+                                       placeholder="Allowed IPs" maxlength="127" type="text">
+
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
+                        {% for allowed_ip in allowed_ips|slice:"1:" %}
+                        <div class="form-group row ">
+                            <label class="col-md-2 col-form-label"></label>
+                            <div class="col-md-6">
+                                <input name="allowed_ips" data-parsley-trigger="change"
+                                       data-parsley-pattern="^(([0-9])+\.){3}([0-9])+$" class="form-control" required=""
+                                       value="{{ allowed_ip }}" data-parsley-error-message="This value should be a valid IP"
+                                       placeholder="Allowed IPs" maxlength="127" type="text">
+
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
+                            </div>
+                            <div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div></div>
+                        {% endfor %}
+                        {% endwith %}
                     </div>
                     <div class="form-group row ">
                         <label for="id_description" class="col-md-2 col-form-label">Description</label>
@@ -391,6 +437,24 @@ function deleteConfirm(event){
                 );
             });
 
+}
+function duplicateInput(element){
+    var element_container = $(element).parent().parent().parent()
+    if (element_container.find('input').length < 5){
+        var input = $(element).parent().parent().clone()
+        input.children('label').empty()
+
+        if (input.has('button i.fa-minus').length == 0 ){
+            input.append('<div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div>')
+        }
+
+        element_container.append(input)
+    }
+}
+
+function removeItself(element){
+    var input = $(element).parent().parent()
+    input.remove()
 }
 </script>
 {% endblock %}

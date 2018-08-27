@@ -60,15 +60,15 @@
         <!--</button>-->
     </div>
     <div class="col-sm-8 m-b-20">
-        <div class="project-sort pull-right">
-            <div class="project-sort-item">
+        <div class="app-sort pull-right">
+            <div class="app-sort-item">
                 <form class="form-inline">
-                    <div class="form-group">
+                    <div class="form-group select-order-by">
                         <label>Sort :</label>
-                        <select class="form-control ml-2 form-control-sm">
-                            <option>Name</option>
-                            <option selected>Date Created </option>
-                            <option>Date Modified</option>
+                        <select class="form-control ml-2 form-control-sm" onchange="location = this.value;">
+                            <option value="{% url 'dashboard' %}?order_by=-created_at">Date Created </option>
+                            <option value="{% url 'dashboard' %}?order_by=-modified_at">Date Modified</option>
+                            <option value="{% url 'dashboard' %}?order_by=name">Name</option>
                         </select>
                     </div>
                 </form>
@@ -123,7 +123,7 @@
             <p class="text-muted font-13 app-description">{{ app.description }}
             </p>
             <div class="text-left m-t-20">
-                <p class="text-muted font-13"><strong>Callback URI :</strong> <span class="m-l-15">{{ app.callback_uri }}</span>
+                <p class="text-muted font-13"><strong>Callback URIs :</strong> <span class="m-l-15">{{ app.callback_uris }}</span>
                 </p>
                 <p class="text-muted font-13"><strong>Allowed APs</strong><span
                         class="m-l-15">{{ app.allowed_ips }}</span></p>
@@ -162,6 +162,7 @@
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <script type="text/javascript">
 $(document).ready(function() {
+   $(".select-order-by select").val("{% url 'dashboard' %}?order_by={{ request.GET.order_by }}")
    $(".app-description").each(function(){
         len = $(this).text().length;
         if (len > 100) {
