@@ -244,7 +244,7 @@ def channel_detail(request, app_id, channel_id):
             permissions = request.POST.getlist('permission')
             if len(permissions) == 0:
                 messages.error(request, "Update failed channel: permission is required!")
-                return redirect('app_detail', app_id=app_id)
+                return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
             else:
                 channel.set_permissions(permissions)
 

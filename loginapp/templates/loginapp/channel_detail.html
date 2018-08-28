@@ -162,6 +162,15 @@
                                     </div>
                                     {% endfor %}
                                 </div>
+                                <div class="provider-permission-required " id="id-{{ provider.id }}-required" style="display: none;">
+                                    {% for permission in provider.permission_required_as_list %}
+                                    <div class="checkbox">
+                                        <input id="{{ permission }}" name="permission"
+                                               type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;">
+                                        <label class="" for="{{ permission }}"> {{ permission }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
                                 {% endfor %}
                                 {% endwith %}
                             </div>
@@ -203,22 +212,22 @@
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
 <!-- Sweet Alert Js  -->
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
-<!--&lt;!&ndash; Modal-Effect &ndash;&gt;-->
-<!--<script src="assets/plugins/custombox/dist/custombox.min.js"></script>-->
-<!--<script src="assets/plugins/custombox/dist/legacy.min.js"></script>-->
-
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function() {
     $('#id-'+ $('#id_provider').val()).show();
+    $('#id-'+ $('#id_provider').val()+'-required').show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
     $('#id_provider').change(function(){
         $('.provider-permission').hide();
+        $('.provider-permission-required').hide();
 
         $('.provider-permission input').prop("checked", false)
         $('.provider-permission input').prop('disabled', true)
+        $('.provider-permission-required input').prop('disabled', true)
 
         $('#id-'+ $('#id_provider').val()).show();
+        $('#id-'+ $('#id_provider').val()+'-required').show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
     })
     $('form').parsley({excluded: 'input[disabled]'});

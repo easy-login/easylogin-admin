@@ -26,6 +26,9 @@ class User(AbstractUser):
 
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
 
+    class Meta:
+        db_table = "user"
+
 
 class Provider(models.Model):
     id = models.CharField(max_length=30, primary_key=True)
@@ -41,6 +44,9 @@ class Provider(models.Model):
 
     def __str__(self):
         return u'{0}'.format(self.id)
+
+    class Meta:
+        db_table = "provider"
 
 
 class App(models.Model):
@@ -77,6 +83,9 @@ class App(models.Model):
     def get_number_of_channels(self):
         return len(Channel.objects.filter(app_id=self.id))
 
+    class Meta:
+        db_table = "app"
+
 
 class Channel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -96,3 +105,6 @@ class Channel(models.Model):
             perm_value += perm + ","
         perm_value = perm_value[:-1]
         self.permissions = perm_value
+
+    class Meta:
+        db_table = "channel"
