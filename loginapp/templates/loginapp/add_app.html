@@ -5,7 +5,7 @@
 <!-- Page title -->
 {% block topbar%}
 <!-- Page title -->
-<ul class="nav navbar-nav list-inline navbar-left">
+<ul class="nav navbar-nav list-inline navbar-left" style="flex-direction: unset">
     <li class="list-inline-item">
         <button class="button-menu-mobile open-left">
             <i class="mdi mdi-menu"></i>
@@ -13,6 +13,13 @@
     </li>
     <li class="list-inline-item">
         <h4 class="page-title">Add new Application</h4>
+    </li>
+    <li class="list-inline-item">
+        <div class="create-app-button">
+            <a href="{% url 'dashboard' %}"
+               class="btn btn-danger btn-rounded w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i> <span>Cancel</span>
+            </a>
+        </div>
     </li>
 </ul>
 
@@ -109,9 +116,9 @@
                     <label class="col-md-2 col-form-label">Callback URIs</label>
                     <div class="col-md-6">
                         {% if form.callback_uris.errors %}
-                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='Callback URI' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
+                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
                         {% else %}
-                        {% render_field form.callback_uris class='form-control' placeholder='Callback URI' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
+                        {% render_field form.callback_uris class='form-control' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
                         {% endif %}
                         {% if form.callback_uris.errors %}
                         <ul class="parsley-errors-list filled">

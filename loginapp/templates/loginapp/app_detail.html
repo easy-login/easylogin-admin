@@ -249,7 +249,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item">Detail And Edit</a>
+                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item">Edit</a>
                     <!-- item-->
                     <form method="POST" action="{% url 'delete_channel' app.id channel.id %}">
                         {% csrf_token %}
@@ -357,6 +357,16 @@
                                     </div>
                                     {% endfor %}
                                 </div>
+                                <div class="provider-permission-required checkbox-handler-error" id="id-{{ provider.id }}-required" style="display: none;">
+                                    {% for permission in provider.permission_required_as_list %}
+                                    <div class="checkbox">
+                                        <input id="{{ permission }}" name="permission" data-parsley-multiple="groups"
+                                               data-parsley-mincheck="1"
+                                               type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;">
+                                        <label class="" for="{{ permission }}"> {{ permission }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -387,14 +397,18 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('#id-'+ $('#id_provider').val()).show();
+    $('#id-'+ $('#id_provider').val()+'-required').show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
     $('#id_provider').change(function(){
         $('.provider-permission').hide();
+        $('.provider-permission-required').hide();
 
         $('.provider-permission input').prop("checked", false)
         $('.provider-permission input').prop('disabled', true)
+        $('.provider-permission-required input').prop('disabled', true)
 
         $('#id-'+ $('#id_provider').val()).show();
+        $('#id-'+ $('#id_provider').val()+'-required').show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
     })
     $('form').parsley({excluded: 'input[disabled]'});

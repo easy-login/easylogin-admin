@@ -70,7 +70,7 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-created_at'
+    order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
     apps = App.objects.all().filter(owner_id=request.user.id).order_by(order_by)
     print(len(apps))
     return render(request, 'loginapp/dashboard.html', {'apps': apps})

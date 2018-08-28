@@ -30,10 +30,14 @@ class User(AbstractUser):
 class Provider(models.Model):
     id = models.CharField(max_length=30, primary_key=True)
     version = models.CharField(max_length=7)
+    permissions_required = models.CharField(max_length=1023)
     permissions = models.CharField(max_length=1023)
 
     def permission_as_list(self):
         return self.permissions.split(",")
+
+    def permission_required_as_list(self):
+        return self.permissions_required.split(",")
 
     def __str__(self):
         return u'{0}'.format(self.id)
@@ -69,6 +73,9 @@ class App(models.Model):
             ai_value += ip + "|"
         ai_value = ai_value[:-1]
         self.allowed_ips = ai_value
+
+    def get_number_of_channels(self):
+        return len(Channel.objects.filter(app_id=self.id))
 
 
 class Channel(models.Model):

@@ -15,7 +15,7 @@
     </li>
     <li class="list-inline-item">
         <div class="create-app-button">
-            <a href="{% url 'add_app' %}" type="button"
+            <a href="{% url 'add_app' %}"
                class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
                     class="fas fa-plus"></i> <span>Add Application</span>
             </a>
@@ -110,7 +110,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a href="{% url 'app_detail' app.id %}" class="dropdown-item">Detail And Edit</a>
+                    <a href="{% url 'app_detail' app.id %}" class="dropdown-item">Edit</a>
                     <!-- item-->
                     <form method="POST" action="{% url 'delete_app' app.id %}">
                         {% csrf_token %}
@@ -130,7 +130,7 @@
             </div>
             <ul class="list-inline">
                 <li class="list-inline-item">
-                    <h3 class="mb-0">87</h3>
+                    <h3 class="mb-0">{{ app.get_number_of_channels }}</h3>
                     <p class="text-danger">Channel</p>
                 </li>
             </ul>
@@ -162,7 +162,11 @@
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <script type="text/javascript">
 $(document).ready(function() {
+   {% if request.GET.order_by %}
    $(".select-order-by select").val("{% url 'dashboard' %}?order_by={{ request.GET.order_by }}")
+   {% else %}
+   $(".select-order-by select").val("{% url 'dashboard' %}?order_by=-modified_at")
+   {% endif %}
    $(".app-description").each(function(){
         len = $(this).text().length;
         if (len > 100) {
