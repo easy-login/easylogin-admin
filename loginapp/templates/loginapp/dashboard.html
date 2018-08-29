@@ -28,7 +28,7 @@
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
 
         <li class="hide-phone">
-            <form class="app-search">
+            <form class="app-search" method="GET" action="{% url 'dashboard' %}">
                 <input type="text" placeholder="Search..."
                        class="form-control">
                 <button type="submit"><i class="fa fa-search"></i></button>

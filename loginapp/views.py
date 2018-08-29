@@ -134,11 +134,10 @@ def add_app(request):
             allowed_ips = request.POST.getlist('allowed_ips')
             if len(callback_uris) == 0:
                 messages.error(request, "Add failed app: callback uris is required!")
-            if len(allowed_ips) == 0:
-                messages.error(request, "Add failed app: allowed ips is required!")
-            if len(callback_uris) > 0 and len(allowed_ips) > 0:
-                app.set_callback_uris(callback_uris)
+            if len(allowed_ips) != 0:
                 app.set_allowed_ips(allowed_ips)
+            if len(callback_uris) > 0:
+                app.set_callback_uris(callback_uris)
                 app.owner_id = request.user
                 app.save()
                 messages.success(request, "App was successfully created!")
@@ -165,11 +164,10 @@ def app_detail(request, app_id):
             allowed_ips = request.POST.getlist('allowed_ips')
             if len(callback_uris) == 0:
                 messages.error(request, "Add failed app: callback uris is required!")
-            if len(allowed_ips) == 0:
-                messages.error(request, "Add failed app: allowed ips is required!")
+            if len(allowed_ips) != 0:
+                app_update.set_allowed_ips(allowed_ips)
             if len(callback_uris) > 0 and len(allowed_ips) > 0:
                 app_update.set_callback_uris(callback_uris)
-                app_update.set_allowed_ips(allowed_ips)
                 app_update.save()
                 messages.success(request, "Application was successfully updated!")
                 return redirect('app_detail', app_id=app_id)
