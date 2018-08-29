@@ -27,7 +27,7 @@ class User(AbstractUser):
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
 
     class Meta:
-        db_table = "user"
+        db_table = "users"
 
 
 class Provider(models.Model):
@@ -46,7 +46,7 @@ class Provider(models.Model):
         return u'{0}'.format(self.id)
 
     class Meta:
-        db_table = "provider"
+        db_table = "providers"
 
 
 class App(models.Model):
@@ -84,7 +84,7 @@ class App(models.Model):
         return len(Channel.objects.filter(app_id=self.id))
 
     class Meta:
-        db_table = "app"
+        db_table = "apps"
 
 
 class Channel(models.Model):
@@ -107,4 +107,4 @@ class Channel(models.Model):
         self.permissions = perm_value
 
     class Meta:
-        db_table = "channel"
+        db_table = "channels"
