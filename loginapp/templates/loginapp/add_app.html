@@ -116,9 +116,9 @@
                     <label class="col-md-2 col-form-label">Callback URIs</label>
                     <div class="col-md-6">
                         {% if form.callback_uris.errors %}
-                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
+                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
                         {% else %}
-                        {% render_field form.callback_uris class='form-control' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
+                        {% render_field form.callback_uris class='form-control' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
                         {% endif %}
                         {% if form.callback_uris.errors %}
                         <ul class="parsley-errors-list filled">
@@ -139,9 +139,9 @@
                     <label class="col-md-2 col-form-label">Allowed IPs</label>
                     <div class="col-md-6">
                         {% if form.allowed_ips.errors %}
-                        {% render_field form.allowed_ips class='form-control parsley-error' placeholder='Allowed IPs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' id='' %}
+                        {% render_field form.allowed_ips class='form-control parsley-error' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' id='' %}
                         {% else %}
-                        {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' id='' %}
+                        {% render_field form.allowed_ips class='form-control' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' id='' %}
                         {% endif %}
                         {% if form.allowed_ips.errors %}
                         <ul class="parsley-errors-list filled">

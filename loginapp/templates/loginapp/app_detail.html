@@ -170,7 +170,6 @@
                             <div class="col-md-6">
                                 <input name="allowed_ips" data-parsley-trigger="change"
                                        data-parsley-pattern="^(([0-9])+\.){3}([0-9])+$" class="form-control"
-                                       required=""
                                        value="{{ allowed_ips.0 }}"
                                        data-parsley-error-message="This value should be a valid IP"
                                        placeholder="Allowed IPs" maxlength="127" type="text">
@@ -186,7 +185,7 @@
                             <label class="col-md-2 col-form-label"></label>
                             <div class="col-md-6">
                                 <input name="allowed_ips" data-parsley-trigger="change"
-                                       data-parsley-pattern="^(([0-9])+\.){3}([0-9])+$" class="form-control" required=""
+                                       data-parsley-pattern="^(([0-9])+\.){3}([0-9])+$" class="form-control"
                                        value="{{ allowed_ip }}" data-parsley-error-message="This value should be a valid IP"
                                        placeholder="Allowed IPs" maxlength="127" type="text">
 
