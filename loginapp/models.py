@@ -76,7 +76,8 @@ class App(models.Model):
     def set_allowed_ips(self, allowed_ips_list):
         ai_value = ''
         for ip in allowed_ips_list:
-            ai_value += ip + "|"
+            if ip:
+                ai_value += ip + "|"
         ai_value = ai_value[:-1]
         self.allowed_ips = ai_value
 

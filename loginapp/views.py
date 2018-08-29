@@ -72,7 +72,8 @@ def register(request):
 def dashboard(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
     apps = App.objects.all().filter(owner_id=request.user.id).order_by(order_by)
-    print(len(apps))
+    if request.GET.get("search"):
+        apps = apps.filter(name__contains=request.GET.get("search"))
     return render(request, 'loginapp/dashboard.html', {'apps': apps})
 
 
