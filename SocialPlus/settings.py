@@ -81,9 +81,11 @@ WSGI_APPLICATION = 'SocialPlus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
-        }
+        'NAME': 'sociallogin',
+        'USER': 'socialplus',
+        'PASSWORD': 'sp@123**',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
 

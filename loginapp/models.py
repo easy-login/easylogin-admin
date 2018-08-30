@@ -60,7 +60,7 @@ class App(models.Model):
     # owner_id = models.IntegerField()
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def callback_uri_as_list(self):
+    def callback_uris_as_list(self):
         return self.callback_uris.split('|')
 
     def set_callback_uris(self, callback_uri_list):
