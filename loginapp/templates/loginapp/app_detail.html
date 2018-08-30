@@ -344,7 +344,7 @@
                                 <div id="checkbox-error"></div>
                                 {% for provider in providers %}
                                 <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
-                                    {% for permission in provider.permission_as_list %}
+                                    {% for permission in provider.permissions_as_list %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ permission }}" name="permission" data-parsley-multiple="groups"
                                                data-parsley-mincheck="1"
@@ -357,7 +357,7 @@
                                     {% endfor %}
                                 </div>
                                 <div class="provider-permission-required checkbox-handler-error" id="id-{{ provider.id }}-required" style="display: none;">
-                                    {% for permission in provider.permission_required_as_list %}
+                                    {% for permission in provider.permissions_required_as_list %}
                                     <div class="checkbox">
                                         <input id="{{ permission }}" name="permission" data-parsley-multiple="groups"
                                                data-parsley-mincheck="1"

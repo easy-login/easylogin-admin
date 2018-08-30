@@ -36,10 +36,10 @@ class Provider(models.Model):
     permissions_required = models.CharField(max_length=1023)
     permissions = models.CharField(max_length=1023)
 
-    def permission_as_list(self):
+    def permissions_as_list(self):
         return self.permissions.split(",")
 
-    def permission_required_as_list(self):
+    def permissions_required_as_list(self):
         return self.permissions_required.split(",")
 
     def __str__(self):
@@ -97,7 +97,7 @@ class Channel(models.Model):
     permissions = models.CharField(max_length=1023)
     app_id = models.ForeignKey(App, on_delete=models.CASCADE)
 
-    def permission_as_list(self):
+    def permissions_as_list(self):
         return self.permissions.split(",")
 
     def set_permissions(self, permission_list):
