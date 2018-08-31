@@ -70,9 +70,10 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-created_at'
+    order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
     apps = App.objects.all().filter(owner_id=request.user.id).order_by(order_by)
-    print(len(apps))
+    if request.GET.get("search"):
+        apps = apps.filter(name__contains=request.GET.get("search"))
     return render(request, 'loginapp/dashboard.html', {'apps': apps})
 
 
@@ -134,11 +135,10 @@ def add_app(request):
             allowed_ips = request.POST.getlist('allowed_ips')
             if len(callback_uris) == 0:
                 messages.error(request, "Add failed app: callback uris is required!")
-            if len(allowed_ips) == 0:
-                messages.error(request, "Add failed app: allowed ips is required!")
-            if len(callback_uris) > 0 and len(allowed_ips) > 0:
-                app.set_callback_uris(callback_uris)
+            if len(allowed_ips) != 0:
                 app.set_allowed_ips(allowed_ips)
+            if len(callback_uris) > 0:
+                app.set_callback_uris(callback_uris)
                 app.owner_id = request.user
                 app.save()
                 messages.success(request, "App was successfully created!")
@@ -159,17 +159,16 @@ def app_detail(request, app_id):
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
             app_update = form.save(commit=False)
-            app_update.modified_at = datetime.datetime.now()
+            app_update.update_modified_at()
 
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
             if len(callback_uris) == 0:
                 messages.error(request, "Add failed app: callback uris is required!")
-            if len(allowed_ips) == 0:
-                messages.error(request, "Add failed app: allowed ips is required!")
+            if len(allowed_ips) != 0:
+                app_update.set_allowed_ips(allowed_ips)
             if len(callback_uris) > 0 and len(allowed_ips) > 0:
                 app_update.set_callback_uris(callback_uris)
-                app_update.set_allowed_ips(allowed_ips)
                 app_update.save()
                 messages.success(request, "Application was successfully updated!")
                 return redirect('app_detail', app_id=app_id)
@@ -220,7 +219,7 @@ def add_channel(request):
                 channel.app_id = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
             messages.success(request, "Channel was successfully created!")
             app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
-            app.modified_at = datetime.datetime.now()
+            app.update_modified_at()
             app.save()
             channel.save()
             return redirect('app_detail', app_id=app_id)
@@ -244,13 +243,13 @@ def channel_detail(request, app_id, channel_id):
             permissions = request.POST.getlist('permission')
             if len(permissions) == 0:
                 messages.error(request, "Update failed channel: permission is required!")
-                return redirect('app_detail', app_id=app_id)
+                return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
             else:
                 channel.set_permissions(permissions)
 
             channel.app_id = app
             messages.success(request, "Channel was successfully updated!")
-            app.modified_at = datetime.datetime.now()
+            app.update_modified_at()
             app.save()
             channel.save()
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
@@ -270,9 +269,10 @@ def channel_detail(request, app_id, channel_id):
 @login_required
 def delete_channel(request, app_id, channel_id):
     if request.method == 'POST':
-        get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+        app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
         channel = get_object_or_404(Channel, pk=channel_id, app_id=app_id)
         channel.delete()
+        app.update_modified_at()
         messages.success(request, "Channel was deleted!")
         return redirect('app_detail', app_id=app_id)
     else:

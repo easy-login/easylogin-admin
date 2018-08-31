@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, User
 from django.utils.translation import ugettext_lazy as _
+import datetime
+from django.utils import timezone
 
 # Model's constant
 MAX_LENGTH_SHORT_FIELD = 100
@@ -26,17 +28,27 @@ class User(AbstractUser):
 
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
 
+    class Meta:
+        db_table = "users"
+
 
 class Provider(models.Model):
     id = models.CharField(max_length=30, primary_key=True)
     version = models.CharField(max_length=7)
+    permissions_required = models.CharField(max_length=1023)
     permissions = models.CharField(max_length=1023)
 
-    def permission_as_list(self):
+    def permissions_as_list(self):
         return self.permissions.split(",")
+
+    def permissions_required_as_list(self):
+        return self.permissions_required.split(",")
 
     def __str__(self):
         return u'{0}'.format(self.id)
+
+    class Meta:
+        db_table = "providers"
 
 
 class App(models.Model):
@@ -50,7 +62,7 @@ class App(models.Model):
     # owner_id = models.IntegerField()
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def callback_uri_as_list(self):
+    def callback_uris_as_list(self):
         return self.callback_uris.split('|')
 
     def set_callback_uris(self, callback_uri_list):
@@ -66,9 +78,20 @@ class App(models.Model):
     def set_allowed_ips(self, allowed_ips_list):
         ai_value = ''
         for ip in allowed_ips_list:
-            ai_value += ip + "|"
+            if ip:
+                ai_value += ip + "|"
         ai_value = ai_value[:-1]
         self.allowed_ips = ai_value
+
+    def get_number_of_channels(self):
+        return len(Channel.objects.filter(app_id=self.id))
+
+    def update_modified_at(self):
+        # self.modified_at = timezone.now()
+        self.modified_at = datetime.datetime.now()
+
+    class Meta:
+        db_table = "apps"
 
 
 class Channel(models.Model):
@@ -80,7 +103,7 @@ class Channel(models.Model):
     permissions = models.CharField(max_length=1023)
     app_id = models.ForeignKey(App, on_delete=models.CASCADE)
 
-    def permission_as_list(self):
+    def permissions_as_list(self):
         return self.permissions.split(",")
 
     def set_permissions(self, permission_list):
@@ -89,3 +112,6 @@ class Channel(models.Model):
             perm_value += perm + ","
         perm_value = perm_value[:-1]
         self.permissions = perm_value
+
+    class Meta:
+        db_table = "channels"

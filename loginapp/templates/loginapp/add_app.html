@@ -5,7 +5,7 @@
 <!-- Page title -->
 {% block topbar%}
 <!-- Page title -->
-<ul class="nav navbar-nav list-inline navbar-left">
+<ul class="nav navbar-nav list-inline navbar-left" style="flex-direction: unset">
     <li class="list-inline-item">
         <button class="button-menu-mobile open-left">
             <i class="mdi mdi-menu"></i>
@@ -14,6 +14,13 @@
     <li class="list-inline-item">
         <h4 class="page-title">Add new Application</h4>
     </li>
+    <li class="list-inline-item">
+        <div class="create-app-button">
+            <a href="{% url 'dashboard' %}"
+               class="btn btn-danger btn-rounded w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i> <span>Cancel</span>
+            </a>
+        </div>
+    </li>
 </ul>
 
 <nav class="navbar-custom">
@@ -21,9 +28,9 @@
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
 
         <li class="hide-phone">
-            <form class="app-search">
+            <form class="app-search" method="GET" action="{% url 'dashboard' %}">
                 <input type="text" placeholder="Search..."
-                       class="form-control">
+                       class="form-control" name="search">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </li>
@@ -109,9 +116,9 @@
                     <label class="col-md-2 col-form-label">Callback URIs</label>
                     <div class="col-md-6">
                         {% if form.callback_uris.errors %}
-                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='Callback URI' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
+                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
                         {% else %}
-                        {% render_field form.callback_uris class='form-control' placeholder='Callback URI' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' id='' %}
+                        {% render_field form.callback_uris class='form-control' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
                         {% endif %}
                         {% if form.callback_uris.errors %}
                         <ul class="parsley-errors-list filled">
@@ -132,9 +139,9 @@
                     <label class="col-md-2 col-form-label">Allowed IPs</label>
                     <div class="col-md-6">
                         {% if form.allowed_ips.errors %}
-                        {% render_field form.allowed_ips class='form-control parsley-error' placeholder='Allowed IPs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' id='' %}
+                        {% render_field form.allowed_ips class='form-control parsley-error' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' %}
                         {% else %}
-                        {% render_field form.allowed_ips class='form-control' placeholder='Allowed IPs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' id='' %}
+                        {% render_field form.allowed_ips class='form-control' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9])+\.){3}([0-9])+$' %}
                         {% endif %}
                         {% if form.allowed_ips.errors %}
                         <ul class="parsley-errors-list filled">
@@ -209,14 +216,15 @@ $.ajax({
 }
 function duplicateInput(element){
     var element_container = $(element).parent().parent().parent()
-    if (element_container.find('input').length < 5){
+    var num_input = element_container.find('input').length
+    if ( num_input < 5){
         var input = $(element).parent().parent().clone()
         input.children('label').empty()
 
         if (input.has('button i.fa-minus').length == 0 ){
             input.append('<div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div>')
         }
-
+        input.find('input').first().attr('id', element_container.find('input').first().attr('id')+'-'+num_input)
         element_container.append(input)
     }
 }
