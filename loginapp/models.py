@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, User
 from django.utils.translation import ugettext_lazy as _
+import datetime
+from django.utils import timezone
 
 # Model's constant
 MAX_LENGTH_SHORT_FIELD = 100
@@ -83,6 +85,10 @@ class App(models.Model):
 
     def get_number_of_channels(self):
         return len(Channel.objects.filter(app_id=self.id))
+
+    def update_modified_at(self):
+        # self.modified_at = timezone.now()
+        self.modified_at = datetime.datetime.now()
 
     class Meta:
         db_table = "apps"

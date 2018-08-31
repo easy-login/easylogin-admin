@@ -16,7 +16,7 @@
         </button>
     </li>
     <li class="list-inline-item">
-        <h4 class="page-title">Application</h4>
+        <a href="{% url 'dashboard' %}"><h4 class="page-title">Application</h4></a>
     </li>
 </ul>
 
@@ -346,23 +346,23 @@
                                 <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
                                     {% for permission in provider.permissions_as_list %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ permission }}" name="permission" data-parsley-multiple="groups"
+                                        <input id="{{ provider.id }}-{{ permission }}" name="permission" data-parsley-multiple="groups"
                                                data-parsley-mincheck="1"
                                                type="checkbox" value="{{ permission }}" required disabled
                                                data-parsley-errors-container="#checkbox-error"
                                                data-parsley-error-message="Permission value is required."
                                                data-parsley-class-handler=".checkbox-handler-error">
-                                        <label class="" for="{{ permission }}"> {{ permission }} </label>
+                                        <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
                                 <div class="provider-permission-required checkbox-handler-error" id="id-{{ provider.id }}-required" style="display: none;">
                                     {% for permission in provider.permissions_required_as_list %}
                                     <div class="checkbox">
-                                        <input id="{{ permission }}" name="permission" data-parsley-multiple="groups"
+                                        <input id="{{ provider.id }}-{{ permission }}" name="permission" data-parsley-multiple="groups"
                                                data-parsley-mincheck="1"
                                                type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;">
-                                        <label class="" for="{{ permission }}"> {{ permission }} </label>
+                                        <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -449,14 +449,15 @@ function deleteConfirm(event){
 }
 function duplicateInput(element){
     var element_container = $(element).parent().parent().parent()
-    if (element_container.find('input').length < 5){
+    var num_input = element_container.find('input').length
+    if ( num_input < 5){
         var input = $(element).parent().parent().clone()
         input.children('label').empty()
 
         if (input.has('button i.fa-minus').length == 0 ){
             input.append('<div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div>')
         }
-
+        input.find('input').first().attr('id', element_container.find('input').first().attr('id')+'-'+num_input)
         element_container.append(input)
     }
 }

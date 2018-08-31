@@ -159,7 +159,7 @@ def app_detail(request, app_id):
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
             app_update = form.save(commit=False)
-            app_update.modified_at = datetime.datetime.now()
+            app_update.update_modified_at()
 
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
@@ -219,7 +219,7 @@ def add_channel(request):
                 channel.app_id = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
             messages.success(request, "Channel was successfully created!")
             app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
-            app.modified_at = datetime.datetime.now()
+            app.update_modified_at()
             app.save()
             channel.save()
             return redirect('app_detail', app_id=app_id)
@@ -249,7 +249,7 @@ def channel_detail(request, app_id, channel_id):
 
             channel.app_id = app
             messages.success(request, "Channel was successfully updated!")
-            app.modified_at = datetime.datetime.now()
+            app.update_modified_at()
             app.save()
             channel.save()
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
@@ -269,9 +269,10 @@ def channel_detail(request, app_id, channel_id):
 @login_required
 def delete_channel(request, app_id, channel_id):
     if request.method == 'POST':
-        get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+        app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
         channel = get_object_or_404(Channel, pk=channel_id, app_id=app_id)
         channel.delete()
+        app.update_modified_at()
         messages.success(request, "Channel was deleted!")
         return redirect('app_detail', app_id=app_id)
     else:
