@@ -30,7 +30,7 @@
         <li class="hide-phone">
             <form class="app-search" method="GET" action="{% url 'dashboard' %}">
                 <input type="text" placeholder="Search..."
-                       class="form-control" name="search">
+                       class="form-control" name="search" value="{{ request.GET.search }}">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </li>

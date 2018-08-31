@@ -39,9 +39,13 @@ class Provider(models.Model):
     permissions = models.CharField(max_length=1023)
 
     def permissions_as_list(self):
+        if self.permissions == "":
+            return []
         return self.permissions.split(",")
 
     def permissions_required_as_list(self):
+        if self.permissions_required == "":
+            return []
         return self.permissions_required.split(",")
 
     def __str__(self):
@@ -63,6 +67,8 @@ class App(models.Model):
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def callback_uris_as_list(self):
+        if self.callback_uris == "":
+            return []
         return self.callback_uris.split('|')
 
     def set_callback_uris(self, callback_uri_list):
@@ -73,6 +79,8 @@ class App(models.Model):
         self.callback_uris = cu_value
 
     def allowed_ips_as_list(self):
+        if self.allowed_ips == "":
+            return []
         return self.allowed_ips.split('|')
 
     def set_allowed_ips(self, allowed_ips_list):
