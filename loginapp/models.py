@@ -29,7 +29,7 @@ class User(AbstractUser):
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
 
     class Meta:
-        db_table = "users"
+        db_table = "admins"
 
 
 class Provider(models.Model):
@@ -64,7 +64,7 @@ class App(models.Model):
     allowed_ips = models.CharField(max_length=127)
     description = models.TextField()
     # owner_id = models.IntegerField()
-    owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def callback_uris_as_list(self):
         if self.callback_uris == "":
@@ -109,7 +109,7 @@ class Channel(models.Model):
     client_id = models.CharField(max_length=255)
     client_secret = models.CharField(max_length=255)
     permissions = models.CharField(max_length=1023)
-    app_id = models.ForeignKey(App, on_delete=models.CASCADE)
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
 
     def permissions_as_list(self):
         return self.permissions.split(",")

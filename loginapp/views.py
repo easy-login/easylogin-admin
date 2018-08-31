@@ -71,7 +71,7 @@ def register(request):
 @login_required
 def dashboard(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
-    apps = App.objects.all().filter(owner_id=request.user.id).order_by(order_by)
+    apps = App.objects.all().filter(owner=request.user.id).order_by(order_by)
     if request.GET.get("search"):
         apps = apps.filter(name__contains=request.GET.get("search"))
     return render(request, 'loginapp/dashboard.html', {'apps': apps})
@@ -139,7 +139,7 @@ def add_app(request):
                 app.set_allowed_ips(allowed_ips)
             if len(callback_uris) > 0:
                 app.set_callback_uris(callback_uris)
-                app.owner_id = request.user
+                app.owner = request.user
                 app.save()
                 messages.success(request, "App was successfully created!")
                 return redirect('dashboard')
@@ -154,7 +154,7 @@ def add_app(request):
 
 @login_required
 def app_detail(request, app_id):
-    app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     if request.method == 'POST':
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
@@ -176,8 +176,8 @@ def app_detail(request, app_id):
             push_messages_error(request, form)
 
     form = AppForm()
-    apps = App.objects.filter(owner_id=request.user.id)
-    channels = Channel.objects.filter(app_id=app_id).order_by('-created_at')
+    apps = App.objects.filter(owner=request.user.id)
+    channels = Channel.objects.filter(app=app_id).order_by('-created_at')
     providers = Provider.objects.all()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
@@ -190,7 +190,7 @@ def app_detail(request, app_id):
 @login_required
 def delete_app(request, app_id):
     if request.method == 'POST':
-        app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+        app = get_object_or_404(App, pk=app_id, owner=request.user.id)
         app.delete()
         messages.success(request, "App was deleted!")
         return redirect('dashboard')
@@ -216,9 +216,9 @@ def add_channel(request):
                 messages.error(request, "Add channel failed: App ID is required!")
                 return redirect('dashboard')
             else:
-                channel.app_id = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+                channel.app = get_object_or_404(App, pk=app_id, owner=request.user.id)
             messages.success(request, "Channel was successfully created!")
-            app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
+            app = get_object_or_404(App, pk=app_id, owner=request.user.id)
             app.update_modified_at()
             app.save()
             channel.save()
@@ -232,8 +232,8 @@ def add_channel(request):
 
 @login_required
 def channel_detail(request, app_id, channel_id):
-    app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
-    channel = get_object_or_404(Channel, pk=channel_id, app_id=app_id)
+    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    channel = get_object_or_404(Channel, pk=channel_id, app=app_id)
     if request.method == 'POST':
         form = ChannelForm(request.POST, instance=channel)
         if form.is_valid():
@@ -247,7 +247,7 @@ def channel_detail(request, app_id, channel_id):
             else:
                 channel.set_permissions(permissions)
 
-            channel.app_id = app
+            channel.app = app
             messages.success(request, "Channel was successfully updated!")
             app.update_modified_at()
             app.save()
@@ -257,7 +257,7 @@ def channel_detail(request, app_id, channel_id):
             push_messages_error(request, form)
             print(form.errors)
 
-    channels = Channel.objects.filter(app_id=app_id)
+    channels = Channel.objects.filter(app=app_id)
     providers = Provider.objects.all()
     form = ChannelForm()
     form.fields['app_id'].widget = forms.HiddenInput()
@@ -269,8 +269,8 @@ def channel_detail(request, app_id, channel_id):
 @login_required
 def delete_channel(request, app_id, channel_id):
     if request.method == 'POST':
-        app = get_object_or_404(App, pk=app_id, owner_id=request.user.id)
-        channel = get_object_or_404(Channel, pk=channel_id, app_id=app_id)
+        app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+        channel = get_object_or_404(Channel, pk=channel_id, app=app_id)
         channel.delete()
         app.update_modified_at()
         messages.success(request, "Channel was deleted!")
