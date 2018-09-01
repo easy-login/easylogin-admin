@@ -149,23 +149,26 @@
                                 <div id="checkbox-error"></div>
                                 {% with channel_permissions=channel.permissions_as_list %}
                                 {% for provider in providers %}
-                                <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
+                                <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display:none;">
                                     {% for permission in provider.permissions_as_list %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.id }}-{{ permission }}" name="permission" data-parsley-multiple="groups"
+                                        <input id="{{ provider.id }}-{{ permission }}" name="permission"
+                                               data-parsley-multiple="permission"
                                                data-parsley-mincheck="1"
-                                               type="checkbox" value="{{ permission }}" required disabled
+                                               type="checkbox" value="{{ permission }}"
                                                data-parsley-errors-container="#checkbox-error"
                                                data-parsley-error-message="Permission value is required."
-                                               data-parsley-class-handler=".checkbox-handler-error" {% if permission in channel_permissions %} checked{% endif %}>
+                                               data-parsley-class-handler=".checkbox-handler-error"
+                                               {% if permission in channel_permissions and channel.provider == provider.id %} checked{% endif %}
+                                               required disabled>
                                         <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
-                                <div class="provider-permission-required " id="id-{{ provider.id }}-required" style="display: none;">
+                                <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display:none;">
                                     {% for permission in provider.permissions_required_as_list %}
                                     <div class="checkbox">
-                                        <input id="{{ provider.id }}-{{ permission }}" name="permission"
+                                        <input class="permission-required" id="{{ provider.id }}-{{ permission }}" name="permission"
                                                type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;">
                                         <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
                                     </div>
@@ -190,8 +193,6 @@
                      <div class="form-group text-center m-t-40 row">
                         <div class="col-md-2"></div>
                         <div class="col-md-8">
-                            <!--<input id="app_id" name="app_id" hidden type="text" value="{{ app.id }}">-->
-                            <!--<input id="channel_id" name="channel_id" hidden type="text" value="{{ channel.id }}">-->
                             <button id="sa-warning" href="{% url 'delete_channel' app.id channel.id %}"
                                class="btn btn-danger btn-block waves-effect waves-light" onclick="deleteConfirm(event)"
                                type="submit">
@@ -218,6 +219,7 @@ $(document).ready(function() {
     $('#id-'+ $('#id_provider').val()).show();
     $('#id-'+ $('#id_provider').val()+'-required').show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+    $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     $('#id_provider').change(function(){
         $('.provider-permission').hide();
         $('.provider-permission-required').hide();
@@ -229,8 +231,9 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()).show();
         $('#id-'+ $('#id_provider').val()+'-required').show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+        $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     })
-    $('form').parsley({excluded: 'input[disabled]'});
+    $('form').parsley({excluded: 'input[disabled], input[class=permission-required]'});
 });
 
 function getApiKey(){

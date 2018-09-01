@@ -346,8 +346,8 @@
                                 <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
                                     {% for permission in provider.permissions_as_list %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.id }}-{{ permission }}" name="permission" data-parsley-multiple="groups"
-                                               data-parsley-mincheck="1"
+                                        <input id="{{ provider.id }}-{{ permission }}" name="permission"
+                                               data-parsley-multiple="permission"
                                                type="checkbox" value="{{ permission }}" required disabled
                                                data-parsley-errors-container="#checkbox-error"
                                                data-parsley-error-message="Permission value is required."
@@ -356,11 +356,10 @@
                                     </div>
                                     {% endfor %}
                                 </div>
-                                <div class="provider-permission-required checkbox-handler-error" id="id-{{ provider.id }}-required" style="display: none;">
+                                <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display: none;">
                                     {% for permission in provider.permissions_required_as_list %}
                                     <div class="checkbox">
-                                        <input id="{{ provider.id }}-{{ permission }}" name="permission" data-parsley-multiple="groups"
-                                               data-parsley-mincheck="1"
+                                        <input class="permission-required" id="{{ provider.id }}-{{ permission }}" name="permission"
                                                type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;">
                                         <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
                                     </div>
@@ -394,6 +393,7 @@ $(document).ready(function() {
     $('#id-'+ $('#id_provider').val()).show();
     $('#id-'+ $('#id_provider').val()+'-required').show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+    $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     $('#id_provider').change(function(){
         $('.provider-permission').hide();
         $('.provider-permission-required').hide();
@@ -405,8 +405,9 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()).show();
         $('#id-'+ $('#id_provider').val()+'-required').show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+        $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     })
-    $('form').parsley({excluded: 'input[disabled]'});
+    $('form').parsley({excluded: 'input[disabled], input[class=permission-required]'});
 });
 
 function getApiKey(){
