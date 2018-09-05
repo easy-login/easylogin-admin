@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'loginapp.utils.TimezoneMiddleware',
+    'loginapp.utils.TimezoneMiddleware',
 ]
 
 SOUTH_TESTS_MIGRATE = False
@@ -142,7 +142,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
+# TIME_ZONE = 'UTC'
 
 USE_I18N = True
 

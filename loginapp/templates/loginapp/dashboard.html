@@ -2,6 +2,7 @@
 <!-- Page title -->
 {% load static %}
 {% load tz %}
+{% get_current_timezone as TIME_ZONE %}
 {% block css %}
 <!-- Sweet Alert css -->
         <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
@@ -146,6 +147,7 @@
                 </li>
             </ul>
             <hr>
+            {% timezone TIME_ZONE %}
             <ul class="text-primary list-inline m-b-0">
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Create Time</h5>
@@ -161,6 +163,7 @@
                     </p>
                 </li>
             </ul>
+            {% endtimezone %}
         </div>
     </div><!-- end col-->
     {% endfor %}
