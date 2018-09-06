@@ -5,6 +5,7 @@ from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
 from django import forms
+from django.db import IntegrityError
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
@@ -215,11 +216,18 @@ def add_channel(request):
                 return redirect('dashboard')
             else:
                 channel.app = get_object_or_404(App, pk=app_id, owner=request.user.id)
-            messages.success(request, "Channel was successfully created!")
+
             app = get_object_or_404(App, pk=app_id, owner=request.user.id)
-            app.update_modified_at()
-            app.save()
-            channel.save()
+
+            # try to catch exception unique but it catch more
+            try:
+                channel.save()
+                app.update_modified_at()
+                app.save()
+                messages.success(request, "Channel was successfully created!")
+            except IntegrityError as error:
+                messages.error(request, "Channel with " + channel.provider + " provider already exists!")
+
             return redirect('app_detail', app_id=app_id)
         else:
             push_messages_error(request, form)
@@ -246,10 +254,16 @@ def channel_detail(request, app_id, channel_id):
                 channel.set_permissions(permissions)
 
             channel.app = app
-            messages.success(request, "Channel was successfully updated!")
-            app.update_modified_at()
-            app.save()
-            channel.save()
+
+            # try to catch exception unique but it catch more
+            try:
+                channel.save()
+                app.update_modified_at()
+                app.save()
+                messages.success(request, "Channel was successfully updated!")
+            except IntegrityError as error:
+                messages.error(request, "Channel with " + channel.provider + " provider already exists!")
+
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
         else:
             push_messages_error(request, form)

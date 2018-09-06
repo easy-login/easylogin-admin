@@ -97,8 +97,8 @@ class App(models.Model):
         return len(Channel.objects.filter(app_id=self.id))
 
     def update_modified_at(self):
-        # self.modified_at = timezone.now()
-        self.modified_at = datetime.datetime.now()
+        self.modified_at = timezone.now()
+        # self.modified_at = datetime.datetime.now()
 
     class Meta:
         db_table = "apps"
@@ -125,3 +125,4 @@ class Channel(models.Model):
 
     class Meta:
         db_table = "channels"
+        unique_together = ('app', 'provider')
