@@ -344,7 +344,7 @@
                             <div class="col-md-10">
                                 <div id="checkbox-error"></div>
                                 {% for provider in providers %}
-                                <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
+                                <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display:none;">
                                     {% with permissions_required=provider.permissions_required_as_list %}
                                     {% for permission in provider.permissions_as_list %}
                                     {% if permission not in permissions_required %}
@@ -361,7 +361,7 @@
                                     {% endfor %}
                                     {% endwith %}
                                 </div>
-                                <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display: none;">
+                                <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display:none;">
                                     {% for permission in provider.permissions_required_as_list %}
                                     <div class="checkbox">
                                         <input class="permission-required" id="{{ provider.id }}-{{ permission }}" name="permission"
@@ -412,7 +412,7 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
         $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     })
-    $('form').parsley({excluded: 'input[disabled]'});
+    $('form').parsley({excluded: '[disabled]'});
 });
 
 function getApiKey(){
