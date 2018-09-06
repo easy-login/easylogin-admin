@@ -90,6 +90,7 @@
     <div class="col-md-8">
         <div class="card-box">
             <div class="p-20">
+                <h5 class="text-danger font-600">App ID: <span class="badge badge-secondary"> <strong>{{ app.id }}</strong></span></h5>
                 <form class="form-horizontal m-t-20" method="post" action="">
                     {% csrf_token %}
                     <div class="form-group row">
@@ -344,7 +345,9 @@
                                 <div id="checkbox-error"></div>
                                 {% for provider in providers %}
                                 <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display: none;">
+                                    {% with permissions_required=provider.permissions_required_as_list %}
                                     {% for permission in provider.permissions_as_list %}
+                                    {% if permission not in permissions_required %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.id }}-{{ permission }}" name="permission"
                                                data-parsley-multiple="permission"
@@ -354,7 +357,9 @@
                                                data-parsley-class-handler=".checkbox-handler-error">
                                         <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
                                     </div>
+                                    {% endif %}
                                     {% endfor %}
+                                    {% endwith %}
                                 </div>
                                 <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display: none;">
                                     {% for permission in provider.permissions_required_as_list %}
@@ -407,7 +412,7 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
         $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     })
-    $('form').parsley({excluded: 'input[disabled], input[class=permission-required]'});
+    $('form').parsley({excluded: 'input[disabled]'});
 });
 
 function getApiKey(){
@@ -435,8 +440,8 @@ function deleteConfirm(event){
                 text: "You won't be able to revert this!",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#4fa7f3',
-                cancelButtonColor: '#d57171',
+                confirmButtonColor: '#d57171',
+                cancelButtonColor: '#4fa7f3',
                 confirmButtonText: 'Yes, delete it!'
             }).then(function () {
             form.submit();

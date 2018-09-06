@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'loginapp.utils.TimezoneMiddleware',
+    # 'loginapp.utils.TimezoneMiddleware',
 ]
 
 SOUTH_TESTS_MIGRATE = False

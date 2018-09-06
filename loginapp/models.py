@@ -123,3 +123,4 @@ class Channel(models.Model):
 
     class Meta:
         db_table = "channels"
+        unique_together = ('app', 'provider')
