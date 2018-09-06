@@ -5,7 +5,6 @@ from django.template import loader
 from django.contrib.auth import login as signin, logout as signout, authenticate, update_session_auth_hash
 from django.contrib import messages
 from django import forms
-from django.urls import reverse
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
@@ -14,7 +13,6 @@ from loginapp.models import App, Provider, Channel
 import string
 import random
 import datetime
-
 
 # Create your views here.
 

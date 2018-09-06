@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserM
 from django.utils.translation import ugettext_lazy as _
 import datetime
 from django.utils import timezone
+from urllib import parse
 
 # Model's constant
 MAX_LENGTH_SHORT_FIELD = 100
@@ -69,12 +70,13 @@ class App(models.Model):
     def callback_uris_as_list(self):
         if self.callback_uris == "":
             return []
-        return self.callback_uris.split('|')
+        callback_uris_view = parse.unquote_plus(self.callback_uris)
+        return callback_uris_view.split('|')
 
     def set_callback_uris(self, callback_uri_list):
         cu_value = ''
         for uri in callback_uri_list:
-            cu_value += uri + "|"
+            cu_value += parse.quote_plus(uri) + "|"
         cu_value = cu_value[:-1]
         self.callback_uris = cu_value
 
