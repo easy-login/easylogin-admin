@@ -344,8 +344,8 @@
                             <div class="col-md-10">
                                 <div id="checkbox-error"></div>
                                 {% for provider in providers %}
-                                <div class="provider-permission checkbox-handler-error" id="id-{{ provider.id }}" style="display:none;">
-                                    {% with permissions_required=provider.permissions_required_as_list %}
+                                {% with permissions_required=provider.permissions_required_as_list %}
+                                <div class="provider-permission {% if not permissions_required %} checkbox-handler-error {% endif %}" id="id-{{ provider.id }}" style="display:none;">
                                     {% for permission in provider.permissions_as_list %}
                                     {% if permission not in permissions_required %}
                                     <div class="checkbox checkbox-pink">
@@ -359,8 +359,8 @@
                                     </div>
                                     {% endif %}
                                     {% endfor %}
-                                    {% endwith %}
                                 </div>
+                                {% endwith %}
                                 <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display:none;">
                                     {% for permission in provider.permissions_required_as_list %}
                                     <div class="checkbox">
@@ -395,6 +395,7 @@
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function() {
+    $('form').parsley({excluded: '[disabled], input[type=hidden], :hidden'});
     $('#id-'+ $('#id_provider').val()).show();
     $('#id-'+ $('#id_provider').val()+'-required').show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
@@ -407,12 +408,17 @@ $(document).ready(function() {
         $('.provider-permission input').prop('disabled', true)
         $('.provider-permission-required input').prop('disabled', true)
 
+        if ($('#id-'+ $('#id_provider').val()).attr('class').includes('checkbox-handler-error')){
+            $('#checkbox-error').show();
+        }
+        else{
+            $('#checkbox-error').hide();
+        }
         $('#id-'+ $('#id_provider').val()).show();
         $('#id-'+ $('#id_provider').val()+'-required').show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
         $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
     })
-    $('form').parsley({excluded: '[disabled]'});
 });
 
 function getApiKey(){

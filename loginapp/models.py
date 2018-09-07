@@ -132,12 +132,12 @@ class Profiles(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
     provider = models.CharField(max_length=15)
-    pk = models.CharField(max_length=40)
+    _pk = models.CharField(max_length=40, db_column='pk')
     attrs = models.CharField(max_length=4095)
     authorized_at = models.DateTimeField()
     linked_at = models.DateTimeField()
     deleted = models.SmallIntegerField()
-    user_id = models.IntegerField(max_length=11)
+    user_id = models.IntegerField()
     app = models.ForeignKey(App, on_delete=models.CASCADE)
 
     class Meta:
