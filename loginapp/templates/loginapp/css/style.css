@@ -6539,3 +6539,10 @@ File: Responsive
     border-color: transparent;
     border-radius: 4px;
 }
+
+.tab-custom-style{
+    border: none;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top : 10px;
+}
