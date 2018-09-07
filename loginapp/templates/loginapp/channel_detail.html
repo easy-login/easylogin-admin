@@ -156,15 +156,11 @@
                                         <div class="checkbox checkbox-pink">
                                             <input id="{{ provider.id }}-{{ permission }}" name="permission"
                                                    type="checkbox" value="{{ permission }}"
-                                                   {% if not permissions_required %}
                                                    data-parsley-multiple="permission"
                                                    data-parsley-mincheck="1"
                                                    data-parsley-errors-container="#checkbox-error"
                                                    data-parsley-error-message="Permission value is required."
                                                    data-parsley-class-handler=".checkbox-handler-error"
-                                                   {% else %}
-                                                   data-parsley-excluded="true"
-                                                   {% endif %}
                                                    {% if permission in channel_permissions and channel.provider == provider.id %} checked{% endif %}
                                                    required disabled>
                                             <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
@@ -225,7 +221,7 @@
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function() {
-    $('form').parsley({excluded: '[disabled],input[type=hidden], :hidden'});
+    $('form').parsley({excluded: '[disabled]'});
     $('#id-'+ $('#id_provider').val()).show();
     $('#id-'+ $('#id_provider').val()+'-required').show();
     $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
@@ -235,6 +231,7 @@ $(document).ready(function() {
         $('.provider-permission-required').hide();
 
         $('.provider-permission input').prop("checked", false)
+         $('.provider-permission-required input').prop("checked", false)
         $('.provider-permission input').prop('disabled', true)
         $('.provider-permission-required input').prop('disabled', true)
 
@@ -248,6 +245,7 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()+'-required').show();
         $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
         $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
+        $('#id-'+ $('#id_provider').val()+'-required input').prop('checked', true);
     })
 });
 
