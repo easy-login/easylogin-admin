@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.utils import generateApiKey
-from loginapp.models import App, Provider, Channel
+from loginapp.models import App, Provider, Channel, Profiles
 import string
 import random
 import datetime
@@ -293,6 +293,11 @@ def delete_channel(request, app_id, channel_id):
 
 
 @login_required
+def statistic_login(request, app_id):
+    profiles =Profiles.objecst().all()
+
+
+@login_required
 def get_api_key(request):
     try:
         return HttpResponse(generateApiKey(
@@ -302,10 +307,6 @@ def get_api_key(request):
         return HttpResponse(e, status=404)
 
 
-# Channel
-# @login_required
-# def add_channel(request):
-
 # pass messages error
 def push_messages_error(request, form):
     for key, val in form.errors.as_data().items():
@@ -314,7 +315,6 @@ def push_messages_error(request, form):
             errors = validError.messages
             for error in errors:
                 messages.error(request, "Update failed! " + key + ": " + error)
-
 
 # link not found
 def error404(request):
