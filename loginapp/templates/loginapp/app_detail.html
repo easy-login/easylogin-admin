@@ -541,6 +541,7 @@
         </div>
     </div>
 </div>
+</div>
 <!--/ meta -->
 {% endblock %}
 
@@ -584,11 +585,13 @@ $(document).ready(function() {
     })
 
     $('#statistic-table').DataTable({
-        'processing': true,
-        'serverSide: true,
-        'ajax": {
-                'url': '{% url 'statistic_login' %}'
-        }
+        //'processing': true,
+        //'serverSide': true,
+        //'deferLoading': 0,
+        //'ajax': {
+          //      'url': '{% url 'statistic_login' app.id %}',
+            //    'method': 'GET'
+        //}
     });
 });
 

@@ -43,6 +43,8 @@ urlpatterns = [
 
     path('app/<int:app_id>/', views.app_detail, name='app_detail'),
 
+    path('statistic_login/<int:app_id>/', views.statistic_login, name='statistic_login'),
+
     path('delete_app/<int:app_id>/', views.delete_app, name='delete_app'),
 
     url(r'^add_channel/$', views.add_channel, name='add_channel'),

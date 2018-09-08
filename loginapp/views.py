@@ -15,6 +15,7 @@ import string
 import random
 import datetime
 
+
 # Create your views here.
 
 def index(request):
@@ -294,7 +295,8 @@ def delete_channel(request, app_id, channel_id):
 
 @login_required
 def statistic_login(request, app_id):
-    profiles =Profiles.objecst().all()
+    profiles = Profiles.objects.all()
+    return HttpResponse("", content_type='application/json')
 
 
 @login_required
@@ -315,6 +317,7 @@ def push_messages_error(request, form):
             errors = validError.messages
             for error in errors:
                 messages.error(request, "Update failed! " + key + ": " + error)
+
 
 # link not found
 def error404(request):
