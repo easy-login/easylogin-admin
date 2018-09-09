@@ -6546,3 +6546,7 @@ File: Responsive
     padding-right: 0px;
     padding-top : 10px;
 }
+
+#statistic-table{
+    text-align: center;
+}

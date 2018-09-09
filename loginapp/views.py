@@ -6,14 +6,17 @@ from django.contrib.auth import login as signin, logout as signout, authenticate
 from django.contrib import messages
 from django import forms
 from django.db import IntegrityError
+from django.db.models import Sum, Max
+from django.core.serializers.json import DjangoJSONEncoder
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey
-from loginapp.models import App, Provider, Channel, Profiles
+from loginapp.utils import generateApiKey, getOrderValue
+from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
 import datetime
+import json
 
 
 # Create your views here.
@@ -200,6 +203,44 @@ def delete_app(request, app_id):
 
 
 @login_required
+def statistic_login(request, app_id):
+    get_object_or_404(App, pk=app_id, owner=request.user.id)
+
+    page_length = int(request.GET.get('length', 0))
+    start_page = int(request.GET.get('start', 0))
+    search_value = request.GET.get('search[value]')
+    order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
+    profiles = Profiles.objects.filter(app=app_id).values('user_id') \
+        .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
+                  providers=GroupConcat('provider')) \
+        .order_by(order_by)
+
+    records_total = len(profiles)
+    if search_value:
+        try:
+            profiles = profiles.filter(user_id=search_value)
+        except ValueError:
+            pass
+    records_filtered = len(profiles)
+
+    providers = Provider.objects.all()
+    data = []
+    for id, profile in enumerate(profiles[start_page:start_page + page_length]):
+        row_data = [id + 1, profile['deleted'], profile['user_id'], profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
+                    profile['login_total']]
+        provider_split = profile['providers'].split(',')
+        for provider in providers:
+            if provider.id in provider_split:
+                row_data.append(1)
+            else:
+                row_data.append(0)
+
+        data.append(row_data)
+    json_data_tabe = {"recordsTotal": records_total, "recordsFiltered": records_filtered, "data": data}
+    return HttpResponse(json.dumps(json_data_tabe, cls=DjangoJSONEncoder), content_type='application/json')
+
+
+@login_required
 def add_channel(request):
     if request.method == 'POST':
         form = ChannelForm(request.POST)
@@ -291,12 +332,6 @@ def delete_channel(request, app_id, channel_id):
     else:
         messages.error(request, "Delete failed Channel!")
         return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
-
-
-@login_required
-def statistic_login(request, app_id):
-    profiles = Profiles.objects.all()
-    return HttpResponse("", content_type='application/json')
 
 
 @login_required

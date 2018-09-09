@@ -8,7 +8,7 @@ from django.utils.deprecation import MiddlewareMixin
 class TimezoneMiddleware(MiddlewareMixin):
     def process_request(self, request):
         tzname = request.session.get('local_timezone')
-        print("timezone:"+str(tzname))
+        print("timezone:" + str(tzname))
         if tzname:
             timezone.activate(pytz.timezone(tzname))
         else:
@@ -29,3 +29,14 @@ def validateURL(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
     return re.match(regex, url) is not None
+
+
+def getOrderValue(column, value):
+    column_dic = {
+        '1': 'deleted',
+        '2': 'user_id',
+        '3': 'last_login',
+        '4': 'login_total'
+    }
+    column_name = column_dic.get(column, 'user_id')
+    return '-' + column_name if value == 'desc' else column_name
