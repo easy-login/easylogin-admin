@@ -43,11 +43,6 @@
 
 {% block sidemenu %}
 <li>
-    <a href="{% url 'dashboard' %}" class="waves-effect"><i class="mdi mdi-web"></i><span> Your Apps </span>
-    </a>
-</li>
-
-<li>
     <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
     </a>
 </li>
@@ -57,8 +52,6 @@
 {% block content%}
 <div class="row">
     <div class="col-sm-4">
-        <!--<button type="button" class="btn btn-purple btn-rounded w-md waves-effect waves-light m-b-20">Create Project-->
-        <!--</button>-->
     </div>
     <div class="col-sm-8 m-b-20">
         <div class="app-sort pull-right">
@@ -124,14 +117,14 @@
             <p class="text-muted font-13 app-description">{{ app.description }}
             </p>
             <div class="text-left m-t-20" style="word-wrap: break-word">
-                <p class="text-muted font-13"><strong>Callback URIs :</strong>
+                <p class="text-white font-13"><strong>Callback URIs :</strong>
                     <ul class="list-unstyled">
                     {% for uri in app.callback_uris_as_list %}
                     <li>{{ uri }}</li>
                     {% endfor %}
                     </ul>
                 </p>
-                <p class="text-muted font-13"><strong>Allowed IPs</strong>
+                <p class="text-white font-13"><strong>Allowed IPs</strong>
                     <ul class="list-unstyled">
                     {% for ip in app.allowed_ips_as_list %}
                     <li>{{ ip }} </li>

@@ -6524,11 +6524,10 @@ File: Responsive
 
 /* My CSS*/
 .create-app-button{
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .app-list-select{
     min-width: 150px;
-    margin-top: 20px;
 }
 .success-messages{
     margin-bottom: 0px;
@@ -6549,4 +6548,9 @@ File: Responsive
 
 #statistic-table{
     text-align: center;
+}
+
+.menu-narrow{
+    position: absolute;
+    right: 20px;
 }

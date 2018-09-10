@@ -161,4 +161,8 @@ STATIC_URL = BASE_DIR + '/loginapp/templates/loginapp/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, STATIC_URL),
-]   
+]
+
+# App SETTING
+
+ADMIN_ENABLED = False

@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.login, name='index'),
 
     url(r'^login/$', views.login, name='login'),
 
@@ -46,6 +46,8 @@ urlpatterns = [
     path('statistic_login/<int:app_id>/', views.statistic_login, name='statistic_login'),
 
     path('delete_app/<int:app_id>/', views.delete_app, name='delete_app'),
+
+    path('app/<int:app_id>/channels/', views.channel_list, name='channel_list'),
 
     url(r'^add_channel/$', views.add_channel, name='add_channel'),
 

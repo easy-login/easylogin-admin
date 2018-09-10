@@ -27,7 +27,7 @@ def index(request):
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect('dashboard')
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -77,7 +77,7 @@ def dashboard(request):
     apps = App.objects.all().filter(owner=request.user.id).order_by(order_by)
     if request.GET.get("search"):
         apps = apps.filter(name__contains=request.GET.get("search"))
-    return render(request, 'loginapp/dashboard.html', {'apps': apps})
+    return render(request, 'loginapp/app_list.html', {'apps': apps})
 
 
 @login_required
@@ -152,7 +152,7 @@ def add_app(request):
 
     else:
         form = AppForm()
-    return render(request, 'loginapp/add_app.html', {'form': form})
+    return render(request, 'loginapp/app_add.html', {'form': form})
 
 
 @login_required
@@ -180,14 +180,8 @@ def app_detail(request, app_id):
 
     form = AppForm()
     apps = App.objects.filter(owner=request.user.id)
-    channels = Channel.objects.filter(app=app_id).order_by('-created_at')
-    providers = Provider.objects.all()
-    channel_form = ChannelForm()
-    channel_form.fields['app_id'].widget = forms.HiddenInput()
-
     return render(request, 'loginapp/app_detail.html',
-                  {'app': app, 'apps': apps, 'channels': channels, 'providers': providers, 'form': form,
-                   'channel_form': channel_form})
+                  {'app': app, 'apps': apps, 'form': form, })
 
 
 @login_required
@@ -241,6 +235,18 @@ def statistic_login(request, app_id):
 
 
 @login_required
+def channel_list(request, app_id):
+    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    channels = Channel.objects.filter(app=app_id).order_by('-created_at')
+    providers = Provider.objects.all()
+    channel_form = ChannelForm()
+    channel_form.fields['app_id'].widget = forms.HiddenInput()
+
+    return render(request, 'loginapp/channel_list.html',
+                  {'app': app, 'providers': providers, 'channels': channels, 'channel_form': channel_form})
+
+
+@login_required
 def add_channel(request):
     if request.method == 'POST':
         form = ChannelForm(request.POST)
@@ -250,7 +256,7 @@ def add_channel(request):
             app_id = request.POST['app_id']
             if len(permissions) == 0:
                 messages.error(request, "Add failed channel: permission is required!")
-                return redirect('app_detail', app_id=app_id)
+                return redirect('channel_list', app_id=app_id)
             else:
                 channel.set_permissions(permissions)
             if app_id is None:
@@ -270,7 +276,7 @@ def add_channel(request):
             except IntegrityError as error:
                 messages.error(request, "Channel with " + channel.provider + " provider already exists!")
 
-            return redirect('app_detail', app_id=app_id)
+            return redirect('channel_list', app_id=app_id)
         else:
             push_messages_error(request, form)
             print(form.errors)
@@ -328,10 +334,10 @@ def delete_channel(request, app_id, channel_id):
         channel.delete()
         app.update_modified_at()
         messages.success(request, "Channel was deleted!")
-        return redirect('app_detail', app_id=app_id)
+        return redirect('channel_list', app_id=app_id)
     else:
         messages.error(request, "Delete failed Channel!")
-        return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
+        return redirect('channel_list', app_id=app_id)
 
 
 @login_required
