@@ -48,7 +48,7 @@ def init_mysql_connection(host, user, passwd, db):
     return MySQLdb.connect(host, user, passwd, db)
 
 
-def get_auth_report(mysql_con, from_dt=None, to_dt=None, is_login=1):
+def get_auth_report(mysql_con, app_id, from_dt=None, to_dt=None, is_login=1):
     cursor = mysql_con.cursor()
     _from = datetime.strptime(from_dt, '%Y-%m-%d')
     _to = datetime.strptime(to_dt, '%Y-%m-%d')
@@ -69,7 +69,7 @@ def get_auth_report(mysql_con, from_dt=None, to_dt=None, is_login=1):
             SELECT provider, DATE(modified_at), COUNT(provider) 
             FROM auth_logs 
             WHERE app_id = %s AND modified_at BETWEEN %s and %s AND status = 'succeeded' AND is_login = %s
-            GROUP BY DATE(modified_at), provider""", (3, from_dt, to_dt, is_login))
+            GROUP BY DATE(modified_at), provider""", (app_id, from_dt, to_dt, is_login))
 
     i = 0
     while True:
