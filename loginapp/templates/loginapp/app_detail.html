@@ -37,10 +37,10 @@
                     <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
                             data-toggle="dropdown" aria-expanded="false">{{ app.name }}
                     </button>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu app-navigation">
                         <!-- item-->
                         {% for option in apps %}
-                        <a href="{% url 'app_detail' option.id %}" class="dropdown-item">{{ option.name }}</a>
+                        <a href="{% url 'app_detail' option.id %}?tab_active=statistic" class="dropdown-item">{{ option.name }}</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -68,18 +68,18 @@
 {% block content%}
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a href="#edit_app" data-toggle="tab" aria-expanded="false" class="nav-link active">
+        <a href="#edit_app" data-toggle="tab" aria-expanded="false" class="nav-link {%if not request.GET.tab_active %}active{% endif %}" onclick="keepTabActive(this)">
             Edit
         </a>
     </li>
     <li class="nav-item">
-        <a href="#statistic" data-toggle="tab" aria-expanded="false" class="nav-link" onclick="loadInitialStatisticTable()">
+        <a href="#statistic" data-toggle="tab" aria-expanded="false" class="nav-link {%if request.GET.tab_active %}active{% endif %}" onclick="loadInitialStatisticTable();keepTabActive(this)">
             Statistic
         </a>
     </li>
 </ul>
 <div class="tab-content tab-custom-style">
-<div role="tabpanel" class="tab-pane fade show active" id="edit_app">
+<div role="tabpanel" class="tab-pane fade {%if not request.GET.tab_active %}show active{% endif %}" id="edit_app">
     <div class="row">
     <div class="col-md-12">
         {% if messages %}
@@ -297,7 +297,7 @@
     <div class="clearfix"></div>
     </div>
 </div>
-<div role="tabpanel" class="tab-pane fade" id="statistic">
+<div role="tabpanel" class="tab-pane fade {%if request.GET.tab_active %}show active{% endif %}" id="statistic">
     <div class="row">
         <div class="col-md-12">
             <table id="statistic-table" class="table table-striped table-bordered" cellspacing="0" width="100%" >
@@ -464,6 +464,8 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
         $('#id-'+ $('#id_provider').val()+'-required input').prop('checked', true);
     })
+
+    {%if request.GET.tab_active %}loadInitialStatisticTable();{% endif %}
 });
 
 function getApiKey(){
@@ -560,6 +562,20 @@ function loadInitialStatisticTable(){
         },
     }).draw();
 }
-
+function keepTabActive(e){
+    if ($(e).attr('href')=='#edit_app'){
+        $('.app-navigation').children().each(function(){
+            $(this).attr('href', $(this).attr('href').split('?')[0])
+            window.history.pushState("", "", window.location.href.split('?')[0]);
+            console.log($(this).attr('href'))
+        })
+    }
+    else if ($(e).attr('href')=='#statistic'){
+        $('.app-navigation').children().each(function(){
+            $(this).attr('href', $(this).attr('href').split('?')[0]+'?tab_active=statistic')
+            console.log($(this).attr('href'))
+        })
+    }
+}
 </script>
 {% endblock %}
