@@ -57,7 +57,7 @@
     </a>
     <ul class="list-unstyled sub-menu-app">
         <li><a href="#">App Dashboard</a></li>
-        <li><a href="#">User Statistic</a></li>
+        <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
         <li class="active"><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
         <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
     </ul>

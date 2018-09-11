@@ -5,7 +5,6 @@
 {% block css %}
 <!-- Sweet Alert css -->
         <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
-        <link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 <!-- Page title -->
 {% block topbar %}
@@ -50,7 +49,7 @@
     </a>
     <ul class="list-unstyled">
         <li><a href="#">App Dashboard</a></li>
-        <li><a href="#">User Statistic</a></li>
+        <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
         <li><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
         <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
     </ul>
@@ -248,10 +247,6 @@
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
 <!-- Sweet Alert Js  -->
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
-
-    <!-- Datatables Js-->
-    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
-    <script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
 <!--My js-->
 <script type="text/javascript">
 function getApiKey(){
@@ -310,43 +305,6 @@ function duplicateInput(element){
 function removeItself(element){
     var input = $(element).parent().parent()
     input.remove()
-}
-
-function loadInitialStatisticTable(){
-    if ($.fn.DataTable.isDataTable('#statistic-table')) return;
-
-    $('#statistic-table').DataTable({
-        'lengthMenu': [5,10,25,50,100],
-        'autoWidth': false,
-        'processing': true,
-        'serverSide': true,
-        'deferLoading': 0,
-        'ajax': {
-              'url': '{% url 'statistic_login' app.id %}',
-              'method': 'GET'
-        },
-        'order': [[ 2, 'asc' ]],
-        'columnDefs': [
-            {orderable: false, targets: 'no-order' },
-            {
-                'targets': 'provider-datatable',
-                'render': function ( data, type, row ) {
-                    if (data == 1) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
-                    else return ''
-                }
-            },
-            {
-                'targets': 1,
-                'render': function ( data, type, row ) {
-                    if (data == 1) return '<span class="text-danger"><i class="mdi mdi-24px mdi-account-remove"></i></span>'
-                    else return ''
-                }
-            }
-        ],
-        language: {
-        searchPlaceholder: "User ID"
-        },
-    }).draw();
 }
 </script>
 {% endblock %}

@@ -5,7 +5,7 @@
 <!-- Page title -->
 {% block topbar%}
 <!-- Page title -->
-<ul class="nav navbar-nav list-inline navbar-left">
+<ul class="nav navbar-nav list-inline navbar-left" style="flex-direction: unset">
     <li class="list-inline-item">
         <button class="button-menu-mobile open-left">
             <i class="mdi mdi-menu"></i>
@@ -13,6 +13,13 @@
     </li>
     <li class="list-inline-item">
         <h4 class="page-title">Profile</h4>
+    </li>
+    <li class="list-inline-item">
+        <div class="create-app-button">
+            <a href="{% url 'profile' %}"
+               class="btn btn-danger btn-rounded w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i> <span>Cancel</span>
+            </a>
+        </div>
     </li>
 </ul>
 
@@ -34,19 +41,20 @@
 
 
 {% block sidemenu %}
-<li>
-    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
+<li class="has_sub">
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-account"></i><span>Your Profile</span>
+         <i class="fa fa-angle-down menu-narrow"></i>
     </a>
+    <ul class="list-unstyled">
+        <li>
+            <a href="{% url 'profile' %}">Update Profile</a>
+        </li>
+        <li>
+            <a href="{% url 'change_password' %}">Change Password</a>
+        </li>
+    </ul>
 </li>
-
-<li>
-    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
-        <span> Change Password </span> </a>
-</li>
-
 {% endblock %}
-
-
 {% block content%}
 <div class="row card-box profile-info-name justify-content-md-center">
     <div class="col-md-6 profile-info-detail ">
