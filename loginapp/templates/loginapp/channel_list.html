@@ -21,15 +21,7 @@
 
 <nav class="navbar-custom">
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
-       <li class="list-inline-item">
-            <div class="create-channel-button">
-                <button data-toggle="modal" data-target="#add-channel-modal" type="button"
-                        class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5">
-                        <i class="mdi mdi-plus"></i> <span>Add Channel</span>
-                </button>
-            </div>
-        </li>
-         <li class="list-inline-item">
+        <li class="list-inline-item">
             <div class="create-channel-button">
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
@@ -42,6 +34,14 @@
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+        </li>
+        <li class="list-inline-item">
+            <div class="create-channel-button">
+                <button data-toggle="modal" data-target="#add-channel-modal" type="button"
+                        class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5">
+                    <i class="mdi mdi-plus"></i> <span>Add Channel</span>
+                </button>
             </div>
         </li>
     </ul>
