@@ -1,0 +1,296 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+<!-- Sweet Alert css -->
+        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<ul class="nav navbar-nav list-inline navbar-left">
+    <li class="list-inline-item">
+        <button class="button-menu-mobile open-left">
+            <i class="mdi mdi-menu"></i>
+        </button>
+    </li>
+    <li class="list-inline-item">
+        <h4 class="page-title">Report App</h4>
+    </li>
+</ul>
+
+<nav class="navbar-custom">
+    <ul class="list-unstyled topbar-right-menu float-right mb-0">
+        <li class="list-inline-item">
+            <div class="app-list-select">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
+                            data-toggle="dropdown" aria-expanded="false">{{ app.name }}
+                    </button>
+                    <div class="dropdown-menu app-navigation">
+                        <!-- item-->
+                        {% for option in apps %}
+                        <a href="{% url 'report_app' option.id %}?tab_active=statistic" class="dropdown-item">{{ option.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+
+{% block sidemenu %}
+<li class="has_sub">
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-square"></i><span style="text-transform: capitalize;"> {{ app.name }} </span>
+        <i class="fa fa-angle-down menu-narrow"></i>
+    </a>
+    <ul class="list-unstyled">
+        <li><a href="{% url 'report_app' app.id %}">App Dashboard</a></li>
+        <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
+        <li><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
+        <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
+    </ul>
+</li>
+
+<li>
+    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
+    </a>
+</li>
+
+{% endblock %}
+
+
+{% block content%}
+<div class="row">
+    <div class="col-md-12 m-t-10 m-b-10">
+        <div class="card-box">
+            <canvas id="line-chart-report" height="400"></canvas>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
+<!-- Chart JS -->
+<script src="{% static 'plugins/chart.js/Chart.bundle.min.js' %}"></script>
+<!--My js-->
+<script type="text/javascript">
+$(document).ready(function(){
+
+window.chartColors = {
+	red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	yellow: 'rgb(255, 205, 86)',
+	green: 'rgb(75, 192, 192)',
+	blue: 'rgb(54, 162, 235)',
+	purple: 'rgb(153, 102, 255)',
+	grey: 'rgb(201, 203, 207)'
+};
+
+(function(global) {
+	var Months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+
+	var COLORS = [
+		'#4dc9f6',
+		'#f67019',
+		'#f53794',
+		'#537bc4',
+		'#acc236',
+		'#166a8f',
+		'#00a950',
+		'#58595b',
+		'#8549ba'
+	];
+
+	var Samples = global.Samples || (global.Samples = {});
+	var Color = global.Color;
+
+	Samples.utils = {
+		// Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+		srand: function(seed) {
+			this._seed = seed;
+		},
+
+		rand: function(min, max) {
+			var seed = this._seed;
+			min = min === undefined ? 0 : min;
+			max = max === undefined ? 1 : max;
+			this._seed = (seed * 9301 + 49297) % 233280;
+			return min + (this._seed / 233280) * (max - min);
+		},
+
+		numbers: function(config) {
+			var cfg = config || {};
+			var min = cfg.min || 0;
+			var max = cfg.max || 1;
+			var from = cfg.from || [];
+			var count = cfg.count || 8;
+			var decimals = cfg.decimals || 8;
+			var continuity = cfg.continuity || 1;
+			var dfactor = Math.pow(10, decimals) || 0;
+			var data = [];
+			var i, value;
+
+			for (i = 0; i < count; ++i) {
+				value = (from[i] || 0) + this.rand(min, max);
+				if (this.rand() <= continuity) {
+					data.push(Math.round(dfactor * value) / dfactor);
+				} else {
+					data.push(null);
+				}
+			}
+
+			return data;
+		},
+
+		labels: function(config) {
+			var cfg = config || {};
+			var min = cfg.min || 0;
+			var max = cfg.max || 100;
+			var count = cfg.count || 8;
+			var step = (max - min) / count;
+			var decimals = cfg.decimals || 8;
+			var dfactor = Math.pow(10, decimals) || 0;
+			var prefix = cfg.prefix || '';
+			var values = [];
+			var i;
+
+			for (i = min; i < max; i += step) {
+				values.push(prefix + Math.round(dfactor * i) / dfactor);
+			}
+
+			return values;
+		},
+
+		months: function(config) {
+			var cfg = config || {};
+			var count = cfg.count || 12;
+			var section = cfg.section;
+			var values = [];
+			var i, value;
+
+			for (i = 0; i < count; ++i) {
+				value = Months[Math.ceil(i) % 12];
+				values.push(value.substring(0, section));
+			}
+
+			return values;
+		},
+
+		color: function(index) {
+			return COLORS[index % COLORS.length];
+		},
+
+		transparentize: function(color, opacity) {
+			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+			return Color(color).alpha(alpha).rgbString();
+		}
+	};
+
+	// DEPRECATED
+	window.randomScalingFactor = function() {
+		return Math.round(Samples.utils.rand(-100, 100));
+	};
+
+	// INITIALIZATION
+
+	Samples.utils.srand(Date.now());
+}(this));
+
+var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+				datasets: [{
+					label: 'My First dataset',
+					backgroundColor: window.chartColors.red,
+					borderColor: window.chartColors.red,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+					fill: false,
+				}, {
+					label: 'My Second dataset',
+					fill: false,
+					backgroundColor: window.chartColors.blue,
+					borderColor: window.chartColors.blue,
+					data: [
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor(),
+						randomScalingFactor()
+					],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Chart.js Line Chart'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Value'
+						}
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('line-chart-report').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+})
+</script>
+{% endblock %}

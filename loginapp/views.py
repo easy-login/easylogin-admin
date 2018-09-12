@@ -239,6 +239,48 @@ def statistic_login(request, app_id):
 
 
 @login_required
+def report_app(request, app_id):
+    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    if request.GET.get('flag_loading'):
+        page_length = int(request.GET.get('length', 0))
+        start_page = int(request.GET.get('start', 0))
+        search_value = request.GET.get('search[value]')
+        order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
+        profiles = Profiles.objects.filter(app=app_id).values('user_id') \
+            .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
+                      providers=GroupConcat('provider')) \
+            .order_by(order_by)
+
+        records_total = len(profiles)
+        if search_value:
+            try:
+                profiles = profiles.filter(user_id=search_value)
+            except ValueError:
+                pass
+        records_filtered = len(profiles)
+
+        providers = Provider.objects.all()
+        data = []
+        for id, profile in enumerate(profiles[start_page:start_page + page_length]):
+            row_data = [id + 1, profile['deleted'], profile['user_id'], profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
+                        profile['login_total']]
+            provider_split = profile['providers'].split(',')
+            for provider in providers:
+                if provider.id in provider_split:
+                    row_data.append(1)
+                else:
+                    row_data.append(0)
+
+            data.append(row_data)
+        json_data_tabe = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
+        return HttpResponse(json.dumps(json_data_tabe, cls=DjangoJSONEncoder), content_type='application/json')
+    else:
+        apps = App.objects.all()
+        providers = Provider.objects.all()
+        return render(request, 'loginapp/report_app.html', {'apps': apps, 'app': app, 'providers': providers})
+
+
+@login_required
 def channel_list(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     channels = Channel.objects.filter(app=app_id).order_by('-created_at')
