@@ -6,6 +6,7 @@
 <!-- Sweet Alert css -->
         <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{%static 'plugins/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
 {% endblock %}
 <!-- Page title -->
 {% block topbar %}
@@ -65,32 +66,29 @@
 
 
 {% block content%}
-<div class="row">
-<<<<<<< HEAD
-    <div class="col-md-12 m-t-20 m-b-20">
-        <table id="statistic-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-            <tr>
-                <th class="no-order">No</th>
-                <th>Deleted</th>
-                <th>User ID</th>
-                <th>Last Login</th>
-                <th>Login Count</th>
-                {% for provider in providers %}
-                <th class="no-order provider-datatable" style="text-transform: capitalize;">
-                    {{ provider.id }} <i class="fa fa-1x fa-{{ provider.id }}"></i>
-                </th>
-                {% endfor %}
-            </tr>
-            </thead>
-        </table>
-=======
-    <div class="col-md-12 m-t-10 m-b-10">
-        <div class="card-box">
-            <canvas id="line-chart-report" height="400"></canvas>
-        </div>
->>>>>>> origin/dev-2.0
-    </div>
+<div class="row p-t-40 card-box">
+         <div class="col-md-2 mt-20">
+             <select class="form-control">
+                 <option>Login</option>
+                 <option>Register</option>
+             </select>
+         </div>
+         <div class="col-md-3">
+             <select class="form-control">
+                 <option>Total</option>
+                 <option>Line</option>
+                 <option>YahooJp</option>
+                 <option>Amazon</option>
+             </select>
+         </div>
+        <div class="col-md-3"></div>
+         <div class="col-md-4">
+             <div id="date-range" class="form-control">
+                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                 <span></span>
+             </div>
+         </div>
+             <canvas id="line-chart-report"></canvas>
     <div class="clearfix"></div>
 </div>
 {% endblock %}
@@ -100,63 +98,15 @@
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
 <!-- Sweet Alert Js  -->
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
-<<<<<<< HEAD
-
-    <!-- Datatables Js-->
-    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
-    <script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
-<!--My js-->
-<script type="text/javascript">
-$(document).ready(function(){
-    loadInitialStatisticTable()
-})
-function loadInitialStatisticTable(){
-    if ($.fn.DataTable.isDataTable('#statistic-table')) return;
-
-    $('#statistic-table').DataTable({
-        'lengthMenu': [5,10,25,50,100],
-        'autoWidth': false,
-        'processing': true,
-        'serverSide': true,
-        'deferLoading': 0,
-        'ajax': {
-              'url': '{% url 'statistic_login' app.id %}',
-              'method': 'GET',
-              'data': function(d){
-                d.flag_loading = 'load-data'
-              }
-        },
-        'order': [[ 2, 'asc' ]],
-        'columnDefs': [
-            {orderable: false, targets: 'no-order' },
-            {
-                'targets': 'provider-datatable',
-                'render': function ( data, type, row ) {
-                    if (data == 1) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
-                    else return ''
-                }
-            },
-            {
-                'targets': 1,
-                'render': function ( data, type, row ) {
-                    if (data == 1) return '<span class="text-danger"><i class="mdi mdi-24px mdi-account-remove"></i></span>'
-                    else return ''
-                }
-            }
-        ],
-        language: {
-        searchPlaceholder: "User ID"
-        },
-    }).draw();
-}
-=======
 <!-- Chart JS -->
 <script src="{% static 'plugins/chart.js/Chart.bundle.min.js' %}"></script>
+<!-- Date Range Picker-->
+<script src="{% static 'plugins/moment/moment.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
 <!--My js-->
 <script type="text/javascript">
-$(document).ready(function(){
 
-window.chartColors = {
+var chartColors = {
 	red: 'rgb(255, 99, 132)',
 	orange: 'rgb(255, 159, 64)',
 	yellow: 'rgb(255, 205, 86)',
@@ -165,170 +115,42 @@ window.chartColors = {
 	purple: 'rgb(153, 102, 255)',
 	grey: 'rgb(201, 203, 207)'
 };
-
-(function(global) {
-	var Months = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December'
-	];
-
-	var COLORS = [
-		'#4dc9f6',
-		'#f67019',
-		'#f53794',
-		'#537bc4',
-		'#acc236',
-		'#166a8f',
-		'#00a950',
-		'#58595b',
-		'#8549ba'
-	];
-
-	var Samples = global.Samples || (global.Samples = {});
-	var Color = global.Color;
-
-	Samples.utils = {
-		// Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
-		srand: function(seed) {
-			this._seed = seed;
-		},
-
-		rand: function(min, max) {
-			var seed = this._seed;
-			min = min === undefined ? 0 : min;
-			max = max === undefined ? 1 : max;
-			this._seed = (seed * 9301 + 49297) % 233280;
-			return min + (this._seed / 233280) * (max - min);
-		},
-
-		numbers: function(config) {
-			var cfg = config || {};
-			var min = cfg.min || 0;
-			var max = cfg.max || 1;
-			var from = cfg.from || [];
-			var count = cfg.count || 8;
-			var decimals = cfg.decimals || 8;
-			var continuity = cfg.continuity || 1;
-			var dfactor = Math.pow(10, decimals) || 0;
-			var data = [];
-			var i, value;
-
-			for (i = 0; i < count; ++i) {
-				value = (from[i] || 0) + this.rand(min, max);
-				if (this.rand() <= continuity) {
-					data.push(Math.round(dfactor * value) / dfactor);
-				} else {
-					data.push(null);
-				}
-			}
-
-			return data;
-		},
-
-		labels: function(config) {
-			var cfg = config || {};
-			var min = cfg.min || 0;
-			var max = cfg.max || 100;
-			var count = cfg.count || 8;
-			var step = (max - min) / count;
-			var decimals = cfg.decimals || 8;
-			var dfactor = Math.pow(10, decimals) || 0;
-			var prefix = cfg.prefix || '';
-			var values = [];
-			var i;
-
-			for (i = min; i < max; i += step) {
-				values.push(prefix + Math.round(dfactor * i) / dfactor);
-			}
-
-			return values;
-		},
-
-		months: function(config) {
-			var cfg = config || {};
-			var count = cfg.count || 12;
-			var section = cfg.section;
-			var values = [];
-			var i, value;
-
-			for (i = 0; i < count; ++i) {
-				value = Months[Math.ceil(i) % 12];
-				values.push(value.substring(0, section));
-			}
-
-			return values;
-		},
-
-		color: function(index) {
-			return COLORS[index % COLORS.length];
-		},
-
-		transparentize: function(color, opacity) {
-			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
-			return Color(color).alpha(alpha).rgbString();
-		}
-	};
-
-	// DEPRECATED
-	window.randomScalingFactor = function() {
-		return Math.round(Samples.utils.rand(-100, 100));
-	};
-
-	// INITIALIZATION
-
-	Samples.utils.srand(Date.now());
-}(this));
-
-var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+$(document).ready(function(){
 		var config = {
-			type: 'line',
-			data: {
-				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-				datasets: [{
-					label: 'My First dataset',
-					backgroundColor: window.chartColors.red,
-					borderColor: window.chartColors.red,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-					fill: false,
-				}, {
-					label: 'My Second dataset',
-					fill: false,
-					backgroundColor: window.chartColors.blue,
-					borderColor: window.chartColors.blue,
-					data: [
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-					],
-				}]
-			},
-			options: {
+            "type": "line",
+            "data": {
+    	            "labels": ["January", "February", "March", "April", "May", "June", "July"],
+    	            "datasets": [{
+    	                "label": "Total",
+    	                "data": [65, 70, 80, 81, 56, 79, 100],
+    					"fill": false,
+    					"borderColor": chartColors.blue,
+    					"backgroundColor": chartColors.blue},
+    					{
+    	                "label": "Amazone",
+    	                "data": [65, 59.23, 80, 81, 56, 55, 40],
+    					"fill": false,
+    					"borderColor": chartColors.orange,
+    					"backgroundColor": chartColors.orange},
+    					{
+    	                "label": "Yahoojp",
+    	                "data": [10, 59, 20, 41, 56, 80, 40],
+    					"fill": false,
+    					"borderColor": chartColors.purple,
+    					"backgroundColor": chartColors.purple},
+    					{
+    	                "label": "Line",
+    	                "data": [1, 59, 30, 81, 15, 33, 66],
+    					"fill": false,
+    					"borderColor": chartColors.green,
+    					"backgroundColor": chartColors.green}
+    				]
+            },
+            options: {
 				responsive: true,
 				title: {
 					display: true,
-					text: 'Chart.js Line Chart'
+					text: 'User Login'
 				},
 				tooltips: {
 					mode: 'index',
@@ -344,6 +166,13 @@ var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'A
 						scaleLabel: {
 							display: true,
 							labelString: 'Month'
+						},
+						distribution: 'series',
+						time: {
+						    unit: 'day',
+						    displayFormats: {
+                                quarter: 'YYYY-MM-DD'
+                            }
 						}
 					}],
 					yAxes: [{
@@ -355,13 +184,52 @@ var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'A
 					}]
 				}
 			}
-		};
-
-		window.onload = function() {
-			var ctx = document.getElementById('line-chart-report').getContext('2d');
-			window.myLine = new Chart(ctx, config);
-		};
+        }
+            var ctx = document.getElementById('line-chart-report').getContext('2d');
+			var appChart = new Chart(ctx, config);
 })
->>>>>>> origin/dev-2.0
+
+$('#date-range span').html(moment().subtract(7, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+
+            $('#date-range').daterangepicker({
+                format: 'MM/DD/YYYY',
+                startDate: moment().subtract(7, 'days'),
+                endDate: moment(),
+                dateLimit: {
+                    days: 60
+                },
+                showDropdowns: true,
+                showWeekNumbers: true,
+                timePicker: false,
+                timePickerIncrement: 1,
+                timePicker12Hour: true,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                opens: 'left',
+                drops: 'down',
+                buttonClasses: ['btn', 'btn-sm'],
+                applyClass: 'btn-success',
+                cancelClass: 'btn-secondary',
+                separator: ' to ',
+                locale: {
+                    applyLabel: 'Submit',
+                    cancelLabel: 'Cancel',
+                    fromLabel: 'From',
+                    toLabel: 'To',
+                    customRangeLabel: 'Custom',
+                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    firstDay: 1
+                }
+            }, function (start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+                $('#date-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            })
 </script>
 {% endblock %}
