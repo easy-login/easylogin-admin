@@ -97,7 +97,7 @@
     </div>
     {% for app in apps %}
     <div class="col-md-4">
-        <div class="card-box project-box p-b-0">
+        <div class="card-box project-box p-b-0"  style="word-wrap: break-word">
             <div class="dropdown pull-right">
                 <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
                     <i class="mdi mdi-dots-vertical"></i>
@@ -118,7 +118,7 @@
             <h4 class="mt-0 app-title"><a href="{% url 'app_detail' app.id %}" class="text-inverse">{{ app.name }}</a></h4>
             <p class="text-muted font-13 app-description">{{ app.description }}
             </p>
-            <div class="text-left m-t-20" style="word-wrap: break-word">
+            <div class="text-left m-t-20">
                 <p class="text-inverse font-13"><strong>Callback URIs :</strong>
                     <ul class="list-unstyled">
                     {% for uri in app.callback_uris_as_list %}
