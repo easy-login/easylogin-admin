@@ -68,17 +68,17 @@
 {% block content%}
 <div class="row p-t-40 card-box">
          <div class="col-md-2 mt-20">
-             <select class="form-control">
-                 <option>Login</option>
-                 <option>Register</option>
+             <select id="is-login" class="form-control">
+                 <option value="login">Login</option>
+                 <option value="register">Register</option>
              </select>
          </div>
          <div class="col-md-3">
-             <select class="form-control">
-                 <option>Total</option>
-                 <option>Line</option>
-                 <option>YahooJp</option>
-                 <option>Amazon</option>
+             <select id="provider-select" class="form-control">
+                 <option value="all">All</option>
+                 <option value="line">Line</option>
+                 <option value="yahoojp">YahooJp</option>
+                 <option value="amazon">Amazon</option>
              </select>
          </div>
         <div class="col-md-3"></div>
@@ -105,131 +105,142 @@
 <script src="{% static 'plugins/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
 <!--My js-->
 <script type="text/javascript">
-
 var chartColors = {
-	red: 'rgb(255, 99, 132)',
-	orange: 'rgb(255, 159, 64)',
-	yellow: 'rgb(255, 205, 86)',
-	green: 'rgb(75, 192, 192)',
-	blue: 'rgb(54, 162, 235)',
-	purple: 'rgb(153, 102, 255)',
-	grey: 'rgb(201, 203, 207)'
-};
-$(document).ready(function(){
-		var config = {
-            "type": "line",
-            "data": {
-    	            "labels": ["January", "February", "March", "April", "May", "June", "July"],
-    	            "datasets": [{
-    	                "label": "Total",
-    	                "data": [65, 70, 80, 81, 56, 79, 100],
-    					"fill": false,
-    					"borderColor": chartColors.blue,
-    					"backgroundColor": chartColors.blue},
-    					{
-    	                "label": "Amazone",
-    	                "data": [65, 59.23, 80, 81, 56, 55, 40],
-    					"fill": false,
-    					"borderColor": chartColors.orange,
-    					"backgroundColor": chartColors.orange},
-    					{
-    	                "label": "Yahoojp",
-    	                "data": [10, 59, 20, 41, 56, 80, 40],
-    					"fill": false,
-    					"borderColor": chartColors.purple,
-    					"backgroundColor": chartColors.purple},
-    					{
-    	                "label": "Line",
-    	                "data": [1, 59, 30, 81, 15, 33, 66],
-    					"fill": false,
-    					"borderColor": chartColors.green,
-    					"backgroundColor": chartColors.green}
-    				]
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+}
+
+function drawReportChart(data){
+var config = {
+        "type": "line",
+        "data": {
+            "datasets": data
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'User Login'
             },
-            options: {
-				responsive: true,
-				title: {
-					display: true,
-					text: 'User Login'
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-				},
-				hover: {
-					mode: 'nearest',
-					intersect: true
-				},
-				scales: {
-					xAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Month'
-						},
-						distribution: 'series',
-						time: {
-						    unit: 'day',
-						    displayFormats: {
-                                quarter: 'YYYY-MM-DD'
-                            }
-						}
-					}],
-					yAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Value'
-						}
-					}]
-				}
-			}
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    },
+                    distribution: 'series',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            quarter: 'YYYY-MM-DD'
+                        }
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }]
+            }
         }
-            var ctx = document.getElementById('line-chart-report').getContext('2d');
-			var appChart = new Chart(ctx, config);
+    }
+
+    var ctx = document.getElementById('line-chart-report').getContext('2d');
+    var appChart = new Chart(ctx, config);
+}
+var startDate = moment().format('YYYY-MM-DD');
+var endDate = moment().subtract(7, 'days').format('YYYY-MM-DD');
+function reloadChartData(){
+    var isLogin = $('#is-login').val();
+    var provider = $('#provider-select').val();
+
+    $.ajax({
+        url: '{% url 'report_app' app.id %}',
+        data: {
+            'is_login' : isLogin,
+            'provider' : provider,
+            'endDate' : endDate,
+            'startDate' : startDate,
+        },
+        type: 'get',
+        cache: false,
+        success: function(data){
+            //drawReportChart(data)
+            //$('#img-loading').hide()
+        },
+        error: function(message){
+            alert("Failed load chart data")
+            //$('#img-loading').hide()
+        }
+    })
+}
+
+$(document).ready(function() {
+
+    $('#is-login').change(function(){
+        reloadChartData()
+    })
+    $('#provider-select').change(function(){
+        reloadChartData()
+    })
+    $('#date-range span').html(moment().subtract(7, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+
+    $('#date-range').daterangepicker({
+        format: 'MM/DD/YYYY',
+        startDate: moment().subtract(7, 'days'),
+        endDate: moment(),
+        showDropdowns: true,
+        showWeekNumbers: true,
+        timePicker: false,
+        timePickerIncrement: 1,
+        timePicker12Hour: true,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'left',
+        drops: 'down',
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-success',
+        cancelClass: 'btn-secondary',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Submit',
+            cancelLabel: 'Cancel',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    }, function(start, end, label) {
+        console.log(start.toISOString(), end.toISOString(), label);
+        $('#date-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        startDate = start.format('YYYY-MM-DD');
+        endDate = end.format('YYYY-MM-DD');
+    })
+
 })
-
-$('#date-range span').html(moment().subtract(7, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
-
-            $('#date-range').daterangepicker({
-                format: 'MM/DD/YYYY',
-                startDate: moment().subtract(7, 'days'),
-                endDate: moment(),
-                dateLimit: {
-                    days: 60
-                },
-                showDropdowns: true,
-                showWeekNumbers: true,
-                timePicker: false,
-                timePickerIncrement: 1,
-                timePicker12Hour: true,
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                opens: 'left',
-                drops: 'down',
-                buttonClasses: ['btn', 'btn-sm'],
-                applyClass: 'btn-success',
-                cancelClass: 'btn-secondary',
-                separator: ' to ',
-                locale: {
-                    applyLabel: 'Submit',
-                    cancelLabel: 'Cancel',
-                    fromLabel: 'From',
-                    toLabel: 'To',
-                    customRangeLabel: 'Custom',
-                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                    firstDay: 1
-                }
-            }, function (start, end, label) {
-                console.log(start.toISOString(), end.toISOString(), label);
-                $('#date-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-            })
 </script>
 {% endblock %}
