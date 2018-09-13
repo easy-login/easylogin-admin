@@ -45,6 +45,8 @@ urlpatterns = [
 
     path('statistic_login/<int:app_id>/', views.statistic_login, name='statistic_login'),
 
+    path('report_app/<int:app_id>/', views.report_app, name='report_app'),
+
     path('delete_app/<int:app_id>/', views.delete_app, name='delete_app'),
 
     path('app/<int:app_id>/channels/', views.channel_list, name='channel_list'),

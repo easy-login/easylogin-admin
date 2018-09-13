@@ -23,17 +23,15 @@
 <nav class="navbar-custom">
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
         <li class="list-inline-item">
-            <div class="app-list-select">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
-                            data-toggle="dropdown" aria-expanded="false">{{ app.name }}
-                    </button>
-                    <div class="dropdown-menu app-navigation">
-                        <!-- item-->
-                        {% for option in apps %}
-                        <a href="{% url 'app_detail' option.id %}?tab_active=statistic" class="dropdown-item">{{ option.name }}</a>
-                        {% endfor %}
-                    </div>
+            <div class="dropdown app-list-select">
+                <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
+                        data-toggle="dropdown" aria-expanded="false">{{ app.name }}
+                </button>
+                <div class="dropdown-menu app-navigation">
+                    <!-- item-->
+                    {% for option in apps %}
+                    <a href="{% url 'app_detail' option.id %}?tab_active=statistic" class="dropdown-item">{{ option.name }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </li>
@@ -48,7 +46,7 @@
         <i class="fa fa-angle-down menu-narrow"></i>
     </a>
     <ul class="list-unstyled">
-        <li><a href="#">App Dashboard</a></li>
+        <li><a href="{% url 'report_app' app.id %}">App Dashboard</a></li>
         <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
         <li><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
         <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
@@ -89,7 +87,12 @@
     <div class="col-md-12">
         <div class="card-box">
             <div class="p-20">
-                <h5 class="text-danger font-600">App ID: <span class="badge badge-secondary"> <strong>{{ app.id }}</strong></span></h5>
+                <div class="form-group row">
+                    <label class="col-md-2"><h5 class="text-danger font-600">App ID:</h5></label>
+                    <div class="col-md-8">
+                        <h5><span class="badge badge-secondary"> <strong>{{ app.id }}</strong></span></h5>
+                    </div>
+                </div>
                 <form class="form-horizontal m-t-20" method="post" action="">
                     {% csrf_token %}
                     <div class="form-group row">

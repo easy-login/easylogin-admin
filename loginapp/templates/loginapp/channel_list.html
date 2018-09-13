@@ -23,7 +23,15 @@
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
         <li class="list-inline-item">
             <div class="create-channel-button">
-                <div class="dropdown">
+                <button data-toggle="modal" data-target="#add-channel-modal" type="button"
+                        class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5">
+                    <i class="mdi mdi-plus"></i> <span>Add Channel</span>
+                </button>
+            </div>
+        </li>
+        <li class="list-inline-item">
+            <div class="create-channel-button">
+                <div class="dropdown app-list-select">
                     <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
                             data-toggle="dropdown" aria-expanded="false">{{ app.name }}
                     </button>
@@ -34,14 +42,6 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
-        </li>
-        <li class="list-inline-item">
-            <div class="create-channel-button">
-                <button data-toggle="modal" data-target="#add-channel-modal" type="button"
-                        class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5">
-                    <i class="mdi mdi-plus"></i> <span>Add Channel</span>
-                </button>
             </div>
         </li>
     </ul>
@@ -55,7 +55,7 @@
         <i class="fa fa-angle-down menu-narrow"></i>
     </a>
     <ul class="list-unstyled">
-        <li><a href="#">App Dashboard</a></li>
+        <li><a href="{% url 'report_app' app.id %}">App Dashboard</a></li>
         <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
         <li><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
         <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>

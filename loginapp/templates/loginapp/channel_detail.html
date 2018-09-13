@@ -31,17 +31,15 @@
 <nav class="navbar-custom">
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
         <li class="list-inline-item">
-            <div class="channel-list-select">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
-                            data-toggle="dropdown" aria-expanded="false">{{ channel.provider }}
-                    </button>
-                    <div class="dropdown-menu">
-                        <!-- item-->
-                        {% for option in channels %}
-                        <a href="{% url 'channel_detail' app.id option.id %}" class="dropdown-item">{{ option.provider }}</a>
-                        {% endfor %}
-                    </div>
+            <div class="dropdown app-list-select ">
+                <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
+                        data-toggle="dropdown" aria-expanded="false">{{ channel.provider }}
+                </button>
+                <div class="dropdown-menu">
+                    <!-- item-->
+                    {% for option in channels %}
+                    <a href="{% url 'channel_detail' app.id option.id %}" class="dropdown-item">{{ option.provider }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </li>
@@ -56,7 +54,7 @@
         <i class="fa fa-angle-down menu-narrow"></i>
     </a>
     <ul class="list-unstyled sub-menu-app">
-        <li><a href="#">App Dashboard</a></li>
+        <li><a href="{% url 'report_app' app.id %}">App Dashboard</a></li>
         <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
         <li class="active"><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
         <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
