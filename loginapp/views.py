@@ -8,10 +8,11 @@ from django import forms
 from django.db import IntegrityError
 from django.db.models import Sum, Max
 from django.core.serializers.json import DjangoJSONEncoder
+from django.conf import settings
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey, getOrderValue
+from loginapp.utils import generateApiKey, getOrderValue, get_auth_report, init_mysql_connection, getChartColor
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
@@ -20,7 +21,6 @@ import json
 
 
 # Create your views here.
-
 def index(request):
     return render(request, 'loginapp/index.html')
 
@@ -200,7 +200,7 @@ def delete_app(request, app_id):
 def statistic_login(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     if request.GET.get('flag_loading'):
-        page_length = int(request.GET.get('length', 0))
+        page_length = int(request.GET.get('length', 10))
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
         order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
@@ -220,7 +220,8 @@ def statistic_login(request, app_id):
         providers = Provider.objects.all()
         data = []
         for id, profile in enumerate(profiles[start_page:start_page + page_length]):
-            row_data = [id + 1, profile['deleted'], profile['user_id'], profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
+            row_data = [id + 1, profile['deleted'], profile['user_id'],
+                        profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
             for provider in providers:
@@ -241,43 +242,46 @@ def statistic_login(request, app_id):
 @login_required
 def report_app(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
-    if request.GET.get('flag_loading'):
-        page_length = int(request.GET.get('length', 0))
-        start_page = int(request.GET.get('start', 0))
-        search_value = request.GET.get('search[value]')
-        order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
-        profiles = Profiles.objects.filter(app=app_id).values('user_id') \
-            .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
-                      providers=GroupConcat('provider')) \
-            .order_by(order_by)
+    if request.GET.get('chart_loading'):
+        isLogin = request.GET.get('is_login', '1')
+        provider = request.GET.get('provider', 'all')
+        startDate = request.GET.get('startDate', datetime.datetime
+                                    .strftime(datetime.datetime.today() - datetime.timedelta(days=7), '%Y-%m-%d'))
+        endDate = request.GET.get('endDate', datetime.datetime.strftime(datetime.datetime.today(), '%Y-%m-%d'))
 
-        records_total = len(profiles)
-        if search_value:
-            try:
-                profiles = profiles.filter(user_id=search_value)
-            except ValueError:
-                pass
-        records_filtered = len(profiles)
+        dbUser = settings.DATABASES.get('default').get('USER')
+        dbPassword = settings.DATABASES.get('default').get('PASSWORD')
+        dbDatabase = settings.DATABASES.get('default').get('NAME')
+        dbHost = settings.DATABASES.get('default').get('HOST')
 
-        providers = Provider.objects.all()
-        data = []
-        for id, profile in enumerate(profiles[start_page:start_page + page_length]):
-            row_data = [id + 1, profile['deleted'], profile['user_id'], profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
-                        profile['login_total']]
-            provider_split = profile['providers'].split(',')
-            for provider in providers:
-                if provider.id in provider_split:
-                    row_data.append(1)
-                else:
-                    row_data.append(0)
+        dataChart = get_auth_report(init_mysql_connection(user=dbUser, passwd=dbPassword, db=dbDatabase, host=dbHost),
+                                    app_id=app_id, from_dt=startDate, to_dt=endDate, is_login=int(isLogin))
+        datasets = []
+        labels = set()
+        maxy = 0
+        providerNames = {'total', 'line', 'yahoojp', 'amazon'}
+        if provider != 'all':
+            providerNames = {provider}
+            dataChart = {provider: dataChart.get(provider)}
+        for key in providerNames:
+            datasetPoint = {'label': key.capitalize(),
+                            'fill': False,
+                            'borderColor': getChartColor(key),
+                            'backgroundColor': getChartColor(key),
+                            }
+            dataPoint = []
+            for key1, value1 in dataChart.get(key).items():
+                if value1 > maxy:
+                    maxy = value1
+                dataPoint.append(value1)
+                labels.add(key1)
+            datasets.append(datasetPoint)
+            datasetPoint.update({'data': dataPoint})
+        dataChartJson = {'maxy': maxy, 'data': {'labels': sorted(list(labels)), 'datasets': datasets}}
 
-            data.append(row_data)
-        json_data_tabe = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
-        return HttpResponse(json.dumps(json_data_tabe, cls=DjangoJSONEncoder), content_type='application/json')
+        return HttpResponse(json.dumps(dataChartJson), content_type='application/json')
     else:
-        apps = App.objects.all()
-        providers = Provider.objects.all()
-        return render(request, 'loginapp/report_app.html', {'apps': apps, 'app': app, 'providers': providers})
+        return render(request, 'loginapp/report_app.html', {'app': app})
 
 
 @login_required
@@ -290,7 +294,8 @@ def channel_list(request, app_id):
     channel_form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/channel_list.html',
-                  {'app': app, 'apps': apps, 'providers': providers, 'channels': channels, 'channel_form': channel_form})
+                  {'app': app, 'apps': apps, 'providers': providers, 'channels': channels,
+                   'channel_form': channel_form})
 
 
 @login_required

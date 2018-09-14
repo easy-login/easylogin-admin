@@ -69,8 +69,8 @@
 <div class="row p-t-40 card-box">
          <div class="col-md-2 mt-20">
              <select id="is-login" class="form-control">
-                 <option value="login">Login</option>
-                 <option value="register">Register</option>
+                 <option value="1">Login</option>
+                 <option value="0">Register</option>
              </select>
          </div>
          <div class="col-md-3">
@@ -115,12 +115,12 @@ var chartColors = {
     grey: 'rgb(201, 203, 207)'
 }
 
-function drawReportChart(data){
+var appChart;
+
+function drawReportChart(data, maxy){
 var config = {
         "type": "line",
-        "data": {
-            "datasets": data
-        },
+        "data": data,
         options: {
             responsive: true,
             title: {
@@ -140,17 +140,13 @@ var config = {
                     display: true,
                     scaleLabel: {
                         display: true,
-                        labelString: 'Month'
+                        labelString: 'Time'
                     },
-                    distribution: 'series',
-                    time: {
-                        unit: 'day',
-                        displayFormats: {
-                            quarter: 'YYYY-MM-DD'
-                        }
-                    }
                 }],
                 yAxes: [{
+                    ticks: {
+                        max: maxy + 1
+                    },
                     display: true,
                     scaleLabel: {
                         display: true,
@@ -162,10 +158,10 @@ var config = {
     }
 
     var ctx = document.getElementById('line-chart-report').getContext('2d');
-    var appChart = new Chart(ctx, config);
+    appChart = new Chart(ctx, config);
 }
-var startDate = moment().format('YYYY-MM-DD');
-var endDate = moment().subtract(7, 'days').format('YYYY-MM-DD');
+var startDate = moment().subtract(7, 'days').format('YYYY-MM-DD');
+var endDate = moment().format('YYYY-MM-DD');
 function reloadChartData(){
     var isLogin = $('#is-login').val();
     var provider = $('#provider-select').val();
@@ -173,6 +169,7 @@ function reloadChartData(){
     $.ajax({
         url: '{% url 'report_app' app.id %}',
         data: {
+            'chart_loading': 'true',
             'is_login' : isLogin,
             'provider' : provider,
             'endDate' : endDate,
@@ -181,7 +178,10 @@ function reloadChartData(){
         type: 'get',
         cache: false,
         success: function(data){
-            //drawReportChart(data)
+            if (appChart !== undefined){
+                appChart.destroy()
+            }
+            drawReportChart(data.data, data.maxy)
             //$('#img-loading').hide()
         },
         error: function(message){
@@ -239,8 +239,11 @@ $(document).ready(function() {
         $('#date-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
+
+        reloadChartData();
     })
 
+    reloadChartData();
 })
 </script>
 {% endblock %}

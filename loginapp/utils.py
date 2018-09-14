@@ -44,16 +44,27 @@ def getOrderValue(column, value):
     return '-' + column_name if value == 'desc' else column_name
 
 
+def getChartColor(provider):
+    color_dic = {
+        'total': '#188ae2',
+        'line': '#10c469',
+        'yahoojp': '#ef5350',
+        'amazon': '#f9c851',
+    }
+    return color_dic.get(provider)
+
+
 def init_mysql_connection(host, user, passwd, db):
     return MySQLdb.connect(host, user, passwd, db)
 
 
 def get_auth_report(mysql_con, app_id, from_dt=None, to_dt=None, is_login=1):
+    print (str(app_id) + ":" + from_dt + ":" + to_dt + ":" + str(is_login))
     cursor = mysql_con.cursor()
     _from = datetime.strptime(from_dt, '%Y-%m-%d')
     _to = datetime.strptime(to_dt, '%Y-%m-%d')
 
-    results = dict()
+    results = {'line': {}, 'yahoojp': {}, 'amazon': {}, 'total': {}}
     for provider in ['line', 'yahoojp', 'amazon', 'total']:
         results[provider] = {}
 
@@ -82,5 +93,5 @@ def get_auth_report(mysql_con, app_id, from_dt=None, to_dt=None, is_login=1):
             provider = row[0]
             results[provider][dt_str] = int(row[2])
             results['total'][dt_str] += int(row[2])
-
+    print (results)
     return results
