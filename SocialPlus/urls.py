@@ -19,6 +19,5 @@ from django.urls import include, path
 handler404="loginapp.views.error404_page"
 
 urlpatterns = [
-	path('sociallogin/', include('loginapp.urls')),
-    path('admin/', admin.site.urls),
+	path('', include('loginapp.urls')),
 ]

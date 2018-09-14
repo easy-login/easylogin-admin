@@ -1,0 +1,303 @@
+{% extends 'loginapp/base.html' %}
+<!-- Page title -->
+{% load static %}
+{% load widget_tweaks %}
+{% load tz %}
+{% block css %}
+<!-- Sweet Alert css -->
+        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block topbar%}
+<ul class="nav navbar-nav list-inline navbar-left">
+    <li class="list-inline-item">
+        <button class="button-menu-mobile open-left">
+            <i class="mdi mdi-menu"></i>
+        </button>
+    </li>
+    <li class="list-inline-item">
+        <h4 class="page-title">Channels</h4>
+    </li>
+</ul>
+
+<nav class="navbar-custom">
+    <ul class="list-unstyled topbar-right-menu float-right mb-0">
+       <li class="list-inline-item">
+            <div class="create-channel-button">
+                <button data-toggle="modal" data-target="#add-channel-modal" type="button"
+                        class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5">
+                        <i class="mdi mdi-plus"></i> <span>Add Channel</span>
+                </button>
+            </div>
+        </li>
+         <li class="list-inline-item">
+            <div class="create-channel-button">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
+                            data-toggle="dropdown" aria-expanded="false">{{ app.name }}
+                    </button>
+                    <div class="dropdown-menu app-navigation">
+                        <!-- item-->
+                        {% for option in apps %}
+                        <a href="{% url 'channel_list' option.id %}?tab_active=statistic" class="dropdown-item">{{ option.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+
+{% block sidemenu %}
+<li class="has_sub">
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-square"></i><span style="text-transform: capitalize;"> {{ app.name }} </span>
+        <i class="fa fa-angle-down menu-narrow"></i>
+    </a>
+    <ul class="list-unstyled">
+        <li><a href="#">App Dashboard</a></li>
+        <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
+        <li><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
+        <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
+    </ul>
+</li>
+
+<li>
+    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
+    </a>
+</li>
+
+{% endblock %}
+
+{% block content%}
+<div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% for channel in channels %}
+    <div class="col-md-4">
+        <div class="card-box project-box p-b-0">
+            <div class="dropdown pull-right">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown"
+                   aria-expanded="false">
+                    <i class="mdi mdi-dots-vertical"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <!-- item-->
+                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item">Edit</a>
+                    <!-- item-->
+                    <form method="POST" action="{% url 'delete_channel' app.id channel.id %}">
+                        {% csrf_token %}
+                    <button  class="dropdown-item" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
+                    </form>
+                    <!-- item-->
+                </div>
+            </div>
+            <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="text-inverse">{{ channel.provider }}</a></h4>
+            <div class="text-left">
+                <p class="text-muted font-13"><strong>Client ID :</strong> <span class="m-l-15">{{ channel.client_id }}</span></p>
+
+                <p class="text-muted font-13"><strong>Client Secret :</strong> <span class="m-l-15">{{ channel.client_secret }}</span>
+                </p>
+            </div>
+            <hr>
+            <ul class="text-primary list-inline m-b-0">
+                <li class="list-inline-item">
+                    <h5 class="m-b-5">Create Time</h5>
+                    <p class="font-10"> {{ channel.created_at|date:'N j,Y' }}
+                        <!--<small class="text-muted">{{ channel.created_at|date:'P' }}</small>-->
+                    </p>
+                </li>
+
+                <li class="list-inline-item">
+                    <h5 class="m-b-5">Last Modify</h5>
+                    <p class="font-10"> {{ channel.modified_at|date:'N j,Y' }}
+                        <!--<small class="text-muted">{{ channel.modified_at|date:'P' }}</small>-->
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<!--Add channel modal-->
+<div id="add-channel-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addChannelModal"
+         style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addChannelModal">New Channel</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <form class="form-horizontal m-t-20" method="post" action="{% url 'add_channel' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                {% render_field channel_form.app_id class='form-control' value=app.id %}
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
+                            <div class="col-md-10">
+                                {% render_field channel_form.provider class='form-control' %}
+                                {% if channel_form.provider.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.provider.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
+                            <div class="col-md-10">
+                                {% render_field channel_form.client_id class='form-control' placeholder='Client ID' %}
+                                {% if channel_form.client_id.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.client_id.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
+                            <div class="col-md-10">
+                                {% render_field channel_form.client_secret class='form-control' placeholder='Client Secret' %}
+                                {% if channel_form.client_secret.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in channel_form.client_secret.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label for="id_permission" class="col-md-2 col-form-label">Permission</label>
+                            <div class="col-md-10">
+                                <div id="checkbox-error"></div>
+                                {% for provider in providers %}
+                                {% with permissions_required=provider.permissions_required_as_list %}
+                                <div class="provider-permission {% if not permissions_required %} checkbox-handler-error {% endif %}" id="id-{{ provider.id }}" style="display:none;">
+                                    {% for permission in provider.permissions_as_list %}
+                                    {% if permission not in permissions_required %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ provider.id }}-{{ permission }}" name="permission"
+                                               type="checkbox" value="{{ permission }}" required disabled
+                                               data-parsley-multiple="permission"
+                                               data-parsley-errors-container="#checkbox-error"
+                                               data-parsley-error-message="Permission value is required."
+                                               data-parsley-class-handler=".checkbox-handler-error">
+                                        <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endwith %}
+                                <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display:none;">
+                                    {% for permission in provider.permissions_required_as_list %}
+                                    <div class="checkbox">
+                                        <input class="permission-required" id="{{ provider.id }}-{{ permission }}" name="permission"
+                                               type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;">
+                                        <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Add Channel</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+<!-- end row -->
+{% endblock %}
+
+{% block js %}
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('form').parsley({excluded: '[disabled]'});
+    $('#id-'+ $('#id_provider').val()).show();
+    $('#id-'+ $('#id_provider').val()+'-required').show();
+    $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+    $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
+    $('#id_provider').change(function(){
+        $('.provider-permission').hide();
+        $('.provider-permission-required').hide();
+
+        $('.provider-permission input').prop("checked", false)
+        $('.provider-permission-required input').prop("checked", false)
+        $('.provider-permission input').prop('disabled', true)
+        $('.provider-permission-required input').prop('disabled', true)
+
+        if ($('#id-'+ $('#id_provider').val()).attr('class').includes('checkbox-handler-error')){
+            $('#checkbox-error').show();
+        }
+        else{
+            $('#checkbox-error').hide();
+        }
+        $('#id-'+ $('#id_provider').val()).show();
+        $('#id-'+ $('#id_provider').val()+'-required').show();
+        $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
+        $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
+        $('#id-'+ $('#id_provider').val()+'-required input').prop('checked', true);
+    })
+});
+
+function deleteConfirm(event){
+    event.preventDefault();
+    var form = event.target.form;
+    swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d57171',
+                cancelButtonColor: '#4fa7f3',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function () {
+            form.submit();
+                swal(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                );
+            });
+}
+</script>
+{% endblock %}

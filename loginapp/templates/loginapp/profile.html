@@ -34,24 +34,20 @@
 
 
 {% block sidemenu %}
-<li>
-    <a href="{% url 'dashboard' %}" class="waves-effect"><i class="mdi mdi-web"></i><span> Your Apps </span>
+<li class="has_sub">
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-account"></i><span>Your Profile</span>
+         <i class="fa fa-angle-down menu-narrow"></i>
     </a>
+    <ul class="list-unstyled">
+        <li>
+            <a href="{% url 'profile' %}">Update Profile</a>
+        </li>
+        <li>
+            <a href="{% url 'change_password' %}">Change Password</a>
+        </li>
+    </ul>
 </li>
-
-<li>
-    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
-    </a>
-</li>
-
-<li>
-    <a href="{% url 'change_password' %}" class="waves-effect"><i class="mdi mdi-view-dashboard"></i>
-        <span> Change Password </span> </a>
-</li>
-
 {% endblock %}
-
-
 {% block content%}
         <div class="row card-box profile-info-name">
             <div class="col-md-3">

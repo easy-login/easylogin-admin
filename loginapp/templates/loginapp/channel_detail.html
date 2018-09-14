@@ -20,7 +20,7 @@
     </li>
     <li class="list-inline-item">
         <div class="create-app-button">
-            <a href="{% url 'app_detail' app.id %}"
+            <a href="{% url 'channel_list' app.id %}"
                class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
                     class="mdi mdi-keyboard-backspace"></i> <span>Back</span>
             </a>
@@ -51,11 +51,17 @@
 
 
 {% block sidemenu %}
-<li>
-    <a href="{% url 'dashboard' %}" class="waves-effect"><i class="mdi mdi-web"></i><span> Your Apps </span>
+<li class="has_sub">
+    <a href="javascript:void(0);" class="waves-effect active"><i class="mdi mdi-square"></i><span style="text-transform: capitalize;"> {{ app.name }} </span>
+        <i class="fa fa-angle-down menu-narrow"></i>
     </a>
+    <ul class="list-unstyled sub-menu-app">
+        <li><a href="#">App Dashboard</a></li>
+        <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
+        <li class="active"><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
+        <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
+    </ul>
 </li>
-
 <li>
     <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
     </a>
@@ -247,6 +253,7 @@ $(document).ready(function() {
         $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
         $('#id-'+ $('#id_provider').val()+'-required input').prop('checked', true);
     })
+    $('.sub-menu-app').show('slow');
 });
 
 function getApiKey(){
