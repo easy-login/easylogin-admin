@@ -91,6 +91,20 @@
              <canvas id="line-chart-report"></canvas>
     <div class="clearfix"></div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="header-title m-t-0 m-b-30">Total Login</h4>
+            <canvas id="pie-login-chart-report"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="header-title m-t-0 m-b-30">Total Register</h4>
+            <canvas id="pie-register-chart-report"></canvas>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
@@ -125,7 +139,7 @@ var config = {
             responsive: true,
             title: {
                 display: true,
-                text: 'User Login'
+                text: $('#is-login').val() == '1'? 'User Login':'User Register'
             },
             tooltips: {
                 mode: 'index',
@@ -244,6 +258,68 @@ $(document).ready(function() {
     })
 
     reloadChartData();
+
+    //pie login chart
+    var configPieLogin = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+					{% for value in total_login %}
+						{{ value.1 }},
+					{% endfor %}
+					],
+					backgroundColor: [
+						'#f9c851',
+						'#10c469',
+						'#ef5350',
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+				{% for value in total_login %}
+						'{{ value.0 }}',
+					{% endfor %}
+				]
+			},
+			options: {
+				responsive: true
+			}
+		};
+
+		var ctx = document.getElementById('pie-login-chart-report').getContext('2d');
+		new Chart(ctx, configPieLogin);
+
+	//pie register chart
+    var configPieLogin = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+					{% for value in total_register %}
+						{{ value.1 }},
+					{% endfor %}
+					],
+					backgroundColor: [
+						'#f9c851',
+						'#10c469',
+						'#ef5350',
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+				{% for value in total_register %}
+						'{{ value.0 }}',
+					{% endfor %}
+				]
+			},
+			options: {
+				responsive: true
+			}
+		};
+
+		var ctx = document.getElementById('pie-register-chart-report').getContext('2d');
+		new Chart(ctx, configPieLogin);
 })
 </script>
 {% endblock %}
