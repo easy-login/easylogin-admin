@@ -58,14 +58,25 @@ def init_mysql_connection(host, user, passwd, db):
     return MySQLdb.connect(host, user, passwd, db)
 
 
-def get_total_auth_report(db, app_id, is_login):
+def get_total_auth_report(db, app_id):
     cursor = db.cursor()
     cursor.execute("""
-        SELECT provider, count(_id) 
+        SELECT is_login, count(id) 
         FROM auth_logs 
-        WHERE app_id = %s and status = 'succeeded' and is_login = %s
-        GROUP BY provider""", (app_id, is_login))
-    rows = cursor.fetchmany(1000)
+        WHERE app_id = %s and status = 'succeeded' 
+        GROUP BY is_login""", (app_id,))
+    rows = cursor.fetchmany(500)
+    return [('Login' if int(row[0]) else 'Register', int(row[1])) if row else (None, None) for row in rows]
+
+
+def get_total_provider_report(db, app_id):
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT provider, count(id) 
+        FROM auth_logs 
+        WHERE app_id = %s and status = 'succeeded'
+        GROUP BY provider""", (app_id,))
+    rows = cursor.fetchmany(500)
     return [(row[0], row[1]) if row else (None, None) for row in rows]
 
 

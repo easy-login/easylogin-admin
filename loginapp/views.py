@@ -12,7 +12,8 @@ from django.conf import settings
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, init_mysql_connection, getChartColor, get_total_auth_report
+from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, \
+    init_mysql_connection, getChartColor, get_total_auth_report, get_total_provider_report
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
@@ -285,10 +286,14 @@ def report_app(request, app_id):
 
         return HttpResponse(json.dumps(dataChartJson), content_type='application/json')
     else:
-        total_data_login = get_total_auth_report(db=db, app_id=app_id, is_login=1)
-        total_data_register = get_total_auth_report(db=db, app_id=app_id, is_login=0)
+        total_data_auth = get_total_auth_report(db=db, app_id=app_id)
+        total_data_provider = get_total_provider_report(db=db, app_id=app_id)
         apps = App.objects.all()
-        return render(request, 'loginapp/report_app.html', {'app': app, 'apps': apps, 'total_login': total_data_login, 'total_register': total_data_register})
+        return render(request, 'loginapp/report_app.html', {
+            'app': app, 'apps': apps,
+            'total_data_auth': total_data_auth,
+            'total_data_provider': total_data_provider
+        })
 
 
 @login_required
