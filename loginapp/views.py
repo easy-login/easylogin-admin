@@ -205,9 +205,9 @@ def statistic_login(request, app_id):
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
         order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
-        profiles = Profiles.objects.filter(app=app_id).values('user_id') \
+        profiles = Profiles.objects.filter(app=app_id).values('user_pk') \
             .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
-                      providers=GroupConcat('provider')) \
+                      providers=GroupConcat('provider'), id=Max('id')) \
             .order_by(order_by)
 
         records_total = len(profiles)
@@ -221,7 +221,8 @@ def statistic_login(request, app_id):
         providers = Provider.objects.all()
         data = []
         for id, profile in enumerate(profiles[start_page:start_page + page_length]):
-            row_data = [id + 1, profile['deleted'], profile['user_id'],
+            user_pk = profile['user_pk'] or profile['id']
+            row_data = [id + 1, profile['deleted'], user_pk,
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
