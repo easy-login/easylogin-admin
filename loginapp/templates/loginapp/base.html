@@ -70,9 +70,12 @@
                     </li>
 
                     <li class="list-inline-item">
-                        <a href="{% url 'logout' %}" class="text-custom">
+                        <a class="text-custom" tabindex="0" data-trigger="focus" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a href='{% url 'logout' %}'>Logout</a>">
                             <i class="mdi mdi-power"></i>
                         </a>
+                        <script>
+
+                        </script>
                     </li>
                 </ul>
             </div>
