@@ -205,9 +205,9 @@ def statistic_login(request, app_id):
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
         order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
-        profiles = Profiles.objects.filter(app=app_id).values('user_pk') \
+        profiles = Profiles.objects.filter(app=app_id).values('alias', 'user_pk') \
             .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
-                      providers=GroupConcat('provider'), id=Max('id')) \
+                      providers=GroupConcat('provider')) \
             .order_by(order_by)
 
         records_total = len(profiles)
@@ -221,8 +221,9 @@ def statistic_login(request, app_id):
         providers = Provider.objects.all()
         data = []
         for id, profile in enumerate(profiles[start_page:start_page + page_length]):
-            user_pk = profile['user_pk'] or profile['id']
-            row_data = [id + 1, profile['deleted'], user_pk,
+            row_data = [id + 1, profile['deleted'],
+                        profile['user_pk'],
+                        str(profile['alias']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
@@ -233,8 +234,8 @@ def statistic_login(request, app_id):
                     row_data.append(0)
 
             data.append(row_data)
-        json_data_tabe = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
-        return HttpResponse(json.dumps(json_data_tabe, cls=DjangoJSONEncoder), content_type='application/json')
+        json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
+        return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         apps = App.objects.all()
         providers = Provider.objects.all()
