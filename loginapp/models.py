@@ -145,6 +145,7 @@ class Profiles(models.Model):
     class Meta:
         db_table = "social_profiles"
 
+
 class GroupConcat(models.Aggregate):
     function = 'GROUP_CONCAT'
     template = '%(function)s(%(distinct)s%(expressions)s%(ordering)s%(separator)s)'

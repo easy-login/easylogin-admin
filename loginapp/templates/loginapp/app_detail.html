@@ -122,8 +122,8 @@
                             {% endif %}
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-pink btn-block waves-effect waves-light" type="button"
-                                    onclick="getApiKey()">
+                            <button class="btn btn-danger btn-block waves-effect waves-light" type="button"
+                                    onclick="generateKeyConfirm()">
                                 Generate Key
                             </button>
                         </div>
@@ -294,6 +294,24 @@ function deleteConfirm(event){
                     'Your file has been deleted.',
                     'success'
                 );
+            });
+
+}
+function generateKeyConfirm(event){
+    //event.preventDefault();
+    swal({
+                text: 'Do you want to generate a new key?',
+                type: 'info',
+                showCancelButton: true,
+                cancelButtonColor: '#4fa7f3',
+                confirmButtonColor: '#98a6ad',
+                reverseButtons: true,
+                confirmButtonText: 'Yes',
+                onOpen: function(ele) {
+                    $('.swal2-cancel').focus()
+                }
+            }).then(function () {
+                getApiKey()
             });
 
 }
