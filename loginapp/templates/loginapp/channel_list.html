@@ -287,9 +287,13 @@ function deleteConfirm(event){
                 text: "You won't be able to revert this!",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d57171',
                 cancelButtonColor: '#4fa7f3',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonColor: '#98a6ad',
+                reverseButtons: true,
+                confirmButtonText: 'Yes, delete it!',
+                onOpen: function(ele) {
+                    $('.swal2-cancel').focus()
+                }
             }).then(function () {
             form.submit();
                 swal(
