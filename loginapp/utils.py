@@ -78,8 +78,10 @@ def get_auth_report_per_provider(db, app_id, from_dt=None, to_dt=None, is_login=
     for provider in ['line', 'yahoojp', 'amazon', 'total']:
         results[provider] = {}
 
+    labels = set()
     while _from <= _to:
         dt_str = _from.strftime('%Y-%m-%d')
+        labels.add(dt_str)
         for provider in ['line', 'yahoojp', 'amazon', 'total']:
             results[provider][dt_str] = 0
         _from += timedelta(days=1)
@@ -103,4 +105,6 @@ def get_auth_report_per_provider(db, app_id, from_dt=None, to_dt=None, is_login=
             provider = row[0]
             results[provider][dt_str] = int(row[2])
             results['total'][dt_str] += int(row[2])
+    results['labels'] = labels
     return results
+

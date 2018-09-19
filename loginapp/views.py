@@ -12,7 +12,8 @@ from django.conf import settings
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, init_mysql_connection, getChartColor, get_total_auth_report
+from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, init_mysql_connection, \
+    getChartColor, get_total_auth_report
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
@@ -260,12 +261,14 @@ def report_app(request, app_id):
                                                  from_dt=startDate,
                                                  to_dt=endDate,
                                                  is_login=int(isLogin))
+        print(dataChart)
         datasets = []
-        labels = set()
+        labels = sorted(list(dataChart.get('labels')))
         maxy = 0
-        providerNames = {'total', 'line', 'yahoojp', 'amazon'}
+        check_zero = True
+        providerNames = ['total', 'amazon', 'line', 'yahoojp']
         if provider != 'all':
-            providerNames = {provider}
+            providerNames = [provider]
             dataChart = {provider: dataChart.get(provider)}
         for key in providerNames:
             datasetPoint = {'label': key.capitalize(),
@@ -274,21 +277,26 @@ def report_app(request, app_id):
                             'backgroundColor': getChartColor(key),
                             }
             dataPoint = []
-            for key1, value1 in dataChart.get(key).items():
+            for key1 in labels:
+                value1 = dataChart.get(key).get(key1)
+                if value1 > 0:
+                    check_zero = False
                 if value1 > maxy:
                     maxy = value1
                 dataPoint.append(value1)
-                labels.add(key1)
             datasets.append(datasetPoint)
             datasetPoint.update({'data': dataPoint})
-        dataChartJson = {'maxy': maxy, 'data': {'labels': sorted(list(labels)), 'datasets': datasets}}
+        if check_zero:
+            maxy = 999
+        dataChartJson = {'maxy': maxy, 'data': {'labels': labels, 'datasets': datasets}}
 
         return HttpResponse(json.dumps(dataChartJson), content_type='application/json')
     else:
         total_data_login = get_total_auth_report(db=db, app_id=app_id, is_login=1)
         total_data_register = get_total_auth_report(db=db, app_id=app_id, is_login=0)
         apps = App.objects.all()
-        return render(request, 'loginapp/report_app.html', {'app': app, 'apps': apps, 'total_login': total_data_login, 'total_register': total_data_register})
+        return render(request, 'loginapp/report_app.html', {'app': app, 'apps': apps, 'total_login': total_data_login,
+                                                            'total_register': total_data_register})
 
 
 @login_required
