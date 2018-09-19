@@ -97,7 +97,7 @@
     </div>
     {% for app in apps %}
     <div class="col-md-4">
-        <div class="card-box project-box p-b-0"  style="word-wrap: break-word">
+        <div class="card-box project-box p-b-0" style="word-wrap: break-word">
             <div class="dropdown pull-right">
                 <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
                     <i class="mdi mdi-dots-vertical"></i>
@@ -141,17 +141,17 @@
                 </li>
             </ul>
             <hr>
-            <ul class="text-primary list-inline m-b-0">
+            <ul class="text-inverse list-inline m-b-0">
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Create Time</h5>
-                    <p> {{ app.created_at|date:'N j,Y' }}
+                    <p class="text-primary"> {{ app.created_at|date:'N j,Y' }}
                         <small class="text-muted">{{ app.created_at|date:'P' }}</small>
                     </p>
                 </li>
 
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Last Modify</h5>
-                    <p> {{ app.modified_at|date:'N j,Y' }}
+                    <p class="text-primary"> {{ app.modified_at|date:'N j,Y' }}
                         <small class="text-muted">{{ app.modified_at|date:'P' }}</small>
                     </p>
                 </li>

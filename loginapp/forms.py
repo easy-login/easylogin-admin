@@ -107,7 +107,6 @@ class ProviderModelChoiceField(ModelChoiceField):
 
 
 class ChannelForm(ModelForm):
-    CHOICES = (('label1', 'value1'), ('label2', 'value2'), ('label3', 'value3'))
     provider = ProviderModelChoiceField(Provider.objects.all(), to_field_name='id', required=True, empty_label=None)
     client_id = forms.CharField(max_length=255, required=True)
     client_secret = forms.CharField(max_length=255, required=True)
