@@ -75,7 +75,7 @@ def register(request):
 @login_required
 def dashboard(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
-    apps = App.objects.all().filter(owner=request.user.id).order_by(order_by)
+    apps = App.objects.filter(owner=request.user.id).order_by(order_by)
     if request.GET.get("search"):
         apps = apps.filter(name__contains=request.GET.get("search"))
     return render(request, 'loginapp/app_list.html', {'apps': apps})
@@ -237,7 +237,7 @@ def statistic_login(request, app_id):
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
-        apps = App.objects.all()
+        apps = App.objects.all(owner=request.user.id)
         providers = Provider.objects.all()
         return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
 
@@ -296,7 +296,7 @@ def report_app(request, app_id):
     else:
         total_data_auth = get_total_auth_report(db=db, app_id=app_id)
         total_data_provider = get_total_provider_report(db=db, app_id=app_id)
-        apps = App.objects.all()
+        apps = App.objects.filter(owner=request.user.id)
 
         return render(request, 'loginapp/report_app.html', {
             'app': app, 'apps': apps,
@@ -309,7 +309,7 @@ def report_app(request, app_id):
 def channel_list(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     channels = Channel.objects.filter(app=app_id).order_by('-created_at')
-    apps = App.objects.all()
+    apps = App.objects.filter(owner=request.user.id)
     providers = Provider.objects.all()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
