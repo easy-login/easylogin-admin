@@ -12,8 +12,8 @@ from django.conf import settings
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, init_mysql_connection, \
-    getChartColor, get_total_auth_report
+from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, \
+    init_mysql_connection, getChartColor, get_total_auth_report, get_total_provider_report
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
@@ -205,7 +205,7 @@ def statistic_login(request, app_id):
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
         order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
-        profiles = Profiles.objects.filter(app=app_id).values('user_id') \
+        profiles = Profiles.objects.filter(app=app_id).values('alias', 'user_pk') \
             .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
                       providers=GroupConcat('provider')) \
             .order_by(order_by)
@@ -221,19 +221,21 @@ def statistic_login(request, app_id):
         providers = Provider.objects.all()
         data = []
         for id, profile in enumerate(profiles[start_page:start_page + page_length]):
-            row_data = [id + 1, profile['deleted'], profile['user_id'],
+            row_data = [id + 1, profile['deleted'],
+                        profile['user_pk'],
+                        str(profile['alias']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
             for provider in providers:
-                if provider.id in provider_split:
+                if provider.name in provider_split:
                     row_data.append(1)
                 else:
                     row_data.append(0)
 
             data.append(row_data)
-        json_data_tabe = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
-        return HttpResponse(json.dumps(json_data_tabe, cls=DjangoJSONEncoder), content_type='application/json')
+        json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
+        return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         apps = App.objects.all()
         providers = Provider.objects.all()
@@ -292,11 +294,15 @@ def report_app(request, app_id):
 
         return HttpResponse(json.dumps(dataChartJson), content_type='application/json')
     else:
-        total_data_login = get_total_auth_report(db=db, app_id=app_id, is_login=1)
-        total_data_register = get_total_auth_report(db=db, app_id=app_id, is_login=0)
+        total_data_auth = get_total_auth_report(db=db, app_id=app_id)
+        total_data_provider = get_total_provider_report(db=db, app_id=app_id)
         apps = App.objects.all()
-        return render(request, 'loginapp/report_app.html', {'app': app, 'apps': apps, 'total_login': total_data_login,
-                                                            'total_register': total_data_register})
+
+        return render(request, 'loginapp/report_app.html', {
+            'app': app, 'apps': apps,
+            'total_data_auth': total_data_auth,
+            'total_data_provider': total_data_provider
+        })
 
 
 @login_required
