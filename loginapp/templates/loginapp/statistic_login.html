@@ -109,7 +109,7 @@ function loadInitialStatisticTable(){
     if ($.fn.DataTable.isDataTable('#statistic-table')) return;
 
     $('#statistic-table').DataTable({
-        'lengthMenu': [5,10,25,50,100],
+        'lengthMenu': [25,50,100],
         'autoWidth': false,
         'processing': true,
         'serverSide': true,
