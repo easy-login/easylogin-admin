@@ -104,8 +104,6 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a href="{% url 'report_app' app.id %}" class="dropdown-item">Dashboard</a>
-                    <!-- item-->
                     <a href="{% url 'app_detail' app.id %}" class="dropdown-item">Edit</a>
                     <!-- item-->
                     <form method="POST" action="{% url 'delete_app' app.id %}">

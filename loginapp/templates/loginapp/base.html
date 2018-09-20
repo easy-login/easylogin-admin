@@ -65,13 +65,13 @@
                 <ul class="list-inline">
                     <li class="list-inline-item">
                         <a href="{% url 'profile' %}">
-                            <i class="mdi mdi-settings"></i>
+                            <i class="mdi mdi-36px mdi-settings"></i>
                         </a>
                     </li>
 
                     <li class="list-inline-item">
-                        <a class="text-custom" tabindex="0" data-trigger="focus" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a href='{% url 'logout' %}'>Logout</a>">
-                            <i class="mdi mdi-power"></i>
+                        <a class="text-custom" tabindex="0" data-trigger="focus" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a href='' onclick='return logoutConfirm(event)'>Logout</a>">
+                            <i class="mdi mdi-36px mdi-power"></i>
                         </a>
                         <script>
 
@@ -146,6 +146,26 @@
 <!-- App js -->
 <script src="{% static 'js/jquery.core.js' %}"></script>
 <script src="{% static 'js/jquery.app.js' %}"></script>
+
+<script type="text/javascript">
+    function logoutConfirm(event){
+        event.preventDefault();
+        swal({
+                text: 'Are you sure you want to logout?',
+                type: 'info',
+                showCancelButton: true,
+                cancelButtonColor: '#4fa7f3',
+                confirmButtonColor: '#ff5b5b',
+                reverseButtons: true,
+                confirmButtonText: 'Yes',
+                onOpen: function(ele) {
+                    $('.swal2-cancel').focus()
+                }
+            }).then(function () {
+                 window.location.href = {% url 'logout' %}
+            });
+    }
+</script>
 {% block js%}
 {% endblock %}
 </body>

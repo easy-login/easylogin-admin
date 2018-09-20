@@ -34,7 +34,7 @@ class User(AbstractUser):
 
 
 class Provider(models.Model):
-    id = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30)
     version = models.CharField(max_length=7)
     permissions_required = models.CharField(max_length=1023)
     permissions = models.CharField(max_length=1023)
