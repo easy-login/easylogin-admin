@@ -108,6 +108,7 @@ class Channel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
     provider = models.CharField(max_length=30)
+    api_version = models.CharField(max_length=7)
     client_id = models.CharField(max_length=255)
     client_secret = models.CharField(max_length=255)
     permissions = models.CharField(max_length=1023)
