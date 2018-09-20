@@ -228,7 +228,7 @@ def statistic_login(request, app_id):
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
             for provider in providers:
-                if provider.id in provider_split:
+                if provider.name in provider_split:
                     row_data.append(1)
                 else:
                     row_data.append(0)
