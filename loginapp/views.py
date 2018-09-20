@@ -12,7 +12,8 @@ from django.conf import settings
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, init_mysql_connection, getChartColor, get_total_auth_report
+from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, \
+    init_mysql_connection, getChartColor, get_total_auth_report, get_total_provider_report
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
@@ -204,7 +205,7 @@ def statistic_login(request, app_id):
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
         order_by = getOrderValue(request.GET.get('order[0][column]', '2'), request.GET.get('order[0][dir]', 'asc'))
-        profiles = Profiles.objects.filter(app=app_id).values('user_id') \
+        profiles = Profiles.objects.filter(app=app_id).values('alias', 'user_pk') \
             .annotate(deleted=Max('deleted'), last_login=Max('authorized_at'), login_total=Sum('login_count'),
                       providers=GroupConcat('provider')) \
             .order_by(order_by)
@@ -220,7 +221,9 @@ def statistic_login(request, app_id):
         providers = Provider.objects.all()
         data = []
         for id, profile in enumerate(profiles[start_page:start_page + page_length]):
-            row_data = [id + 1, profile['deleted'], profile['user_id'],
+            row_data = [id + 1, profile['deleted'],
+                        profile['user_pk'],
+                        str(profile['alias']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
@@ -231,8 +234,8 @@ def statistic_login(request, app_id):
                     row_data.append(0)
 
             data.append(row_data)
-        json_data_tabe = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
-        return HttpResponse(json.dumps(json_data_tabe, cls=DjangoJSONEncoder), content_type='application/json')
+        json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
+        return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         apps = App.objects.all()
         providers = Provider.objects.all()
@@ -260,12 +263,14 @@ def report_app(request, app_id):
                                                  from_dt=startDate,
                                                  to_dt=endDate,
                                                  is_login=int(isLogin))
+        print(dataChart)
         datasets = []
-        labels = set()
+        labels = sorted(list(dataChart.get('labels')))
         maxy = 0
-        providerNames = {'total', 'line', 'yahoojp', 'amazon'}
+        check_zero = True
+        providerNames = ['total', 'amazon', 'line', 'yahoojp']
         if provider != 'all':
-            providerNames = {provider}
+            providerNames = [provider]
             dataChart = {provider: dataChart.get(provider)}
         for key in providerNames:
             datasetPoint = {'label': key.capitalize(),
@@ -274,21 +279,30 @@ def report_app(request, app_id):
                             'backgroundColor': getChartColor(key),
                             }
             dataPoint = []
-            for key1, value1 in dataChart.get(key).items():
+            for key1 in labels:
+                value1 = dataChart.get(key).get(key1)
+                if value1 > 0:
+                    check_zero = False
                 if value1 > maxy:
                     maxy = value1
                 dataPoint.append(value1)
-                labels.add(key1)
             datasets.append(datasetPoint)
             datasetPoint.update({'data': dataPoint})
-        dataChartJson = {'maxy': maxy, 'data': {'labels': sorted(list(labels)), 'datasets': datasets}}
+        if check_zero:
+            maxy = 999
+        dataChartJson = {'maxy': maxy, 'data': {'labels': labels, 'datasets': datasets}}
 
         return HttpResponse(json.dumps(dataChartJson), content_type='application/json')
     else:
-        total_data_login = get_total_auth_report(db=db, app_id=app_id, is_login=1)
-        total_data_register = get_total_auth_report(db=db, app_id=app_id, is_login=0)
+        total_data_auth = get_total_auth_report(db=db, app_id=app_id)
+        total_data_provider = get_total_provider_report(db=db, app_id=app_id)
         apps = App.objects.all()
-        return render(request, 'loginapp/report_app.html', {'app': app, 'apps': apps, 'total_login': total_data_login, 'total_register': total_data_register})
+
+        return render(request, 'loginapp/report_app.html', {
+            'app': app, 'apps': apps,
+            'total_data_auth': total_data_auth,
+            'total_data_provider': total_data_provider
+        })
 
 
 @login_required

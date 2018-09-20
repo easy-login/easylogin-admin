@@ -138,6 +138,7 @@ class Profiles(models.Model):
     login_count = models.IntegerField()
     linked_at = models.DateTimeField()
     deleted = models.SmallIntegerField()
+    alias = models.BigIntegerField()
     user_id = models.IntegerField()
     user_pk = models.CharField(max_length=255)
     app = models.ForeignKey(App, on_delete=models.CASCADE)

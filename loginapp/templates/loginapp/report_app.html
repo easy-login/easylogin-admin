@@ -94,13 +94,13 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card-box">
-            <h4 class="header-title m-t-0 m-b-30">Total Login</h4>
+            <h4 class="header-title m-t-0 m-b-30">Authorization Report</h4>
             <canvas id="pie-login-chart-report"></canvas>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card-box">
-            <h4 class="header-title m-t-0 m-b-30">Total Register</h4>
+            <h4 class="header-title m-t-0 m-b-30">Provider Report</h4>
             <canvas id="pie-register-chart-report"></canvas>
         </div>
     </div>
@@ -164,7 +164,7 @@ var config = {
                     display: true,
                     scaleLabel: {
                         display: true,
-                        labelString: 'Value'
+                        labelString: 'Number of logins / number of registers'
                     }
                 }]
             }
@@ -265,19 +265,18 @@ $(document).ready(function() {
 			data: {
 				datasets: [{
 					data: [
-					{% for value in total_login %}
+					{% for value in total_data_auth %}
 						{{ value.1 }},
 					{% endfor %}
 					],
 					backgroundColor: [
 						'#f9c851',
 						'#10c469',
-						'#ef5350',
 					],
 					label: 'Dataset 1'
 				}],
 				labels: [
-				{% for value in total_login %}
+				{% for value in total_data_auth %}
 						'{{ value.0 }}',
 					{% endfor %}
 				]
@@ -296,7 +295,7 @@ $(document).ready(function() {
 			data: {
 				datasets: [{
 					data: [
-					{% for value in total_register %}
+					{% for value in total_data_provider %}
 						{{ value.1 }},
 					{% endfor %}
 					],
@@ -308,7 +307,7 @@ $(document).ready(function() {
 					label: 'Dataset 1'
 				}],
 				labels: [
-				{% for value in total_register %}
+				{% for value in total_data_provider %}
 						'{{ value.0 }}',
 					{% endfor %}
 				]
