@@ -79,7 +79,7 @@
                     <th>Login Count</th>
                     {% for provider in providers %}
                     <th class="no-order provider-datatable" style="text-transform: capitalize;">
-                        {{ provider.id }} <i class="fa fa-1x fa-{{ provider.id }}"></i>
+                        {{ provider.name }} <i class="fa fa-1x fa-{{ provider.name }}"></i>
                     </th>
                     {% endfor %}
                 </tr>
@@ -109,7 +109,7 @@ function loadInitialStatisticTable(){
     if ($.fn.DataTable.isDataTable('#statistic-table')) return;
 
     $('#statistic-table').DataTable({
-        'lengthMenu': [5,10,25,50,100],
+        'lengthMenu': [25,50,100],
         'autoWidth': false,
         'processing': true,
         'serverSide': true,
