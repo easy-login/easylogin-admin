@@ -113,9 +113,9 @@
             </div>
             <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="text-inverse">{{ channel.provider }}</a></h4>
             <div class="text-left">
-                <p class="text-inverse font-13"><strong>Client ID :</strong> <span class="m-l-15">{{ channel.client_id }}</span></p>
+                <p class="text-inverse font-13"><strong>Client ID :</strong> <span class="m-l-15 text-muted">{{ channel.client_id }}</span></p>
 
-                <p class="text-inverse font-13"><strong>Client Secret :</strong> <span class="m-l-15">{{ channel.client_secret }}</span>
+                <p class="text-inverse font-13"><strong>Client Secret :</strong> <span class="m-l-15 text-muted">{{ channel.client_secret }}</span>
                 </p>
             </div>
             <hr>

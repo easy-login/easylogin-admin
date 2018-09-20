@@ -34,10 +34,12 @@ class User(AbstractUser):
 
 
 class Provider(models.Model):
-    id = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30)
     version = models.CharField(max_length=7)
     permissions_required = models.CharField(max_length=1023)
-    permissions = models.CharField(max_length=1023)
+    basic_fields = models.CharField(max_length=4095)
+    advanced_fields = models.CharField(max_length=4095)
+    options = models.CharField(max_length=4095)
 
     def permissions_as_list(self):
         if self.permissions == "":
@@ -110,7 +112,9 @@ class Channel(models.Model):
     provider = models.CharField(max_length=30)
     client_id = models.CharField(max_length=255)
     client_secret = models.CharField(max_length=255)
-    permissions = models.CharField(max_length=1023)
+    permissions = models.CharField(max_length=4095)
+    required_fields = models.CharField(max_length=4095)
+    options = models.CharField(max_length=1023)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
 
     def permissions_as_list(self):
