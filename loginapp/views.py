@@ -237,7 +237,7 @@ def statistic_login(request, app_id):
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
-        apps = App.objects.all(owner=request.user.id)
+        apps = App.objects.f(owner=request.user.id)
         providers = Provider.objects.all()
         return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
 
@@ -263,7 +263,6 @@ def report_app(request, app_id):
                                                  from_dt=startDate,
                                                  to_dt=endDate,
                                                  is_login=int(isLogin))
-        print(dataChart)
         datasets = []
         labels = sorted(list(dataChart.get('labels')))
         maxy = 0

@@ -5,6 +5,7 @@ import datetime
 from django.utils import timezone
 from urllib import parse
 
+import json
 # Model's constant
 MAX_LENGTH_SHORT_FIELD = 100
 MAX_LENGTH_MEDIUM_FIELD = 255
@@ -45,6 +46,15 @@ class Provider(models.Model):
         if self.required_permissions == "":
             return []
         return self.required_permissions.split("|")
+
+    def basic_fields_as_object(self):
+        return json.loads(self.basic_fields)
+
+    def advanced_fields_as_object(self):
+        return json.loads(self.advanced_fields)
+
+    def options_as_object(self):
+        return json.loads(self.options)
 
     def __str__(self):
         return u'{0}'.format(self.name)
