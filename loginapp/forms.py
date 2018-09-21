@@ -107,11 +107,15 @@ class ProviderModelChoiceField(ModelChoiceField):
 
 
 class ChannelForm(ModelForm):
-    provider = ProviderModelChoiceField(Provider.objects.all(), to_field_name='id', required=True, empty_label=None)
+    provider = forms.ChoiceField(choices=[], required=True)
     client_id = forms.CharField(max_length=255, required=True)
     client_secret = forms.CharField(max_length=255, required=True)
     # permission = forms.CharField(max_length=1023, required=True)
     app_id = forms.IntegerField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(ChannelForm, self).__init__(*args, **kwargs)
+        self.fields['provider'].choices = Provider.objects.all().values_list('name','name').distinct()
 
     class Meta:
         model = Channel
