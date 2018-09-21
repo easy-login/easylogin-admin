@@ -72,8 +72,12 @@ def register(request):
     return render(request, 'loginapp/page-register.html', {'form': form})
 
 
-@login_required
 def dashboard(request):
+    return redirect('list_apps')
+
+
+@login_required
+def list_apps(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
     apps = App.objects.filter(owner=request.user.id).order_by(order_by)
     if request.GET.get("search"):
@@ -198,7 +202,7 @@ def delete_app(request, app_id):
 
 
 @login_required
-def statistic_login(request, app_id):
+def user_report(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     if request.GET.get('flag_loading'):
         page_length = int(request.GET.get('length', 10))
@@ -228,7 +232,7 @@ def statistic_login(request, app_id):
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
             for provider in providers:
-                if provider.name in provider_split:
+                if provider.id in provider_split:
                     row_data.append(1)
                 else:
                     row_data.append(0)
@@ -237,13 +241,13 @@ def statistic_login(request, app_id):
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
-        apps = App.objects.all(owner=request.user.id)
+        apps = App.objects.filter(owner=request.user.id)
         providers = Provider.objects.all()
         return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
 
 
 @login_required
-def report_app(request, app_id):
+def app_dashboard(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
 
     dbUser = settings.DATABASES.get('default').get('USER')
