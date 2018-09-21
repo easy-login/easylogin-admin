@@ -1,12 +1,15 @@
 import hashlib
 import pytz
 import re
-import MySQLdb
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.utils.deprecation import MiddlewareMixin
+from datetime import datetime, timedelta, timezone
 import string
 import secrets
+import pytz
+
+import MySQLdb
+from django.utils import timezone
+from django.utils.deprecation import MiddlewareMixin
+from django.conf import settings
 
 
 class TimezoneMiddleware(MiddlewareMixin):
@@ -122,3 +125,6 @@ def get_auth_report_per_provider(db, app_id, from_dt=None, to_dt=None, is_login=
     results['labels'] = labels
     return results
 
+
+def convert_to_user_timezone(dt):
+    return dt.replace(tzinfo=timezone.utc).astimezone(pytz.timezone(settings.TIME_ZONE))
