@@ -91,31 +91,27 @@ class AppForm(ModelForm):
         model = App
         fields = ('name', 'api_key', 'description',)
 
-        # def clean(self):
-        #     cleaned_data = super(AppForm, self).clean()
-        #     callback_uri = cleaned_data.get('callback_uri')
-        #     if not utils.validateURL(callback_uri):
-        #         raise forms.ValidationError({'callback_uri': [
-        #             "Enter a valid URL.", ]
-        #         })
+    # def clean(self):
+    #     cleaned_data = super(AppForm, self).clean()
+    #     callback_uri = cleaned_data.get('callback_uri')
+    #     if not utils.validateURL(callback_uri):
+    #         raise forms.ValidationError({'callback_uri': [
+    #             "Enter a valid URL.", ]
+    #         })
 
 
 # Custom ModelChoiceField Label
 class ProviderModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.name
+        return obj.id
 
 
 class ChannelForm(ModelForm):
-    provider = forms.ChoiceField(choices=[], required=True)
+    provider = ProviderModelChoiceField(Provider.objects.all(), to_field_name='id', required=True, empty_label=None)
     client_id = forms.CharField(max_length=255, required=True)
     client_secret = forms.CharField(max_length=255, required=True)
     # permission = forms.CharField(max_length=1023, required=True)
     app_id = forms.IntegerField(required=True)
-
-    def __init__(self, *args, **kwargs):
-        super(ChannelForm, self).__init__(*args, **kwargs)
-        self.fields['provider'].choices = Provider.objects.all().values_list('name','name').distinct()
 
     class Meta:
         model = Channel
