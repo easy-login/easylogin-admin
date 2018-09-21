@@ -36,23 +36,18 @@ class User(AbstractUser):
 class Provider(models.Model):
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=7)
-    permissions_required = models.CharField(max_length=1023)
+    required_permissions = models.CharField(max_length=1023)
     basic_fields = models.CharField(max_length=4095)
     advanced_fields = models.CharField(max_length=4095)
     options = models.CharField(max_length=4095)
 
-    def permissions_as_list(self):
-        if self.permissions == "":
+    def required_permissions_as_list(self):
+        if self.required_permissions == "":
             return []
-        return self.permissions.split(",")
-
-    def permissions_required_as_list(self):
-        if self.permissions_required == "":
-            return []
-        return self.permissions_required.split(",")
+        return self.required_permissions.split("|")
 
     def __str__(self):
-        return u'{0}'.format(self.id)
+        return u'{0}'.format(self.name)
 
     class Meta:
         db_table = "providers"
@@ -66,7 +61,6 @@ class App(models.Model):
     callback_uris = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)
     description = models.TextField()
-    # owner_id = models.IntegerField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def callback_uris_as_list(self):

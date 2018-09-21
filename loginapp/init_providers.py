@@ -1,7 +1,6 @@
 import MySQLdb
 import json
 
-
 providers = [
     {
         "name": "line",
@@ -59,6 +58,30 @@ providers = [
                 "key": "email",
                 "name": "Email",
                 "permission": "profile"
+            }
+        ]
+    },
+    {
+        "name": "amazon",
+        "version": ["v3"],
+        "required_permissions": "profile:user_id",
+        "basic_fields": [
+            {
+                "key": "namev3",
+                "name": "Full Namev3",
+                "permission": "profilev3"
+            },
+            {
+                "key": "postal_codev3",
+                "name": "Postal Codev3",
+                "permission": "postal_codev3"
+            }
+        ],
+        "advanced_fields": [
+            {
+                "key": "emailv3",
+                "name": "Emailv3",
+                "permission": "profilev3"
             }
         ]
     },
@@ -133,7 +156,6 @@ providers = [
     }
 ]
 
-
 if __name__ == '__main__':
     data = []
     for provider in providers:
@@ -157,14 +179,3 @@ if __name__ == '__main__':
 
     db.commit()
     db.close()
-
-
-
-
-
-
-
-
-
-
-
