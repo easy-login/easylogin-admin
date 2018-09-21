@@ -247,7 +247,7 @@ def user_report(request, app_id):
 
 
 @login_required
-def app_dashboard(request, app_id):
+def app_report(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
 
     dbUser = settings.DATABASES.get('default').get('USER')
@@ -351,6 +351,7 @@ def add_channel(request):
                 app.save()
                 messages.success(request, "Channel was successfully created!")
             except IntegrityError as error:
+                print('Add channel error', error)
                 messages.error(request, "Channel with " + channel.provider + " provider already exists!")
 
             return redirect('channel_list', app_id=app_id)
@@ -420,9 +421,7 @@ def delete_channel(request, app_id, channel_id):
 @login_required
 def get_api_key(request):
     try:
-        return HttpResponse(generateApiKey(
-            ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)).encode('utf-8')),
-            content_type='text/plain')
+        return HttpResponse(generateApiKey(nbytes=64), content_type='text/plain')
     except Exception as e:
         return HttpResponse(e, status=404)
 

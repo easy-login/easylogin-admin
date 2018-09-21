@@ -5,6 +5,8 @@ import MySQLdb
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
+import string
+import secrets
 
 
 class TimezoneMiddleware(MiddlewareMixin):
@@ -17,8 +19,9 @@ class TimezoneMiddleware(MiddlewareMixin):
             timezone.deactivate()
 
 
-def generateApiKey(seed):
-    return hashlib.sha1(seed).hexdigest()
+def generateApiKey(nbytes=32):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(nbytes))
 
 
 def validateURL(url):
