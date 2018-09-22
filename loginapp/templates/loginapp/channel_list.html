@@ -3,6 +3,7 @@
 {% load static %}
 {% load widget_tweaks %}
 {% load tz %}
+{% load custom_tags %}
 {% block css %}
 <!-- Sweet Alert css -->
         <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
@@ -175,7 +176,7 @@
                             <div class="col-md-10">
                                 <select name="api_version" id="id_api_version" class="form-control">
                                     {% for provider in providers %}
-                                    <option class="{{ provider.name }}" value="{{ provider.version }}">{{ provider.version }}</option>
+                                    <option class="version-{{ provider.name }} api-version-option" value="{{ provider.version }}" style="display: none">{{ provider.version }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -210,20 +211,48 @@
                         </div>
 
                         <div class="form-group row ">
-                            <label for="id_basic_field" class="col-md-2 col-form-label">Basic fields</label>
-                            <div class="col-md-10">
+                            <div class="col-md-6">
                                 {% for provider in providers %}
-                                {% with basic_field=provider.basic_fields_as_object %}
-                                <div class="provider-basic-fields" id="id-{{ provider.id }}-{{ provider.version }}">
+                                <div class="provider-fields {{ provider.name }}-{{ provider.version }}" style="display: none">
+                                    <label class="col-form-label">Basic fields</label>
                                     {% for field in provider.basic_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.id }}-{{ provider.version }}-{{ field.key }}" name="basic-field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" >
-                                        <label class="" for="{{ provider.id }}-{{ permission }}"> {{ field.name }} </label>
+                                        <input id="{{ provider.name }}-{{ provider.version }}-{{ field.key }}" name="required-field"
+                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
+                                        <label class="" for="{{ provider.name }}-{{ provider.version }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
-                                {% endwith %}
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.version }}" style="display: none">
+                                    <label class="col-form-label">Advanced fields</label>
+                                    {% for field in provider.advanced_fields_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ provider.name }}-{{ provider.version }}-{{ field.key }}" name="required-field"
+                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
+                                        <label class="" for="{{ provider.id }}-{{ provider.version }}-{{ field.key }}"> {{ field.name }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.version }}" style="display: none">
+                                    {% if provider.options_as_object %}
+                                    <label class="col-form-label">Options</label>
+                                    {% endif %}
+                                    {% for field in provider.options_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ provider.name }}-{{ provider.version }}-{{ field.key }}" name="option"
+                                               type="checkbox" value="{{ field.key }}" disabled>
+                                        <label class="" for="{{ provider.id }}-{{ provider.version }}-{{ field.key }}"> {{ field.name }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -246,31 +275,19 @@
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('form').parsley({excluded: '[disabled]'});
-    $('#id-'+ $('#id_provider').val()).show();
-    $('#id-'+ $('#id_provider').val()+'-required').show();
-    $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
-    $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
+    $('form').parsley();
+    $('.version-'+$('#id_provider').val()).show();
+    $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
     $('#id_provider').change(function(){
-        $('.provider-permission').hide();
-        $('.provider-permission-required').hide();
+        $('.api-version-option').hide();
+        $('.version-'+$('#id_provider').val()).show();
+        $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
 
-        $('.provider-permission input').prop("checked", false)
-        $('.provider-permission-required input').prop("checked", false)
-        $('.provider-permission input').prop('disabled', true)
-        $('.provider-permission-required input').prop('disabled', true)
+        $('.provider-fields').hide();
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
-        if ($('#id-'+ $('#id_provider').val()).attr('class').includes('checkbox-handler-error')){
-            $('#checkbox-error').show();
-        }
-        else{
-            $('#checkbox-error').hide();
-        }
-        $('#id-'+ $('#id_provider').val()).show();
-        $('#id-'+ $('#id_provider').val()+'-required').show();
-        $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
-        $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
-        $('#id-'+ $('#id_provider').val()+'-required input').prop('checked', true);
+        $('.provider-fields input').prop('disabled', true)
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
     })
 });
 

@@ -324,13 +324,24 @@ def add_channel(request):
         form = ChannelForm(request.POST)
         if form.is_valid():
             channel = form.save(commit=False)
-            permissions = request.POST.getlist('permission')
+            field_permission = request.POST.getlist('required_field')
+            required_fields = ""
+            permissions = ""
+            for item in field_permission:
+                item_split = item.split("|")
+                required_fields += item_split[0] + "|"
+                permissions += item_split[1] + "|"
+            required_fields = required_fields[:-1]
+            permissions = permissions[:-1]
+            options = ""
+            for item in request.POST.getlist('required_field'):
+                options += item + "|"
+            options = options[:-1]
+            channel.permissions = permissions
+            channel.required_fields = required_fields
+            channel.options = options
+
             app_id = request.POST['app_id']
-            if len(permissions) == 0:
-                messages.error(request, "Add failed channel: permission is required!")
-                return redirect('channel_list', app_id=app_id)
-            else:
-                channel.set_permissions(permissions)
             if app_id is None:
                 messages.error(request, "Add channel failed: App ID is required!")
                 return redirect('dashboard')

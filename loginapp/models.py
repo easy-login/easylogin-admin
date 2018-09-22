@@ -125,13 +125,6 @@ class Channel(models.Model):
     def permissions_as_list(self):
         return self.permissions.split(",")
 
-    def set_permissions(self, permission_list):
-        perm_value = ''
-        for perm in permission_list:
-            perm_value += perm + ","
-        perm_value = perm_value[:-1]
-        self.permissions = perm_value
-
     class Meta:
         db_table = "channels"
         unique_together = ('app', 'provider')
