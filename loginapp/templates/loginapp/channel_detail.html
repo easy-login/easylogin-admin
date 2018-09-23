@@ -95,18 +95,18 @@
         <div class="card-box">
                 <form class="form-horizontal m-t-20" method="post" action="">
                     {% csrf_token %}
-                        <div class="form-group row">
+                    <div class="form-group row">
                             <div class="col-md-10">
                                 {% render_field form.app_id class='form-control' value=app.id %}
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                    <div class="form-group row">
                             <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
                             <div class="col-md-8">
                                 <select name="provider" id="id_provider" value="{{ channel.provider }}" class="form-control">
-                                    {% for provider in providers %}
-                                    <option value="{{ provider.id }}" {% if provider.id == channel.provider %} selected{% endif %}>{{ provider.id}}</option>
+                                    {% for provider_name in provider_names %}
+                                    <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
                                     {% endfor %}
                                 </select>
                                 {% if form.provider.errors %}
@@ -119,7 +119,20 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                    <div class="form-group row">
+                        <label for="id_api_version" class="col-md-2 col-form-label">API Version</label>
+                        <div class="col-md-8">
+                            <select name="api_version" id="id_api_version" class="form-control">
+                                {% for provider in providers %}
+                                <option class="version-{{ provider.name }} api-version-option" value="{{ provider.id }}"
+                                        style="display: none">{{ provider.version }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                             <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
                             <div class="col-md-8">
                                 {% render_field form.client_id class='form-control' placeholder='Client ID' value=channel.client_id %}
@@ -133,7 +146,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                    <div class="form-group row">
                             <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
                             <div class="col-md-8">
                                 {% render_field form.client_secret class='form-control' placeholder='Client Secret' value=channel.client_secret %}
@@ -147,46 +160,63 @@
                             </div>
                         </div>
 
-                        <div class="form-group row ">
-                            <label for="id_permission" class="col-md-2 col-form-label">Permission</label>
-                            <div class="col-md-8">
-                                 <div id="checkbox-error"></div>
-                                {% with channel_permissions=channel.permissions_as_list %}
-                                {% for provider in providers %}
-                                {% with permissions_required=provider.permissions_required_as_list %}
-                                <div class="provider-permission {% if not permissions_required %}checkbox-handler-error{% endif %}" id="id-{{ provider.id }}" style="display:none;">
-                                        {% for permission in provider.permissions_as_list %}
-                                        {% if permission not in permissions_required %}
-                                        <div class="checkbox checkbox-pink">
-                                            <input id="{{ provider.id }}-{{ permission }}" name="permission"
-                                                   type="checkbox" value="{{ permission }}"
-                                                   data-parsley-multiple="permission"
-                                                   data-parsley-mincheck="1"
-                                                   data-parsley-errors-container="#checkbox-error"
-                                                   data-parsley-error-message="Permission value is required."
-                                                   data-parsley-class-handler=".checkbox-handler-error"
-                                                   {% if permission in channel_permissions and channel.provider == provider.id %} checked{% endif %}
-                                                   required disabled>
-                                            <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
-                                        </div>
-                                        {% endif %}
-                                        {% endfor %}
-                                </div>
-                                {% endwith %}
-                                <div class="provider-permission-required" id="id-{{ provider.id }}-required" style="display:none;">
-                                    {% for permission in provider.permissions_required_as_list %}
-                                    <div class="checkbox">
-                                        <input class="permission-required" id="{{ provider.id }}-{{ permission }}" name="permission"
-                                               type="checkbox" value="{{ permission }}" disabled checked readonly onclick="return false;"
-                                                data-parsley-excluded="true" >
-                                        <label class="" for="{{ provider.id }}-{{ permission }}"> {{ permission }} </label>
+                    <div class="form-group row ">
+                        <div class="col-md-2"></div>
+                        {% with required_fields=channel.required_fields_as_list %}
+                        <div class="col-md-4">
+                            {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
+                                    <label class="col-form-label">Basic fields</label>
+                                    {% for field in provider.basic_fields_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled
+                                        {% if field.key in required_fields %} checked {% endif %}>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
                                 {% endfor %}
-                                {% endwith %}
                             </div>
-                        </div>
+                        <div class="col-md-4">
+                                {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
+                                    <label class="col-form-label">Advanced fields</label>
+                                    {% for field in provider.advanced_fields_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled
+                                        {% if field.key in required_fields %} checked {% endif %}>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-md-2"></div>
+                        {% with options=channel.options_as_list %}
+                        <div class="col-md-6">
+                                {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
+                                    {% if provider.options_as_object %}
+                                    <label class="col-form-label">Options</label>
+                                    {% endif %}
+                                    {% for field in provider.options_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
+                                               type="checkbox" value="{{ field.key }}" disabled
+                                        {% if field.key in options %} checked {% endif %}>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    </div>
                     <div class="form-group text-center m-t-40 row">
                         <div class="col-md-2"></div>
                         <div class="col-md-8">
@@ -225,33 +255,31 @@
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function() {
-    $('form').parsley({excluded: '[disabled]'});
-    $('#id-'+ $('#id_provider').val()).show();
-    $('#id-'+ $('#id_provider').val()+'-required').show();
-    $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
-    $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
+    $('form').parsley();
+    $('.version-'+$('#id_provider').val()).show();
+    $('#id_api_version').val('{{ provider_id }}');
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
     $('#id_provider').change(function(){
-        $('.provider-permission').hide();
-        $('.provider-permission-required').hide();
+        $('.api-version-option').hide();
+        $('.version-'+$('#id_provider').val()).show();
+        $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
 
-        $('.provider-permission input').prop("checked", false)
-         $('.provider-permission-required input').prop("checked", false)
-        $('.provider-permission input').prop('disabled', true)
-        $('.provider-permission-required input').prop('disabled', true)
+        $('.provider-fields').hide();
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
-        if ($('#id-'+ $('#id_provider').val()).attr('class').includes('checkbox-handler-error')){
-            $('#checkbox-error').show();
-        }
-        else{
-            $('#checkbox-error').hide();
-        }
-        $('#id-'+ $('#id_provider').val()).show();
-        $('#id-'+ $('#id_provider').val()+'-required').show();
-        $('#id-'+ $('#id_provider').val()+' input').prop('disabled', false);
-        $('#id-'+ $('#id_provider').val()+'-required input').prop('disabled', false);
-        $('#id-'+ $('#id_provider').val()+'-required input').prop('checked', true);
+        $('.provider-fields input').prop('disabled', true)
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
     })
-    $('.sub-menu-app').show('slow');
+    $('#id_api_version').change(function(){
+        $('.api-version-option').hide();
+
+        $('.provider-fields').hide();
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+
+        $('.provider-fields input').prop('disabled', true)
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+    })
 });
 
 function getApiKey(){

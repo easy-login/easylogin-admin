@@ -321,22 +321,34 @@ def channel_list(request, app_id):
 @login_required
 def add_channel(request):
     if request.method == 'POST':
+        print(request.POST)
         form = ChannelForm(request.POST)
         if form.is_valid():
             channel = form.save(commit=False)
+            provider_id = request.POST.get('api_version')
+            if provider_id is None:
+                messages.error(request, "Add channel failed: API version is required!")
+                return redirect('dashboard')
+            provider = Provider.objects.filter(pk=provider_id).first()
+            provider_name = request.POST.get('provider')
+            api_version = provider.version
+            required_permission = provider.required_permissions
             field_permission = request.POST.getlist('required_field')
             required_fields = ""
             permissions = ""
             for item in field_permission:
-                item_split = item.split("|")
-                required_fields += item_split[0] + "|"
-                permissions += item_split[1] + "|"
+                item_split = item.split('|')
+                required_fields += item_split[0] + '|'
+                permissions += item_split[1] + '|'
             required_fields = required_fields[:-1]
-            permissions = permissions[:-1]
+            permissions += required_permission
+            permissions = '|'.join(set(permissions.split('|')))
             options = ""
-            for item in request.POST.getlist('required_field'):
+            for item in request.POST.getlist('option'):
                 options += item + "|"
             options = options[:-1]
+            channel.provider = provider_name
+            channel.api_version = api_version
             channel.permissions = permissions
             channel.required_fields = required_fields
             channel.options = options
@@ -377,18 +389,39 @@ def channel_detail(request, app_id, channel_id):
             channel_update = form.save(commit=False)
             channel_update.modified_at = datetime.datetime.now()
 
-            permissions = request.POST.getlist('permission')
-            if len(permissions) == 0:
-                messages.error(request, "Update failed channel: permission is required!")
-                return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
-            else:
-                channel.set_permissions(permissions)
+            provider_id = request.POST.get('api_version')
+            if provider_id is None:
+                messages.error(request, "Add channel failed: API version is required!")
+                return redirect('dashboard')
+            provider = Provider.objects.filter(pk=provider_id).first()
+            provider_name = request.POST.get('provider')
+            api_version = provider.version
+            required_permission = provider.required_permissions
+            field_permission = request.POST.getlist('required_field')
+            required_fields = ""
+            permissions = ""
+            for item in field_permission:
+                item_split = item.split('|')
+                required_fields += item_split[0] + '|'
+                permissions += item_split[1] + '|'
+            required_fields = required_fields[:-1]
+            permissions += required_permission
+            permissions = '|'.join(set(permissions.split('|')))
+            options = ""
+            for item in request.POST.getlist('option'):
+                options += item + "|"
+            options = options[:-1]
+            channel_update.provider = provider_name
+            channel_update.api_version = api_version
+            channel_update.permissions = permissions
+            channel_update.required_fields = required_fields
+            channel_update.options = options
 
             channel.app = app
 
             # try to catch exception unique but it catch more
             try:
-                channel.save()
+                channel_update.save()
                 app.update_modified_at()
                 app.save()
                 messages.success(request, "Channel was successfully updated!")
@@ -402,11 +435,14 @@ def channel_detail(request, app_id, channel_id):
 
     channels = Channel.objects.filter(app=app_id)
     providers = Provider.objects.all()
+    provider_name_list = list(set(Provider.objects.values_list('name', flat=True)))
+    provider_id = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
     form = ChannelForm()
     form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/channel_detail.html',
-                  {"app": app, 'channel': channel, 'channels': channels, 'providers': providers, 'form': form})
+                  {"app": app, 'channel': channel, 'channels': channels, 'providers': providers,
+                   'provider_names': provider_name_list, 'provider_id': provider_id.id, 'form': form})
 
 
 @login_required

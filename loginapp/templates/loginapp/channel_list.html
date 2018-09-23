@@ -176,7 +176,7 @@
                             <div class="col-md-10">
                                 <select name="api_version" id="id_api_version" class="form-control">
                                     {% for provider in providers %}
-                                    <option class="version-{{ provider.name }} api-version-option" value="{{ provider.version }}" style="display: none">{{ provider.version }}</option>
+                                    <option class="version-{{ provider.name }} api-version-option" value="{{ provider.id }}" style="display: none">{{ provider.version }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -213,13 +213,13 @@
                         <div class="form-group row ">
                             <div class="col-md-6">
                                 {% for provider in providers %}
-                                <div class="provider-fields {{ provider.name }}-{{ provider.version }}" style="display: none">
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
                                     <label class="col-form-label">Basic fields</label>
                                     {% for field in provider.basic_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.version }}-{{ field.key }}" name="required-field"
+                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
                                                type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
-                                        <label class="" for="{{ provider.name }}-{{ provider.version }}-{{ field.key }}"> {{ field.name }} </label>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -227,13 +227,13 @@
                             </div>
                             <div class="col-md-6">
                                 {% for provider in providers %}
-                                <div class="provider-fields {{ provider.name }}-{{ provider.version }}" style="display: none">
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
                                     <label class="col-form-label">Advanced fields</label>
                                     {% for field in provider.advanced_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.version }}-{{ field.key }}" name="required-field"
+                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
                                                type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
-                                        <label class="" for="{{ provider.id }}-{{ provider.version }}-{{ field.key }}"> {{ field.name }} </label>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -241,15 +241,15 @@
                             </div>
                             <div class="col-md-6">
                                 {% for provider in providers %}
-                                <div class="provider-fields {{ provider.name }}-{{ provider.version }}" style="display: none">
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
                                     {% if provider.options_as_object %}
                                     <label class="col-form-label">Options</label>
                                     {% endif %}
                                     {% for field in provider.options_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.version }}-{{ field.key }}" name="option"
+                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
                                                type="checkbox" value="{{ field.key }}" disabled>
-                                        <label class="" for="{{ provider.id }}-{{ provider.version }}-{{ field.key }}"> {{ field.name }} </label>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -278,10 +278,22 @@ $(document).ready(function() {
     $('form').parsley();
     $('.version-'+$('#id_provider').val()).show();
     $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+
     $('#id_provider').change(function(){
         $('.api-version-option').hide();
         $('.version-'+$('#id_provider').val()).show();
         $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
+
+        $('.provider-fields').hide();
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+
+        $('.provider-fields input').prop('disabled', true)
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+    })
+    $('#id_api_version').change(function(){
+        $('.api-version-option').hide();
 
         $('.provider-fields').hide();
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();

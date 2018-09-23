@@ -122,8 +122,11 @@ class Channel(models.Model):
     options = models.CharField(max_length=1023)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
 
-    def permissions_as_list(self):
-        return self.permissions.split(",")
+    def required_fields_as_list(self):
+        return self.required_fields.split('|')
+
+    def options_as_list(self):
+        return self.options.split('|')
 
     class Meta:
         db_table = "channels"
