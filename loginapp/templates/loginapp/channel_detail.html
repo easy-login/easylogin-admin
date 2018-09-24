@@ -272,8 +272,6 @@ $(document).ready(function() {
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
     })
     $('#id_api_version').change(function(){
-        $('.api-version-option').hide();
-
         $('.provider-fields').hide();
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
