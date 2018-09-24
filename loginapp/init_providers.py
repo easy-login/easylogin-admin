@@ -33,7 +33,9 @@ providers = [
         "options": [
             {
                 "key": "add_friend",
-                "name": "Add Friend"
+                "name": "Add friend",
+                "default": true,
+                "tooltip": "Show checkbox add LINE user as friend after logged in"
             }
         ]
     },
