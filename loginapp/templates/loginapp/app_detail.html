@@ -39,27 +39,9 @@
 </nav>
 {% endblock %}
 
-
 {% block sidemenu %}
-<li class="has_sub">
-    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-square"></i><span style="text-transform: capitalize;"> {{ app.name }} </span>
-        <i class="fa fa-angle-down menu-narrow"></i>
-    </a>
-    <ul class="list-unstyled">
-        <li><a href="{% url 'report_app' app.id %}">App Dashboard</a></li>
-        <li><a href="{% url 'statistic_login' app.id %}">User Statistic</a></li>
-        <li><a href="{% url 'channel_list' app.id %}">Edit Channel</a></li>
-        <li><a href="{% url 'app_detail' app.id %}">Edit App</a></li>
-    </ul>
-</li>
-
-<li>
-    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
-    </a>
-</li>
-
+{% include 'loginapp/app_menu.html' %}
 {% endblock %}
-
 
 {% block content%}
 <div class="row">

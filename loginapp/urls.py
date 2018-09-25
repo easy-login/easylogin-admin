@@ -31,9 +31,9 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(template_name='loginapp/password_reset_complete.html'),
         name='password_reset_complete'),
 
-    url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    # url(r'^dashboard/$', views.dashboard, name='dashboard'),
 
-    url(r'^apps/$', views.list_apps, name='list_apps'),
+    url(r'^apps/$', views.list_apps, name='dashboard'),
 
     url(r'^profile/settings', views.profile, name='profile'),
 
