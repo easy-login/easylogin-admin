@@ -261,6 +261,14 @@ $(document).ready(function() {
         $('.provider-fields input').prop('disabled', true)
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
     })
+
+    var url = window.location.pathname;
+    url = url.substring(0,url.length-2);
+    var target = $('li.li-left-menu a[href="'+url+'"]');
+    target.parent().parent().parent().children().first().addClass('subdrop');
+    target.parent().parent().show(500);
+    target.parent().addClass('active');
+    target.addClass('active');
 });
 
 function getApiKey(){

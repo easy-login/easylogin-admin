@@ -54,33 +54,9 @@
 
     <!-- ========== Left Sidebar Start ========== -->
     <div class="left side-menu">
-        <div class="sidebar-inner slimscrollleft">
+        <div class="sidebar-inner slimscrollleft" id="scroll-to">
 
             <!-- User -->
-            <div class="user-box">
-                <div class="user-img">
-                    <img src="{% static 'images/ninja.png' %}" alt="user-img" title="{{ request.user.username }}"
-                         class="rounded-circle img-thumbnail img-responsive">
-                    <div class="user-status online"><i class="mdi mdi-adjust"></i></div>
-                </div>
-                <h5><a href="{% url 'profile' %}">{{ request.user.username }}</a></h5>
-                <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a href="{% url 'profile' %}">
-                            <i class="mdi mdi-24px mdi-settings"></i>
-                        </a>
-                    </li>
-
-                    <li class="list-inline-item">
-                        <a class="text-custom" tabindex="0" data-trigger="focus" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a href='' onclick='return logoutConfirm(event)'>Logout</a>">
-                            <i class="mdi mdi-24px mdi-power"></i>
-                        </a>
-                        <script>
-
-                        </script>
-                    </li>
-                </ul>
-            </div>
             <!-- End User -->
 
             <!--- Sidemenu -->
@@ -148,7 +124,10 @@
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.sidebar-inner').scrollTo($('li a.active'), 800)
+    if ($('.sidebar-inner li.active').length > 0){
+        var position = $('.sidebar-inner li.active').offset().top+270;
+        $('#scroll-to').slimScroll().scrollTo(position+'px');
+    }
 });
     function logoutConfirm(event){
         event.preventDefault();
