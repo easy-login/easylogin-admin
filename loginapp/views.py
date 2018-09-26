@@ -75,10 +75,11 @@ def register(request):
 @login_required
 def list_apps(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
-    apps = App.objects.filter(owner=request.user.id).order_by(order_by)
+    apps1 = App.objects.filter(owner=request.user.id).order_by(order_by)
     if request.GET.get("search"):
-        apps = apps.filter(name__contains=request.GET.get("search"))
-    return render(request, 'loginapp/app_list.html', {'apps': apps})
+        apps1 = apps1.filter(name__contains=request.GET.get("search"))
+    apps = App.objects.filter(owner=request.user.id).order_by('name')
+    return render(request, 'loginapp/app_list.html', {'apps1': apps1, 'apps': apps})
 
 
 @login_required
@@ -180,7 +181,7 @@ def app_detail(request, app_id):
             push_messages_error(request, form)
 
     form = AppForm()
-    apps = App.objects.filter(owner=request.user.id)
+    apps = App.objects.filter(owner=request.user.id).order_by('name')
     return render(request, 'loginapp/app_detail.html',
                   {'app': app, 'apps': apps, 'form': form, })
 
@@ -237,7 +238,7 @@ def user_report(request, app_id):
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
-        apps = App.objects.filter(owner=request.user.id)
+        apps = App.objects.filter(owner=request.user.id).order_by('name')
         providers = Provider.objects.all()
         return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
 
@@ -295,7 +296,7 @@ def app_report(request, app_id):
     else:
         total_data_auth = get_total_auth_report(db=db, app_id=app_id)
         total_data_provider = get_total_provider_report(db=db, app_id=app_id)
-        apps = App.objects.filter(owner=request.user.id)
+        apps = App.objects.filter(owner=request.user.id).order_by('name')
 
         return render(request, 'loginapp/report_app.html', {
             'app': app, 'apps': apps,
@@ -308,7 +309,7 @@ def app_report(request, app_id):
 def channel_list(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     channels = Channel.objects.filter(app=app_id).order_by('-created_at')
-    apps = App.objects.filter(owner=request.user.id)
+    apps = App.objects.filter(owner=request.user.id).order_by('name')
     providers = Provider.objects.all()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
@@ -434,6 +435,7 @@ def channel_detail(request, app_id, channel_id):
             print(form.errors)
 
     channels = Channel.objects.filter(app=app_id)
+    apps = App.objects.filter(owner=request.user.id)
     providers = Provider.objects.all()
     provider_name_list = list(set(Provider.objects.values_list('name', flat=True)))
     provider_id = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
@@ -441,7 +443,7 @@ def channel_detail(request, app_id, channel_id):
     form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/channel_detail.html',
-                  {"app": app, 'channel': channel, 'channels': channels, 'providers': providers,
+                  {"app": app, 'apps': apps, 'channel': channel, 'channels': channels, 'providers': providers,
                    'provider_names': provider_name_list, 'provider_id': provider_id.id, 'form': form})
 
 

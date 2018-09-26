@@ -5,9 +5,7 @@ import MySQLdb
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
-from datetime import datetime, timedelta
-import random
-from os import urandom
+
 class TimezoneMiddleware(MiddlewareMixin):
     def process_request(self, request):
         tzname = request.session.get('local_timezone')
@@ -119,29 +117,3 @@ def get_auth_report_per_provider(db, app_id, from_dt=None, to_dt=None, is_login=
             results['total'][dt_str] += int(row[2])
     results['labels'] = labels
     return results
-
-def insert_sample_data(db):
-    providers = ['line', 'amazon', 'yahoojp']
-    samples = []
-    for i in range(0, 100):
-        provider = random.choice(providers)
-        dt = datetime.now() - timedelta(random.randint(0, 10))
-        nonce = urandom(16).hex()
-        samples.append((
-            dt, dt,
-            provider,
-            'http://localhost:8080/auth/callback',
-            nonce,
-            'succeeded',
-            3, random.randint(0, 1)
-        ))
-
-    db.cursor().executemany(
-        """
-        INSERT INTO auth_logs (created_at, modified_at, provider, callback_uri, nonce, status, app_id, is_login)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", samples)
-    db.commit()
-
-
-if __name__ == '__main__':
-    insert_sample_data(init_mysql_connection('localhost', 'root', 'root', 'sociallogin'))
