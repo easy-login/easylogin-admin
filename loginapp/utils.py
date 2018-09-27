@@ -1,10 +1,14 @@
-import hashlib
-import pytz
 import re
-import MySQLdb
 from datetime import datetime, timedelta
+import string
+import secrets
+
+import MySQLdb
+import pytz
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
+from django.conf import settings
+
 
 class TimezoneMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -16,8 +20,13 @@ class TimezoneMiddleware(MiddlewareMixin):
             timezone.deactivate()
 
 
-def generateApiKey(seed):
-    return hashlib.sha1(seed).hexdigest()
+def convert_to_user_timezone(dt):
+    return dt.replace(tzinfo=timezone.utc).astimezone(pytz.timezone(settings.TIME_ZONE))
+
+
+def generateApiKey(nbytes=32):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(nbytes))
 
 
 def validateURL(url):
