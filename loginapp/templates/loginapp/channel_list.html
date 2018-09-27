@@ -87,16 +87,16 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item">Edit</a>
+                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item clickable">Edit</a>
                     <!-- item-->
                     <form method="POST" action="{% url 'delete_channel' app.id channel.id %}">
                         {% csrf_token %}
-                    <button  class="dropdown-item" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
+                    <button  class="dropdown-item clickable" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
                     </form>
                     <!-- item-->
                 </div>
             </div>
-            <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="text-inverse">{{ channel.provider }}</a></h4>
+            <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="clickable">{{ channel.provider }}</a></h4>
             <div class="text-left">
                 <p class="text-inverse font-13"><strong>Client ID :</strong> <span class="m-l-15 text-muted">{{ channel.client_id }}</span></p>
 
@@ -107,14 +107,14 @@
             <ul class="text-inverse list-inline m-b-0">
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Create Time</h5>
-                    <p class="font-10 text-primary"> {{ channel.created_at|date:'N j,Y' }}
+                    <p class="font-10 text-muted"> {{ channel.created_at|date:'N j,Y' }}
                         <!--<small class="text-muted">{{ channel.created_at|date:'P' }}</small>-->
                     </p>
                 </li>
 
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Last Modify</h5>
-                    <p class="font-10 text-primary"> {{ channel.modified_at|date:'N j,Y' }}
+                    <p class="font-10 text-muted"> {{ channel.modified_at|date:'N j,Y' }}
                         <!--<small class="text-muted">{{ channel.modified_at|date:'P' }}</small>-->
                     </p>
                 </li>
