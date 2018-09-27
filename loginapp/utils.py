@@ -83,7 +83,7 @@ def get_total_provider_report(db, app_id):
         SELECT provider, count(id) 
         FROM auth_logs 
         WHERE app_id = %s and status = 'succeeded'
-        GROUP BY provider""", (app_id,))
+        GROUP BY provider ORDER BY provider""", (app_id,))
     rows = cursor.fetchmany(500)
     return [(row[0], row[1]) if row else (None, None) for row in rows]
 
@@ -111,7 +111,8 @@ def get_auth_report_per_provider(db, app_id, from_dt=None, to_dt=None, is_login=
         SELECT provider, DATE(modified_at), COUNT(provider) 
         FROM auth_logs 
         WHERE app_id = %s AND modified_at BETWEEN %s and %s AND status = 'succeeded' AND is_login = %s
-        GROUP BY DATE(modified_at), provider""", (app_id, from_dt, to_dt, is_login))
+        GROUP BY DATE(modified_at), provider
+        ORDER BY provider""", (app_id, from_dt, to_dt, is_login))
 
     i = 0
     while True:
