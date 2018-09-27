@@ -4,7 +4,7 @@ import json
 providers = [
     {
         "name": "line",
-        "version": ["v2.1"],
+        "version": ["v2", "v2.1"],
         "required_permissions": "openid",
         "basic_fields": [
             {
@@ -60,30 +60,6 @@ providers = [
                 "key": "email",
                 "name": "Email",
                 "permission": "profile"
-            }
-        ]
-    },
-    {
-        "name": "amazon",
-        "version": ["v3"],
-        "required_permissions": "profile:user_id",
-        "basic_fields": [
-            {
-                "key": "namev3",
-                "name": "Full Namev3",
-                "permission": "profilev3"
-            },
-            {
-                "key": "postal_codev3",
-                "name": "Postal Codev3",
-                "permission": "postal_codev3"
-            }
-        ],
-        "advanced_fields": [
-            {
-                "key": "emailv3",
-                "name": "Emailv3",
-                "permission": "profilev3"
             }
         ]
     },
