@@ -390,11 +390,11 @@ def channel_detail(request, app_id, channel_id):
             channel_update = form.save(commit=False)
             channel_update.modified_at = datetime.datetime.now()
 
-            provider_id = request.POST.get('api_version')
-            if provider_id is None:
+            provider = request.POST.get('api_version')
+            if provider is None:
                 messages.error(request, "Add channel failed: API version is required!")
                 return redirect('dashboard')
-            provider = Provider.objects.filter(pk=provider_id).first()
+            provider = Provider.objects.filter(pk=provider).first()
             provider_name = request.POST.get('provider')
             api_version = provider.version
             required_permission = provider.required_permissions
@@ -438,13 +438,13 @@ def channel_detail(request, app_id, channel_id):
     apps = App.objects.filter(owner=request.user.id)
     providers = Provider.objects.all()
     provider_name_list = list(set(Provider.objects.values_list('name', flat=True)))
-    provider_id = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
+    provider = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
     form = ChannelForm()
     form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/channel_detail.html',
                   {"app": app, 'apps': apps, 'channel': channel, 'channels': channels, 'providers': providers,
-                   'provider_names': provider_name_list, 'provider_id': provider_id.id, 'form': form})
+                   'provider_names': provider_name_list, 'provider_id': provider.id, 'form': form})
 
 
 @login_required
