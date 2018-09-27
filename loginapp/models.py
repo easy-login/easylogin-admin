@@ -118,8 +118,8 @@ class Channel(models.Model):
     client_id = models.CharField(max_length=255)
     client_secret = models.CharField(max_length=255)
     permissions = models.CharField(max_length=4095)
-    required_fields = models.CharField(max_length=4095)
-    options = models.CharField(max_length=1023)
+    required_fields = models.CharField(null=True, max_length=4095)
+    options = models.CharField(null=True, max_length=1023)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
 
     def required_fields_as_list(self):
