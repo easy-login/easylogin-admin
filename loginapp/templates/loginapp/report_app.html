@@ -141,7 +141,13 @@ var config = {
                 }],
                 yAxes: [{
                     ticks: {
-                        max: maxy + 1
+                        max: maxy + 1,
+                        beginAtZero: true,
+                        userCallback: function(label, index, labels) {
+                            if (Math.floor(label) === label) {
+                                return label;
+                            }
+                        },
                     },
                     display: true,
                     scaleLabel: {
