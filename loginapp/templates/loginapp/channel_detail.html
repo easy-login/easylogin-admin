@@ -190,7 +190,7 @@
                                     {% for field in provider.options_as_object %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
-                                               type="checkbox" value="{{ field.key }}" disabled
+                                               type="checkbox" value="{{ field.key }}" disabled checked
                                         {% if field.key in options %} checked {% endif %}>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
