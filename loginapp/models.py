@@ -40,7 +40,7 @@ class Provider(models.Model):
     required_permissions = models.CharField(max_length=1023)
     basic_fields = models.CharField(max_length=4095)
     advanced_fields = models.CharField(max_length=4095)
-    options = models.CharField(max_length=4095)
+    options = models.CharField(null=True, max_length=4095)
 
     def required_permissions_as_list(self):
         if self.required_permissions == "":
@@ -118,8 +118,8 @@ class Channel(models.Model):
     client_id = models.CharField(max_length=255)
     client_secret = models.CharField(max_length=255)
     permissions = models.CharField(max_length=4095)
-    required_fields = models.CharField(max_length=4095)
-    options = models.CharField(max_length=1023)
+    required_fields = models.CharField(null=True, max_length=4095)
+    options = models.CharField(null=True, max_length=1023)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
 
     def required_fields_as_list(self):
@@ -143,7 +143,7 @@ class Profiles(models.Model):
     login_count = models.IntegerField()
     linked_at = models.DateTimeField()
     deleted = models.SmallIntegerField()
-    alias = models.BigIntegerField()
+    alias = models.BigIntegerField(null=True)
     user_id = models.IntegerField()
     user_pk = models.CharField(max_length=255)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
