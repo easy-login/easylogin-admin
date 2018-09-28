@@ -50,6 +50,11 @@ providers = [
                 "permission": "profile"
             },
             {
+                "key": "email",
+                "name": "Email",
+                "permission": "profile"
+            },
+            {
                 "key": "postal_code",
                 "name": "Postal Code",
                 "permission": "postal_code"
@@ -57,9 +62,14 @@ providers = [
         ],
         "advanced_fields": [
             {
-                "key": "email",
-                "name": "Email",
-                "permission": "profile"
+                "key": "shipping_address",
+                "name": "Payments Shipping Address",
+                "permission": "payments:shipping_address"
+            },
+            {
+                "key": "billing_address",
+                "name": "Payments Billing Address",
+                "permission": "payments:billing_address"
             }
         ]
     },
