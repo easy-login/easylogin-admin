@@ -42,7 +42,7 @@ providers = [
     {
         "name": "amazon",
         "version": ["v2"],
-        "required_permissions": "profile:user_id",
+        "required_permissions": "profile:user_id|payments:widget",
         "basic_fields": [
             {
                 "key": "name",
