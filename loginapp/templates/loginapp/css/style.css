@@ -6350,8 +6350,9 @@ File: Responsive
 }
 
 .clickable{
-    color:#71b6f9 !important;
+
 }
 .clickable:hover{
     text-decoration: underline !important;
+    color:#71b6f9 !important;
 }
