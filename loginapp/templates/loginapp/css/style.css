@@ -6356,3 +6356,6 @@ File: Responsive
     text-decoration: underline !important;
     color:#71b6f9 !important;
 }
+.tooltip{
+    font-size: 12px;
+}
