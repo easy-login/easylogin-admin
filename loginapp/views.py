@@ -467,7 +467,7 @@ def delete_channel(request, app_id, channel_id):
 @login_required
 def get_api_key(request):
     try:
-        return HttpResponse(generateApiKey(nbytes=64), content_type='text/plain')
+        return HttpResponse(generateApiKey(nbytes=48), content_type='text/plain')
     except Exception as e:
         return HttpResponse(e, status=404)
 
