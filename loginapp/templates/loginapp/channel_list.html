@@ -126,7 +126,7 @@
 <!--Add channel modal-->
 <div id="add-channel-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addChannelModal"
          style="display: none;" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="max-width:600px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="addChannelModal">New Channel</h4>
@@ -142,8 +142,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
-                            <div class="col-md-10">
+                            <label for="id_provider" class="col-md-3 col-form-label">Provider
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Provider is ..."></i></label>
+                            <div class="col-md-9">
                                 {% render_field channel_form.provider class='form-control' %}
                                 {% if channel_form.provider.errors %}
                                 <ul class="parsley-errors-list filled">
@@ -156,8 +158,8 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_api_version" class="col-md-2 col-form-label">API Version</label>
-                            <div class="col-md-10">
+                            <label for="id_api_version" class="col-md-3 col-form-label">API Version</label>
+                            <div class="col-md-9">
                                 <select name="api_version" id="id_api_version" class="form-control">
                                     {% for provider in providers %}
                                     <option class="version-{{ provider.name }} api-version-option" value="{{ provider.id }}" style="display: none">{{ provider.version }}</option>
@@ -167,8 +169,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
-                            <div class="col-md-10">
+                            <label for="id_client_id" class="col-md-3 col-form-label"><span class="label-required">Client ID</span>
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title=" Client ID is ..."></i></label>
+                            <div class="col-md-9">
                                 {% render_field channel_form.client_id class='form-control' placeholder='Client ID' %}
                                 {% if channel_form.client_id.errors %}
                                 <ul class="parsley-errors-list filled">
@@ -181,8 +185,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
-                            <div class="col-md-10">
+                            <label for="id_client_secret" class="col-md-3 col-form-label"><span class="label-required">Client Secret</span>
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Client secret is ..."></i></label>
+                            <div class="col-md-9">
                                 {% render_field channel_form.client_secret class='form-control' placeholder='Client Secret' %}
                                 {% if channel_form.client_secret.errors %}
                                 <ul class="parsley-errors-list filled">
@@ -233,12 +239,12 @@
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
                                                type="checkbox" value="{{ field.key }}" disabled {% if not key.default %} checked {% endif %}
-                                        {%if field.tooltip %} data-toggle="tooltip"
-                                         data-placement="right" title="" data-original-title="{{ field.tooltip }}" {% endif %}>
-                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"
-                                        {%if field.tooltip %} data-toggle="tooltip"
-                                         data-placement="right" title="" data-original-title="{{ field.tooltip }}" {% endif %}>
+                                        >
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}">
                                             {{ field.name }} </label>
+                                        {% if field.tooltip %} <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="{{ field.tooltip }}"></i>
+                                        {% endif %}
                                     </div>
                                     {% endfor %}
                                 </div>

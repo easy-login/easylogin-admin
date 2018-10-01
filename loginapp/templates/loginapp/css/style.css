@@ -6359,3 +6359,8 @@ File: Responsive
 .tooltip{
     font-size: 12px;
 }
+
+.label-required:after {
+  content:" *";
+  color:red;
+}

@@ -155,7 +155,8 @@ def add_app(request):
 
     else:
         form = AppForm()
-    return render(request, 'loginapp/app_add.html', {'form': form})
+    apps = App.objects.filter(owner=request.user.id).order_by('name')
+    return render(request, 'loginapp/app_add.html', {'apps': apps, 'form': form})
 
 
 @login_required
