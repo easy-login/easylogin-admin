@@ -13,7 +13,8 @@ from django.conf import settings
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, \
-    init_mysql_connection, getChartColor, get_total_auth_report, get_total_provider_report
+    init_mysql_connection, getChartColor, get_total_auth_report, get_total_provider_report, \
+    convert_to_user_timezone
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
 import string
 import random
@@ -154,7 +155,8 @@ def add_app(request):
 
     else:
         form = AppForm()
-    return render(request, 'loginapp/app_add.html', {'form': form})
+    apps = App.objects.filter(owner=request.user.id).order_by('name')
+    return render(request, 'loginapp/app_add.html', {'apps': apps, 'form': form})
 
 
 @login_required
@@ -222,10 +224,11 @@ def user_report(request, app_id):
         providers = Provider.objects.all()
         data = []
         for id, profile in enumerate(profiles[start_page:start_page + page_length]):
+            last_login = convert_to_user_timezone(profile['last_login'])
             row_data = [id + 1, profile['deleted'],
                         profile['user_pk'],
                         str(profile['alias']),
-                        profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
+                        last_login.strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             provider_split = profile['providers'].split(',')
             for provider in providers:
@@ -390,11 +393,11 @@ def channel_detail(request, app_id, channel_id):
             channel_update = form.save(commit=False)
             channel_update.modified_at = datetime.datetime.now()
 
-            provider_id = request.POST.get('api_version')
-            if provider_id is None:
+            provider = request.POST.get('api_version')
+            if provider is None:
                 messages.error(request, "Add channel failed: API version is required!")
                 return redirect('dashboard')
-            provider = Provider.objects.filter(pk=provider_id).first()
+            provider = Provider.objects.filter(pk=provider).first()
             provider_name = request.POST.get('provider')
             api_version = provider.version
             required_permission = provider.required_permissions
@@ -427,6 +430,7 @@ def channel_detail(request, app_id, channel_id):
                 app.save()
                 messages.success(request, "Channel was successfully updated!")
             except IntegrityError as error:
+                print('Add channel error', error)
                 messages.error(request, "Channel with " + channel.provider + " provider already exists!")
 
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
@@ -438,13 +442,13 @@ def channel_detail(request, app_id, channel_id):
     apps = App.objects.filter(owner=request.user.id)
     providers = Provider.objects.all()
     provider_name_list = list(set(Provider.objects.values_list('name', flat=True)))
-    provider_id = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
+    provider = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
     form = ChannelForm()
     form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/channel_detail.html',
                   {"app": app, 'apps': apps, 'channel': channel, 'channels': channels, 'providers': providers,
-                   'provider_names': provider_name_list, 'provider_id': provider_id.id, 'form': form})
+                   'provider_names': provider_name_list, 'provider_id': provider.id, 'form': form})
 
 
 @login_required
@@ -464,9 +468,7 @@ def delete_channel(request, app_id, channel_id):
 @login_required
 def get_api_key(request):
     try:
-        return HttpResponse(generateApiKey(
-            ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)).encode('utf-8')),
-            content_type='text/plain')
+        return HttpResponse(generateApiKey(nbytes=64), content_type='text/plain')
     except Exception as e:
         return HttpResponse(e, status=404)
 

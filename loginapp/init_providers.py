@@ -4,7 +4,7 @@ import json
 providers = [
     {
         "name": "line",
-        "version": ["v2.1"],
+        "version": ["v2", "v2.1"],
         "required_permissions": "openid",
         "basic_fields": [
             {
@@ -34,7 +34,7 @@ providers = [
             {
                 "key": "add_friend",
                 "name": "Add friend",
-                "default": true,
+                "default": True,
                 "tooltip": "Show checkbox add LINE user as friend after logged in"
             }
         ]
@@ -42,11 +42,16 @@ providers = [
     {
         "name": "amazon",
         "version": ["v2"],
-        "required_permissions": "profile:user_id",
+        "required_permissions": "profile:user_id|payments:widget",
         "basic_fields": [
             {
                 "key": "name",
                 "name": "Full Name",
+                "permission": "profile"
+            },
+            {
+                "key": "email",
+                "name": "Email",
                 "permission": "profile"
             },
             {
@@ -57,33 +62,14 @@ providers = [
         ],
         "advanced_fields": [
             {
-                "key": "email",
-                "name": "Email",
-                "permission": "profile"
-            }
-        ]
-    },
-    {
-        "name": "amazon",
-        "version": ["v3"],
-        "required_permissions": "profile:user_id",
-        "basic_fields": [
-            {
-                "key": "namev3",
-                "name": "Full Namev3",
-                "permission": "profilev3"
+                "key": "shipping_address",
+                "name": "Payments Shipping Address",
+                "permission": "payments:shipping_address"
             },
             {
-                "key": "postal_codev3",
-                "name": "Postal Codev3",
-                "permission": "postal_codev3"
-            }
-        ],
-        "advanced_fields": [
-            {
-                "key": "emailv3",
-                "name": "Emailv3",
-                "permission": "profilev3"
+                "key": "billing_address",
+                "name": "Payments Billing Address",
+                "permission": "payments:billing_address"
             }
         ]
     },

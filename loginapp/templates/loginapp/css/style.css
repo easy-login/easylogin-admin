@@ -6348,3 +6348,19 @@ File: Responsive
     position: absolute;
     right: 20px;
 }
+
+.clickable{
+
+}
+.clickable:hover{
+    text-decoration: underline !important;
+    color:#71b6f9 !important;
+}
+.tooltip{
+    font-size: 12px;
+}
+
+.label-required:after {
+  content:" *";
+  color:red;
+}

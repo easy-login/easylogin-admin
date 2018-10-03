@@ -17,7 +17,7 @@
     <li class="list-inline-item">
         <div class="create-app-button">
             <a href="{% url 'dashboard' %}"
-               class="btn btn-danger btn-rounded w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i> <span>Cancel</span>
+               class="btn btn-danger btn-rounded w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i><span>Cancel</span>
             </a>
         </div>
     </li>
@@ -41,11 +41,7 @@
 
 
 {% block sidemenu %}
-<li>
-    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> Your Profile </span>
-    </a>
-</li>
-
+{% include 'loginapp/app_menu.html' %}
 {% endblock %}
 
 
@@ -66,7 +62,7 @@
             <form class="form-horizontal m-t-20" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group row">
-                    <label for="id_name" class="col-md-2 col-form-label">Name</label>
+                    <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
                     <div class="col-md-8">
                         {% if form.name.errors %}
                         {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
@@ -84,7 +80,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="id_api_key" class="col-md-2 col-form-label">API Key</label>
+                    <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
                     <div class="col-md-6">
                         {% if form.api_key.errors %}
                         {% render_field form.api_key class='form-control parsley-error' readonly='readonly' placeholder='API Key' %}
@@ -108,7 +104,9 @@
 
                 <div id="multi-callback-uri">
                 <div class="form-group row">
-                    <label class="col-md-2 col-form-label">Callback URIs</label>
+                    <label class="col-md-2 col-form-label"><span class="label-required">Callback URIs</span>
+                        <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Callback URIs is ..."></i></label>
                     <div class="col-md-6">
                         {% if form.callback_uris.errors %}
                         {% render_field form.callback_uris class='form-control parsley-error' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
@@ -131,7 +129,9 @@
 
                 <div id="multi-allowed-ips">
                 <div class="form-group row ">
-                    <label class="col-md-2 col-form-label">Allowed IPs</label>
+                    <label class="col-md-2 col-form-label"><span>Allowed IPs </span>
+                    <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Allowed IPs is ..."></i></label>
                     <div class="col-md-6">
                         {% if form.allowed_ips.errors %}
                         {% render_field form.allowed_ips class='form-control parsley-error' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$' %}

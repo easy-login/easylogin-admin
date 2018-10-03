@@ -39,7 +39,7 @@
                     <div class="dropdown-menu app-navigation">
                         <!-- item-->
                         {% for option in apps %}
-                        <a href="{% url 'channel_list' option.id %}?tab_active=statistic" class="dropdown-item">{{ option.name }}</a>
+                        <a href="{% url 'channel_list' option.id %}" class="dropdown-item">{{ option.name }}</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -87,16 +87,16 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
-                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item">Edit</a>
+                    <a href="{% url 'channel_detail' app.id channel.id %}" class="dropdown-item clickable">Edit</a>
                     <!-- item-->
                     <form method="POST" action="{% url 'delete_channel' app.id channel.id %}">
                         {% csrf_token %}
-                    <button  class="dropdown-item" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
+                    <button  class="dropdown-item clickable" onclick="deleteConfirm(event)" type="submit" style="cursor: pointer">Delete</button>
                     </form>
                     <!-- item-->
                 </div>
             </div>
-            <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="text-inverse">{{ channel.provider }}</a></h4>
+            <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="clickable text-inverse">{{ channel.provider }}</a></h4>
             <div class="text-left">
                 <p class="text-inverse font-13"><strong>Client ID :</strong> <span class="m-l-15 text-muted">{{ channel.client_id }}</span></p>
 
@@ -107,14 +107,14 @@
             <ul class="text-inverse list-inline m-b-0">
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Create Time</h5>
-                    <p class="font-10 text-primary"> {{ channel.created_at|date:'N j,Y' }}
+                    <p class="font-10 text-muted"> {{ channel.created_at|date:'N j,Y' }}
                         <!--<small class="text-muted">{{ channel.created_at|date:'P' }}</small>-->
                     </p>
                 </li>
 
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Last Modify</h5>
-                    <p class="font-10 text-primary"> {{ channel.modified_at|date:'N j,Y' }}
+                    <p class="font-10 text-muted"> {{ channel.modified_at|date:'N j,Y' }}
                         <!--<small class="text-muted">{{ channel.modified_at|date:'P' }}</small>-->
                     </p>
                 </li>
@@ -126,7 +126,7 @@
 <!--Add channel modal-->
 <div id="add-channel-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addChannelModal"
          style="display: none;" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="max-width:600px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="addChannelModal">New Channel</h4>
@@ -142,8 +142,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_provider" class="col-md-2 col-form-label">Provider</label>
-                            <div class="col-md-10">
+                            <label for="id_provider" class="col-md-3 col-form-label">Provider
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Provider is ..."></i></label>
+                            <div class="col-md-9">
                                 {% render_field channel_form.provider class='form-control' %}
                                 {% if channel_form.provider.errors %}
                                 <ul class="parsley-errors-list filled">
@@ -156,8 +158,8 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_api_version" class="col-md-2 col-form-label">API Version</label>
-                            <div class="col-md-10">
+                            <label for="id_api_version" class="col-md-3 col-form-label">API Version</label>
+                            <div class="col-md-9">
                                 <select name="api_version" id="id_api_version" class="form-control">
                                     {% for provider in providers %}
                                     <option class="version-{{ provider.name }} api-version-option" value="{{ provider.id }}" style="display: none">{{ provider.version }}</option>
@@ -167,8 +169,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_client_id" class="col-md-2 col-form-label">Client ID</label>
-                            <div class="col-md-10">
+                            <label for="id_client_id" class="col-md-3 col-form-label"><span class="label-required">Client ID</span>
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title=" Client ID is ..."></i></label>
+                            <div class="col-md-9">
                                 {% render_field channel_form.client_id class='form-control' placeholder='Client ID' %}
                                 {% if channel_form.client_id.errors %}
                                 <ul class="parsley-errors-list filled">
@@ -181,8 +185,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="id_client_secret" class="col-md-2 col-form-label">Client Secret</label>
-                            <div class="col-md-10">
+                            <label for="id_client_secret" class="col-md-3 col-form-label"><span class="label-required">Client Secret</span>
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Client secret is ..."></i></label>
+                            <div class="col-md-9">
                                 {% render_field channel_form.client_secret class='form-control' placeholder='Client Secret' %}
                                 {% if channel_form.client_secret.errors %}
                                 <ul class="parsley-errors-list filled">
@@ -232,8 +238,13 @@
                                     {% for field in provider.options_as_object %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
-                                               type="checkbox" value="{{ field.key }}" disabled>
-                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
+                                               type="checkbox" value="{{ field.key }}" disabled {% if not key.default %} checked {% endif %}
+                                        >
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}">
+                                            {{ field.name }} </label>
+                                        {% if field.tooltip %} <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="{{ field.tooltip }}"></i>
+                                        {% endif %}
                                     </div>
                                     {% endfor %}
                                 </div>

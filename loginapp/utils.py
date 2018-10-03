@@ -1,10 +1,14 @@
-import hashlib
-import pytz
 import re
-import MySQLdb
 from datetime import datetime, timedelta
+import string
+import secrets
+
+import MySQLdb
+import pytz
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
+from django.conf import settings
+
 
 class TimezoneMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -16,8 +20,13 @@ class TimezoneMiddleware(MiddlewareMixin):
             timezone.deactivate()
 
 
-def generateApiKey(seed):
-    return hashlib.sha1(seed).hexdigest()
+def convert_to_user_timezone(dt):
+    return dt.replace(tzinfo=timezone.utc).astimezone(pytz.timezone(settings.TIME_ZONE))
+
+
+def generateApiKey(nbytes=32):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(nbytes))
 
 
 def validateURL(url):
@@ -74,7 +83,7 @@ def get_total_provider_report(db, app_id):
         SELECT provider, count(id) 
         FROM auth_logs 
         WHERE app_id = %s and status = 'succeeded'
-        GROUP BY provider""", (app_id,))
+        GROUP BY provider ORDER BY provider""", (app_id,))
     rows = cursor.fetchmany(500)
     return [(row[0], row[1]) if row else (None, None) for row in rows]
 
@@ -102,7 +111,8 @@ def get_auth_report_per_provider(db, app_id, from_dt=None, to_dt=None, is_login=
         SELECT provider, DATE(modified_at), COUNT(provider) 
         FROM auth_logs 
         WHERE app_id = %s AND modified_at BETWEEN %s and %s AND status = 'succeeded' AND is_login = %s
-        GROUP BY DATE(modified_at), provider""", (app_id, from_dt, to_dt, is_login))
+        GROUP BY DATE(modified_at), provider
+        ORDER BY provider""", (app_id, from_dt, to_dt, is_login))
 
     i = 0
     while True:
