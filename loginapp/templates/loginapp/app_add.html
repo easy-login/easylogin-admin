@@ -220,6 +220,7 @@ function duplicateInput(element){
             input.append('<div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div>')
         }
         input.find('input').first().attr('id', element_container.find('input').first().attr('id')+'-'+num_input)
+        input.find('input').first().val("")
         element_container.append(input)
     }
 }
