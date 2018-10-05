@@ -4,7 +4,7 @@ import json
 providers = [
     {
         "name": "line",
-        "version": ["v2", "v2.1"],
+        "version": ["v2.1"],
         "required_permissions": "openid",
         "basic_fields": [
             {
@@ -34,7 +34,7 @@ providers = [
             {
                 "key": "add_friend",
                 "name": "Add friend",
-                "default": True,
+                "default": False,
                 "tooltip": "Show checkbox add LINE user as friend after logged in"
             }
         ]
@@ -42,7 +42,7 @@ providers = [
     {
         "name": "amazon",
         "version": ["v2"],
-        "required_permissions": "profile:user_id|payments:widget",
+        "required_permissions": "profile:user_id",
         "basic_fields": [
             {
                 "key": "name",
@@ -64,12 +64,12 @@ providers = [
             {
                 "key": "shipping_address",
                 "name": "Payments Shipping Address",
-                "permission": "payments:shipping_address"
+                "permission": "payments:widget|payments:shipping_address"
             },
             {
                 "key": "billing_address",
                 "name": "Payments Billing Address",
-                "permission": "payments:billing_address"
+                "permission": "payments:widget|payments:billing_address"
             }
         ]
     },
@@ -139,6 +139,80 @@ providers = [
                 "key": "address",
                 "name": "Address",
                 "permission": "address"
+            }
+        ]
+    },
+    {
+        "name": "facebook",
+        "version": ["v3.1"],
+        "required_permissions": "public_profile",
+        "basic_fields": [
+            {
+                "key": "first_name",
+                "name": "First Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "last_name",
+                "name": "Last Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "middle_name",
+                "name": "Middle Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "name",
+                "name": "Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "picture",
+                "name": "Picture URL",
+                "permission": "public_profile"
+            },
+            {
+                "key": "email",
+                "name": "Email",
+                "permission": "email"
+            }
+        ],
+        "advanced_fields": [
+            {
+                "key": "age_range",
+                "name": "Age Range",
+                "permission": "user_age_range"
+            },
+            {
+                "key": "birthday",
+                "name": "Birthday",
+                "permission": "user_birthday"
+            },
+            {
+                "key": "gender",
+                "name": "Gender",
+                "permission": "user_gender"
+            },
+            {
+                "key": "hometown",
+                "name": "Hometown",
+                "permission": "user_hometown"
+            },
+            {
+                "key": "likes",
+                "name": "User Likes",
+                "permission": "user_likes"
+            },
+            {
+                "key": "link",
+                "name": "Timeline Link",
+                "permission": "user_link"
+            },
+            {
+                "key": "location",
+                "name": "Location",
+                "permission": "user_location"
             }
         ]
     }
