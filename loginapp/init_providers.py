@@ -42,7 +42,7 @@ providers = [
     {
         "name": "amazon",
         "version": ["v2"],
-        "required_permissions": "profile:user_id",
+        "required_permissions": "profile:user_id|payments:widget",
         "basic_fields": [
             {
                 "key": "name",
@@ -64,12 +64,12 @@ providers = [
             {
                 "key": "shipping_address",
                 "name": "Payments Shipping Address",
-                "permission": "payments:widget|payments:shipping_address"
+                "permission": "payments:shipping_address"
             },
             {
                 "key": "billing_address",
                 "name": "Payments Billing Address",
-                "permission": "payments:widget|payments:billing_address"
+                "permission": "payments:billing_address"
             }
         ]
     },
