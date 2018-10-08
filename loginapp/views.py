@@ -12,10 +12,11 @@ from django.conf import settings
 
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.utils import generateApiKey, getOrderValue, get_auth_report_per_provider, \
-    init_mysql_connection, getChartColor, get_total_auth_report, get_total_provider_report, \
-    convert_to_user_timezone
+from loginapp.utils import generateApiKey, getOrderValue, \
+    getChartColor, convert_to_user_timezone
 from loginapp.models import App, Provider, Channel, Profiles, GroupConcat
+from loginapp.reports import get_auth_report_per_provider, get_total_provider_report, get_total_auth_report
+
 import string
 import random
 import datetime
@@ -33,7 +34,8 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        user = AuthenticationWithEmailBackend.authenticate(None, username=email, password=password)
+        auth_backend = AuthenticationWithEmailBackend()
+        user = auth_backend.authenticate(username=email, password=password)
         if user is not None:
             request.session.set_expiry(86400)
             signin(request, user)
@@ -250,11 +252,6 @@ def user_report(request, app_id):
 def app_report(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
 
-    dbUser = settings.DATABASES.get('default').get('USER')
-    dbPassword = settings.DATABASES.get('default').get('PASSWORD')
-    dbDatabase = settings.DATABASES.get('default').get('NAME')
-    dbHost = settings.DATABASES.get('default').get('HOST')
-    db = init_mysql_connection(user=dbUser, passwd=dbPassword, db=dbDatabase, host=dbHost)
     if request.GET.get('chart_loading'):
         isLogin = request.GET.get('is_login', '1')
         provider = request.GET.get('provider', 'all')
@@ -262,8 +259,7 @@ def app_report(request, app_id):
                                     .strftime(datetime.datetime.today() - datetime.timedelta(days=7), '%Y-%m-%d'))
         endDate = request.GET.get('endDate', datetime.datetime.strftime(datetime.datetime.today(), '%Y-%m-%d'))
 
-        dataChart = get_auth_report_per_provider(db=db,
-                                                 app_id=app_id,
+        dataChart = get_auth_report_per_provider(app_id=app_id,
                                                  from_dt=startDate,
                                                  to_dt=endDate,
                                                  is_login=int(isLogin))
@@ -297,8 +293,8 @@ def app_report(request, app_id):
 
         return HttpResponse(json.dumps(dataChartJson), content_type='application/json')
     else:
-        total_data_auth = get_total_auth_report(db=db, app_id=app_id)
-        total_data_provider = get_total_provider_report(db=db, app_id=app_id)
+        total_data_auth = get_total_auth_report(app_id=app_id)
+        total_data_provider = get_total_provider_report(app_id=app_id)
         apps = App.objects.filter(owner=request.user.id).order_by('name')
 
         return render(request, 'loginapp/report_app.html', {
