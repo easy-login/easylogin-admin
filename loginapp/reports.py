@@ -11,7 +11,6 @@ def get_total_auth_report(app_id):
             WHERE app_id = %s and status = 'succeeded' 
             GROUP BY is_login""", (app_id,))
         rows = cursor.fetchmany(10)
-        print(rows)
         return [('Login' if int(row[0]) else 'Register', row[1])for row in rows]
 
 
@@ -31,7 +30,11 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
         _from = datetime.strptime(from_dt, '%Y-%m-%d')
         _to = datetime.strptime(to_dt, '%Y-%m-%d')
 
-        results = {'facebook': {}, 'line': {}, 'yahoojp': {}, 'amazon': {}, 'total': {}}
+        results = {
+            'facebook': {},
+            'line': {}, 'yahoojp': {}, 'amazon': {},
+            'total': {}
+        }
         for provider in results:
             results[provider] = {}
 
