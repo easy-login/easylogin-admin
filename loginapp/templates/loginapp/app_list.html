@@ -7,67 +7,33 @@
 {% endblock %}
 {% block topbar%}
 
-<ul class="nav navbar-nav list-inline navbar-left">
-    <li class="list-inline-item">
-        <button class="button-menu-mobile open-left">
-            <i class="mdi mdi-menu"></i>
-        </button>
-    </li>
-    <li class="list-inline-item">
-        <div class="create-app-button">
-            <a href="{% url 'add_app' %}"
-               class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
-                    class="mdi mdi-plus"></i> <span>Add Application</span>
-            </a>
+<li class="list-inline-item">
+    <div class="create-app-button">
+        <a href="{% url 'add_app' %}"
+           class="btn btn-success btn-bordred w-md waves-effect waves-light m-b-5"><i
+                class="mdi mdi-plus"></i> <span>Add Application</span>
+        </a>
+    </div>
+</li>
+<li class="list-inline-item float-right create-app-button">
+    <form class="form-inline">
+        <div class="form-group select-order-by">
+            <label>Sort :</label>
+            <select class="form-control ml-2 form-control-sm" onchange="location = this.value;">
+                <option value="{% url 'dashboard' %}?order_by=-created_at">Date Created</option>
+                <option value="{% url 'dashboard' %}?order_by=-modified_at">Date Modified</option>
+                <option value="{% url 'dashboard' %}?order_by=name">Name</option>
+            </select>
         </div>
-    </li>
-</ul>
-
-<nav class="navbar-custom">
-
-    <ul class="list-unstyled topbar-right-menu float-right mb-0">
-
-        <li class="">
-            <form class="app-search app-search-custom" method="GET" action="{% url 'dashboard' %}">
-                <input type="text" placeholder="Search..."
-                       class="form-control" name="search" value="{{ request.GET.search }}">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </li>
-
-    </ul>
-</nav>
+    </form>
+</li>
 {% endblock %}
-
 
 {% block sidemenu %}
 {% include 'loginapp/app_menu.html' %}
 {% endblock %}
 
 {% block content%}
-<div class="row">
-    <div class="col-sm-4">
-    </div>
-    <div class="col-sm-8 m-b-20">
-        <div class="app-sort pull-right">
-            <div class="app-sort-item">
-                <form class="form-inline">
-                    <div class="form-group select-order-by">
-                        <label>Sort :</label>
-                        <select class="form-control ml-2 form-control-sm" onchange="location = this.value;">
-                            <option value="{% url 'dashboard' %}?order_by=-created_at">Date Created</option>
-                            <option value="{% url 'dashboard' %}?order_by=-modified_at">Date Modified</option>
-                            <option value="{% url 'dashboard' %}?order_by=name">Name</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div><!-- end col-->
-</div>
-<!-- end row -->
-
-
 <div class="row">
     <div class="col-md-12">
         {% if messages %}

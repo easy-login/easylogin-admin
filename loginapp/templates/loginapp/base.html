@@ -29,61 +29,94 @@
 
 <body class="fixed-left">
 
+<!-- Navigation Bar-->
+        <header id="topnav">
+            <div class="topbar-main">
+                <div class="container-fluid">
+
+                    <!-- Logo container-->
+                    <div class="logo">
+                        <a href="{% url 'index' %}" class="logo logo-small"><span><i class="mdi mdi-36px mdi-layers"></i></a>
+                        <a href="{% url 'index' %}" class="logo logo-large"><span>Easy<span>Login</span></span></a>
+                    </div>
+                    <!-- End Logo container-->
+
+
+                    <div class="menu-extras topbar-custom">
+
+                        <ul class="list-unstyled topbar-right-menu float-right mb-0">
+
+                            <li class="menu-item">
+                                <!-- Mobile menu toggle-->
+                                <a class="navbar-toggle nav-link">
+                                    <div class="lines">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </a>
+                                <!-- End mobile menu toggle-->
+                            </li>
+                            <li class="hide-phone">
+                                <form class="app-search app-search-custom" method="GET" action="{% url 'dashboard' %}">
+                                    <input type="text" placeholder="Search..."
+                                           class="form-control" name="search" value="{{ request.GET.search }}">
+                                    <button type="submit"><i class="fa fa-search"></i></button>
+                                </form>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
+                                   aria-haspopup="false" aria-expanded="false">
+                                    <img src="{% static 'images/ninja.png' %}" alt="user-img" title="{{ request.user.username }}"
+                         class="rounded-circle img-thumbnail img-responsive">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+
+                                    <!-- item-->
+                                    <a href="{% url 'profile' %}" class="dropdown-item notify-item clickable">
+                                        <i class="ti-user m-r-5"></i> Profile
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="" class="dropdown-item notify-item clickable" onclick="return logoutConfirm(event)">
+                                        <i class="ti-power-off m-r-5"></i> Logout
+                                    </a>
+
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <!-- end menu-extras -->
+
+                    <div class="clearfix"></div>
+
+                </div> <!-- end container -->
+            </div>
+            <!-- end topbar-main -->
+
+            <div class="navbar-custom">
+                <div class="container-fluid">
+                    <div id="navigation">
+                        <!-- Navigation Menu-->
+                        <ul class="navigation-menu">
+                           {% block topbar%}
+                            {% endblock %}
+                        </ul>
+                        <!-- End navigation menu -->
+                    </div> <!-- end #navigation -->
+                </div> <!-- end container -->
+            </div> <!-- end navbar-custom -->
+        </header>
+        <!-- End Navigation Bar-->
+
 <!-- Begin page -->
-<div id="wrapper">
-
-    <!-- Top Bar Start -->
-    <div class="topbar">
-
-        <!-- LOGO -->
-        <div class="topbar-left">
-            <a href="{% url 'index' %}" class="logo"><span>Easy<span>Login</span></span><i class="mdi mdi-layers"></i></a>
-        </div>
-
-        <!-- Button mobile view to collapse sidebar menu -->
-        <div class="navbar navbar-default" role="navigation">
-            <div class="container-fluid">
-
-                <!-- Page title -->
-                {% block topbar%}
-                {% endblock %}
-            </div><!-- end container -->
-        </div><!-- end navbar -->
-    </div>
-    <!-- Top Bar End -->
-
+<div class="wrapper">
 
     <!-- ========== Left Sidebar Start ========== -->
     <div class="left side-menu">
         <div class="sidebar-inner slimscrollleft" id="scroll-to">
-
-            <!-- User -->
-            <div class="user-box">
-                <div class="user-img">
-                    <img src="{% static 'images/ninja.png' %}" alt="user-img" title="{{ request.user.username }}"
-                         class="rounded-circle img-thumbnail img-responsive">
-                    <div class="user-status online"><i class="mdi mdi-adjust"></i></div>
-                </div>
-                <h5><a href="{% url 'profile' %}">{{ request.user.username }}</a></h5>
-                <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a href="{% url 'profile' %}">
-                            <i class="mdi mdi-24px mdi-settings"></i>
-                        </a>
-                    </li>
-
-                    <li class="list-inline-item">
-                        <a class="text-custom" tabindex="0" data-trigger="focus" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a href='' onclick='return logoutConfirm(event)'>Logout</a>">
-                            <i class="mdi mdi-24px mdi-power"></i>
-                        </a>
-                        <script>
-
-                        </script>
-                    </li>
-                </ul>
-            </div>
-            <!-- End User -->
-
             <!--- Sidemenu -->
             <div id="sidebar-menu">
                 <ul>
@@ -95,7 +128,6 @@
             </div>
             <!-- Sidebar -->
             <div class="clearfix"></div>
-
         </div>
 
     </div>
