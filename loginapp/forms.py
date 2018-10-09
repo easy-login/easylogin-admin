@@ -115,7 +115,7 @@ class ChannelForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ChannelForm, self).__init__(*args, **kwargs)
-        self.fields['provider'].choices = Provider.objects.all().values_list('name','name').distinct()
+        self.fields['provider'].choices = Provider.objects.all().values_list('name', 'name').distinct()
 
     class Meta:
         model = Channel

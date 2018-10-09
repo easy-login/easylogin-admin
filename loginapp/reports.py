@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 
 from django.db import connection
 
+from loginapp.models import Provider
+from loginapp.utils import dict_fetchall, convert_to_user_timezone
+
 
 def get_total_auth_report(app_id):
     with connection.cursor() as cursor:
@@ -10,9 +13,8 @@ def get_total_auth_report(app_id):
             FROM auth_logs 
             WHERE app_id = %s and status = 'succeeded' 
             GROUP BY is_login""", (app_id,))
-        rows = cursor.fetchmany(10)
-        print(rows)
-        return [('Login' if int(row[0]) else 'Register', row[1])for row in rows]
+        rows = cursor.fetchall()
+        return [('Login' if int(row[0]) else 'Register', row[1]) for row in rows]
 
 
 def get_total_provider_report(app_id):
@@ -22,7 +24,7 @@ def get_total_provider_report(app_id):
             FROM auth_logs 
             WHERE app_id = %s and status = 'succeeded'
             GROUP BY provider ORDER BY provider""", (app_id,))
-        rows = cursor.fetchmany(10)
+        rows = cursor.fetchall()
         return [(row[0], row[1]) for row in rows]
 
 
@@ -31,11 +33,11 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
         _from = datetime.strptime(from_dt, '%Y-%m-%d')
         _to = datetime.strptime(to_dt, '%Y-%m-%d')
 
-        results = {'facebook': {}, 'line': {}, 'yahoojp': {}, 'amazon': {}, 'total': {}}
-        for provider in results:
-            results[provider] = {}
-
+        providers = Provider.provider_names()
+        results = {provider: dict() for provider in providers}
+        results['total'] = dict()
         labels = set()
+
         while _from <= _to:
             dt_str = _from.strftime('%Y-%m-%d')
             labels.add(dt_str)
@@ -63,6 +65,41 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
                 provider = row[0]
                 results[provider][dt_str] = int(row[2])
                 results['total'][dt_str] += int(row[2])
-        results['labels'] = labels
 
-        return results
+        return list(labels), results
+
+
+def get_user_report(app_id, page_length, start_page, order_by, search_value):
+    with connection.cursor() as cursor:
+        offset = start_page * page_length
+        limit = offset + page_length
+        if search_value:
+            cursor.execute("""
+                SELECT alias AS social_id, 
+                    user_pk AS user_id, 
+                    MAX(authorized_at) AS last_login, 
+                    SUM(login_count) AS login_total, 
+                    GROUP_CONCAT(provider) AS linked_providers 
+                FROM social_profiles
+                WHERE app_id = %s AND user_id = %s 
+                GROUP BY alias, user_pk
+                ORDER BY {} LIMIT {}, {}
+                """.format(order_by, offset, limit), (app_id, search_value,))
+        else:
+            cursor.execute("""
+                SELECT alias AS social_id, 
+                    user_pk AS user_id, 
+                    MAX(authorized_at) AS last_login,  
+                    SUM(login_count) AS login_total, 
+                    GROUP_CONCAT(provider) AS linked_providers 
+                FROM social_profiles
+                WHERE app_id = %s
+                GROUP BY alias, user_pk
+                ORDER BY {} LIMIT {}, {}
+                """.format(order_by, offset, limit), (app_id,))
+
+        rows = dict_fetchall(cursor)
+        for row in rows:
+            row['last_login'] = convert_to_user_timezone(row['last_login'])
+            row['linked_providers'] = row['linked_providers'].split(',')
+        return len(rows), rows
