@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 from django.db import connection
 
+from loginapp.utils import dict_fetchall, convert_to_user_timezone
+
 
 def get_total_auth_report(app_id):
     with connection.cursor() as cursor:
@@ -11,7 +13,7 @@ def get_total_auth_report(app_id):
             WHERE app_id = %s and status = 'succeeded' 
             GROUP BY is_login""", (app_id,))
         rows = cursor.fetchmany(10)
-        return [('Login' if int(row[0]) else 'Register', row[1])for row in rows]
+        return [('Login' if int(row[0]) else 'Register', row[1]) for row in rows]
 
 
 def get_total_provider_report(app_id):
@@ -69,3 +71,35 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
         results['labels'] = labels
 
         return results
+
+
+def get_user_report(app_id, page_length, start_page, order_by, search_value):
+    with connection.cursor() as cursor:
+        offset = start_page * page_length
+        limit = offset + page_length
+        if search_value:
+            cursor.execute("""
+                SELECT alias, user_pk, MAX(authorized_at) AS last_login, 
+                    SUM(login_count) AS login_total, 
+                    GROUP_CONCAT(provider) AS linked_providers 
+                FROM social_profiles
+                WHERE app_id = %s AND user_id = %s 
+                GROUP BY alias, user_pk
+                ORDER BY %s LIMIT %s, %s
+                """, (app_id, search_value, order_by, offset, limit))
+        else:
+            cursor.execute("""
+                SELECT alias, user_pk, MAX(authorized_at) AS last_login, 
+                    SUM(login_count) AS login_total, 
+                    GROUP_CONCAT(provider) AS linked_providers 
+                FROM social_profiles
+                WHERE app_id = %s
+                GROUP BY alias, user_pk
+                ORDER BY %s LIMIT %s, %s
+                """, (app_id, order_by, offset, limit))
+
+        rows = dict_fetchall(cursor)
+        for row in rows:
+            row['last_login'] = convert_to_user_timezone(row['last_login'])
+            row['linked_providers'] = row['linked_providers'].split(',')
+        return len(rows), rows

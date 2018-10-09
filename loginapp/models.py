@@ -131,37 +131,3 @@ class Channel(models.Model):
     class Meta:
         db_table = "channels"
         unique_together = ('app', 'provider')
-
-
-class Profiles(models.Model):
-    create_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now_add=True)
-    provider = models.CharField(max_length=15)
-    _pk = models.CharField(max_length=40, db_column='pk')
-    attrs = models.CharField(max_length=4095)
-    authorized_at = models.DateTimeField()
-    login_count = models.IntegerField()
-    linked_at = models.DateTimeField()
-    deleted = models.SmallIntegerField()
-    alias = models.BigIntegerField(null=True)
-    user_id = models.IntegerField()
-    user_pk = models.CharField(max_length=255)
-    app = models.ForeignKey(App, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = "social_profiles"
-
-
-class GroupConcat(models.Aggregate):
-    function = 'GROUP_CONCAT'
-    template = '%(function)s(%(distinct)s%(expressions)s%(ordering)s%(separator)s)'
-
-    def __init__(self, expression, distinct=False, ordering=None, separator=',', **extra):
-        super(GroupConcat, self).__init__(
-            expression,
-            distinct='DISTINCT ' if distinct else '',
-            ordering=' ORDER BY %s' % ordering if ordering is not None else '',
-            separator=' SEPARATOR "%s"' % separator,
-            output_field=models.CharField(),
-            **extra
-        )
