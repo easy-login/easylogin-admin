@@ -5401,7 +5401,7 @@ File: Menu
 }
 
 .topbar .topbar-left .logo {
-  line-height: 70px;
+    //line-height: 70px;
 }
 
 .navbar-default {
@@ -5961,7 +5961,7 @@ File: Menu
 
 #wrapper.enlarged .topbar .topbar-left .logo i {
   display: block;
-  line-height: 70px;
+  //line-height: 70px;
   color: #435966 !important;
 }
 
@@ -6315,7 +6315,7 @@ File: Responsive
 
 /* My CSS*/
 .create-app-button{
-    margin-top: 20px;
+    //margin-top: 20px;
 }
 .create-channel-button{
     margin-top: 10px;
@@ -6363,4 +6363,8 @@ File: Responsive
 .label-required:after {
   content:" *";
   color:red;
+}
+
+.app-search-custom .form-control{
+    margin-top:0px;
 }

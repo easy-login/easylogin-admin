@@ -28,7 +28,7 @@
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
 
         <li class="">
-            <form class="app-search" method="GET" action="{% url 'dashboard' %}">
+            <form class="app-search app-search-custom" method="GET" action="{% url 'dashboard' %}">
                 <input type="text" placeholder="Search..."
                        class="form-control" name="search" value="{{ request.GET.search }}">
                 <button type="submit"><i class="fa fa-search"></i></button>
