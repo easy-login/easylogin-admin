@@ -62,6 +62,10 @@ class Provider(models.Model):
     class Meta:
         db_table = "providers"
 
+    @classmethod
+    def provider_names(cls):
+        return ['amazon', 'facebook', 'line', 'yahoojp']
+
 
 class App(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.db import connection
 
+from loginapp.models import Provider
 from loginapp.utils import dict_fetchall, convert_to_user_timezone
 
 
@@ -12,7 +13,7 @@ def get_total_auth_report(app_id):
             FROM auth_logs 
             WHERE app_id = %s and status = 'succeeded' 
             GROUP BY is_login""", (app_id,))
-        rows = cursor.fetchmany(10)
+        rows = cursor.fetchall()
         return [('Login' if int(row[0]) else 'Register', row[1]) for row in rows]
 
 
@@ -23,7 +24,7 @@ def get_total_provider_report(app_id):
             FROM auth_logs 
             WHERE app_id = %s and status = 'succeeded'
             GROUP BY provider ORDER BY provider""", (app_id,))
-        rows = cursor.fetchmany(10)
+        rows = cursor.fetchall()
         return [(row[0], row[1]) for row in rows]
 
 
@@ -32,15 +33,11 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
         _from = datetime.strptime(from_dt, '%Y-%m-%d')
         _to = datetime.strptime(to_dt, '%Y-%m-%d')
 
-        results = {
-            'facebook': {},
-            'line': {}, 'yahoojp': {}, 'amazon': {},
-            'total': {}
-        }
-        for provider in results:
-            results[provider] = {}
-
+        providers = Provider.provider_names()
+        results = {provider: dict() for provider in providers}
+        results['total'] = dict()
         labels = set()
+
         while _from <= _to:
             dt_str = _from.strftime('%Y-%m-%d')
             labels.add(dt_str)
@@ -68,9 +65,8 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
                 provider = row[0]
                 results[provider][dt_str] = int(row[2])
                 results['total'][dt_str] += int(row[2])
-        results['labels'] = labels
 
-        return results
+        return list(labels), results
 
 
 def get_user_report(app_id, page_length, start_page, order_by, search_value):

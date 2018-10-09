@@ -201,7 +201,6 @@ def delete_app(request, app_id):
 @login_required
 def user_report(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
-    providers = Provider.objects.order_by('name')
     column_dic = {
         '1': 'deleted',
         '2': 'user_id',
@@ -224,6 +223,7 @@ def user_report(request, app_id):
                                                   order_by=order_by)
         records_filtered = len(profiles)
         data = []
+        providers = Provider.provider_names()
         for id, profile in enumerate(profiles):
             row_data = [id + 1, None,
                         profile['user_id'],
@@ -232,7 +232,7 @@ def user_report(request, app_id):
                         profile['login_total']]
             linked_providers = profile['linked_providers']
             for provider in providers:
-                if provider.name in linked_providers:
+                if provider in linked_providers:
                     row_data.append(1)
                 else:
                     row_data.append(0)
@@ -242,6 +242,7 @@ def user_report(request, app_id):
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         apps = App.objects.filter(owner=request.user.id).order_by('name')
+        providers = Provider.objects.order_by('name')
         return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
 
 
@@ -256,15 +257,15 @@ def app_report(request, app_id):
                                     .strftime(datetime.datetime.today() - datetime.timedelta(days=7), '%Y-%m-%d'))
         endDate = request.GET.get('endDate', datetime.datetime.strftime(datetime.datetime.today(), '%Y-%m-%d'))
 
-        dataChart = get_auth_report_per_provider(app_id=app_id,
-                                                 from_dt=startDate,
-                                                 to_dt=endDate,
-                                                 is_login=int(isLogin))
+        labels, dataChart = get_auth_report_per_provider(app_id=app_id, is_login=int(isLogin),
+                                                         from_dt=startDate, to_dt=endDate)
         datasets = []
-        labels = sorted(list(dataChart.get('labels')))
         maxy = 0
         check_zero = True
-        providerNames = ['total', 'amazon', 'line', 'yahoojp']
+        labels = sorted(labels)
+        providerNames = ['total']
+        providerNames.extend(Provider.provider_names())
+
         if provider != 'all':
             providerNames = [provider]
             dataChart = {provider: dataChart.get(provider)}
