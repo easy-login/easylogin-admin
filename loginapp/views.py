@@ -202,12 +202,22 @@ def delete_app(request, app_id):
 def user_report(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     providers = Provider.objects.order_by('name')
+    column_dic = {
+        '1': 'deleted',
+        '2': 'user_id',
+        '3': 'social_id',
+        '4': 'last_login',
+        '5': 'login_total'
+    }
 
     if request.GET.get('flag_loading'):
         page_length = int(request.GET.get('length', 25))
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
-        order_by = request.GET.get('order[0][column]', '2') + ' ' + request.GET.get('order[0][dir]', 'asc')
+
+        order_col = column_dic[request.GET.get('order[0][column]', '2')]
+        order_dir = request.GET.get('order[0][dir]', 'asc')
+        order_by = order_col + ' ' + order_dir
 
         records_total, profiles = get_user_report(app_id=app_id, search_value=search_value,
                                                   page_length=page_length, start_page=start_page,
@@ -216,8 +226,8 @@ def user_report(request, app_id):
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1, None,
-                        profile['user_pk'],
-                        str(profile['alias']),
+                        profile['user_id'],
+                        str(profile['social_id']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
             linked_providers = profile['linked_providers']

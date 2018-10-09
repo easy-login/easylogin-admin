@@ -39,17 +39,6 @@ def validateURL(url):
     return re.match(regex, url) is not None
 
 
-def getOrderValue(column, value):
-    column_dic = {
-        '1': 'deleted',
-        '2': 'user_id',
-        '3': 'last_login',
-        '4': 'login_total'
-    }
-    column_name = column_dic.get(column, 'user_id')
-    return '-' + column_name if value == 'desc' else column_name
-
-
 def getChartColor(provider):
     color_dic = {
         'total': '#188ae2',
