@@ -10,36 +10,26 @@
 <!-- Page title -->
 {% block topbar %}
 <!-- Page title -->
-<ul class="nav navbar-nav list-inline navbar-left">
+<li class="list-inline-item">
+    <h4 class="page-title">User Statistic</h4>
+</li>
+<ul class="list-unstyled topbar-right-menu float-right mb-0">
     <li class="list-inline-item">
-        <button class="button-menu-mobile open-left">
-            <i class="mdi mdi-menu"></i>
-        </button>
-    </li>
-    <li class="list-inline-item">
-        <h4 class="page-title">User Statistic</h4>
-    </li>
-</ul>
-
-<nav class="navbar-custom">
-    <ul class="list-unstyled topbar-right-menu float-right mb-0">
-        <li class="list-inline-item">
-            <div class="app-list-select">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
-                            data-toggle="dropdown" aria-expanded="false">{{ app.name }}
-                    </button>
-                    <div class="dropdown-menu app-navigation">
-                        <!-- item-->
-                        {% for option in apps %}
-                        <a href="{% url 'statistic_login' option.id %}" class="dropdown-item">{{ option.name }}</a>
-                        {% endfor %}
-                    </div>
+        <div class="app-list-select">
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
+                        data-toggle="dropdown" aria-expanded="false">{{ app.name }}
+                </button>
+                <div class="dropdown-menu app-navigation">
+                    <!-- item-->
+                    {% for option in apps %}
+                    <a href="{% url 'statistic_login' option.id %}" class="dropdown-item">{{ option.name }}</a>
+                    {% endfor %}
                 </div>
             </div>
-        </li>
-    </ul>
-</nav>
+        </div>
+    </li>
+</ul>
 {% endblock %}
 
 {% block sidemenu %}

@@ -5431,8 +5431,7 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   -webkit-transition: all .5s ease;
   transition: all .5s ease;
   min-height: 60px;
-  background: #ffffff;
-  box-shadow: 0 0 18px 0 rgba(67, 89, 102, 0.1);
+  background: #ebeff2;
 }
 
 #topnav .has-submenu.active a {
@@ -5449,8 +5448,17 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
 
 #topnav .topbar-main {
   background: #435966;
+  box-shadow: 0 0 18px 0 rgba(67, 89, 102, 0.1);
 }
 
+#topnav .navbar-custom{
+    margin-left: 250px;
+    margin-top: 5px;
+}
+#topnav .navbar-custom .container-fluid{
+    max-width: 100%;
+    padding: 0px 20px;
+}
 #topnav .topbar-main .logo {
   color: #ffffff !important;
   letter-spacing: 1px;
@@ -5637,6 +5645,8 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
 /*
   Responsive Menu
 */
+
+/*
 @media (min-width: 992px) {
   #topnav .navigation-menu > li > a {
     padding-top: 20px;
@@ -5866,6 +5876,11 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
     display: block;
   }
 }
+*/
+
+#topnav .navbar-toggle {
+    display: none;
+}
 
 .topbar-custom {
   border-radius: 0;
@@ -5885,8 +5900,6 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
 .topbar-custom .menu-left {
   overflow: hidden;
 }
-
-/* Footer */
 
 
 /* Seach */
@@ -6351,18 +6364,24 @@ input.app-search-input:-ms-input-placeholder {
   }
 }
 /*# sourceMappingURL=style.css.map */
+/*======================================================================*/
+/* Custom CSS
+/*======================================================================*/
 
-
-/* My CSS*/
+.wrapper .container-fluid{
+    max-width: 100%;
+}
+.content{
+    padding: 0px 10px;
+}
 .create-app-button{
     margin-top: 5px;
 }
-.create-channel-button{
-    margin-top: 10px;
-}
 .app-list-select{
-    min-width: 150px;
     margin-top: 5px;
+}
+.app-list-select button{
+    border-radius: 5px;
 }
 .success-messages{
     margin-bottom: 0px;
@@ -6421,13 +6440,14 @@ input.app-search-input:-ms-input-placeholder {
     text-decoration: underline;
 }
 
-
+/*======================================================================*/
 /*sidebar-menu*/
+/*======================================================================*/
 
 .side-menu {
-  top: 120px;
+  top: 60px;
   width: 250px;
-  z-index: 10;
+  z-index: 10000;
   background: #ffffff;
   bottom: 0;
   margin-top: 0;
@@ -6591,163 +6611,4 @@ input.app-search-input:-ms-input-placeholder {
   pointer-events: none;
   cursor: default;
   font-size: 13px;
-}
-
-#wrapper.enlarged .menu-title, #wrapper.enlarged .menu-arrow {
-  display: none !important;
-}
-
-#wrapper.enlarged .user-box .user-img {
-  height: 48px;
-  width: 48px;
-}
-
-#wrapper.enlarged .user-box h5 {
-  display: none;
-}
-
-#wrapper.enlarged #sidebar-menu ul ul {
-  border: 2px solid #f4f8fb;
-  margin-top: -5px;
-  padding-top: 5px;
-  z-index: 9999;
-  background-color: #ffffff;
-}
-
-#wrapper.enlarged .left.side-menu {
-  width: 70px;
-  z-index: 5;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a {
-  padding: 15px 20px;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:hover {
-  background: #f4f8fb !important;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:active {
-  background: #f4f8fb !important;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:focus {
-  background: #f4f8fb !important;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a i {
-  margin-right: 20px !important;
-  font-size: 20px;
-}
-
-#wrapper.enlarged .left.side-menu .label {
-  position: absolute;
-  top: 5px;
-  left: 35px;
-  text-indent: 0;
-  display: block !important;
-  padding: .2em .6em .3em !important;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li {
-  position: relative;
-  white-space: nowrap;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a {
-  position: relative;
-  width: 260px;
-  background: #f4f8fb;
-  color: #71b6f9;
-  border-color: #71b6f9;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul {
-  display: block;
-  left: 70px;
-  position: absolute;
-  width: 190px;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul a {
-  background: #ffffff;
-  box-shadow: none;
-  padding-left: 15px;
-  position: relative;
-  width: 186px;
-  z-index: 6;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul a:hover {
-  color: #71b6f9;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover a span {
-  display: inline;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul {
-  display: block;
-  left: 70px;
-  position: absolute;
-  width: 190px;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul a {
-  background: #ffffff;
-  box-shadow: none;
-  padding-left: 15px;
-  position: relative;
-  width: 186px;
-  z-index: 6;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul a:hover {
-  color: #71b6f9;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu a.subdrop {
-  color: #71b6f9 !important;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li > ul {
-  display: none;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul ul li:hover > ul {
-  display: block;
-  left: 190px;
-  margin-top: -36px;
-  position: absolute;
-  width: 190px;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul ul li > a span.pull-right {
-  -ms-transform: rotate(270deg);
-  -webkit-transform: rotate(270deg);
-  position: absolute;
-  right: 20px;
-  top: 12px;
-  transform: rotate(270deg);
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul ul li.active a {
-  color: #71b6f9;
-}
-
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li > a span {
-  display: none;
-  padding-left: 10px;
-}
-
-#wrapper.enlarged .left.side-menu .user-details {
-  display: none;
-}
-
-#wrapper.enlarged .content-page {
-  margin-left: 70px;
-}
-
-#wrapper.enlarged .footer {
-  left: 70px;
 }
