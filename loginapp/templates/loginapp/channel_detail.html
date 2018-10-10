@@ -9,42 +9,32 @@
 <!-- Page title -->
 {% block topbar %}
 <!-- Page title -->
-<ul class="nav navbar-nav list-inline navbar-left" style="flex-direction: unset">
+<li class="list-inline-item">
+    <h4 class="page-title">Channel</h4>
+</li>
+<li class="list-inline-item">
+    <div class="create-app-button">
+        <a href="{% url 'channel_list' app.id %}"
+           class="btn btn-success btn-bordred w-md waves-effect waves-light m-b-5"><i
+                class="mdi mdi-keyboard-backspace"></i> <span>Back</span>
+        </a>
+    </div>
+</li>
+<ul class="list-unstyled topbar-right-menu float-right mb-0">
     <li class="list-inline-item">
-        <button class="button-menu-mobile open-left">
-            <i class="mdi mdi-menu"></i>
-        </button>
-    </li>
-    <li class="list-inline-item">
-        <h4 class="page-title">Channel</h4>
-    </li>
-    <li class="list-inline-item">
-        <div class="create-app-button">
-            <a href="{% url 'channel_list' app.id %}"
-               class="btn btn-success btn-rounded w-md waves-effect waves-light m-b-5"><i
-                    class="mdi mdi-keyboard-backspace"></i> <span>Back</span>
-            </a>
+        <div class="dropdown app-list-select ">
+            <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
+                    data-toggle="dropdown" aria-expanded="false">{{ channel.provider }}
+            </button>
+            <div class="dropdown-menu">
+                <!-- item-->
+                {% for option in channels %}
+                <a href="{% url 'channel_detail' app.id option.id %}" class="dropdown-item">{{ option.provider }}</a>
+                {% endfor %}
+            </div>
         </div>
     </li>
 </ul>
-
-<nav class="navbar-custom">
-    <ul class="list-unstyled topbar-right-menu float-right mb-0">
-        <li class="list-inline-item">
-            <div class="dropdown app-list-select ">
-                <button type="button" class="btn btn-primary btn-rounded dropdown-toggle waves-effect waves-light"
-                        data-toggle="dropdown" aria-expanded="false">{{ channel.provider }}
-                </button>
-                <div class="dropdown-menu">
-                    <!-- item-->
-                    {% for option in channels %}
-                    <a href="{% url 'channel_detail' app.id option.id %}" class="dropdown-item">{{ option.provider }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-        </li>
-    </ul>
-</nav>
 {% endblock %}
 
 {% block sidemenu %}
