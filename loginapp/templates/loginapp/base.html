@@ -37,7 +37,7 @@
                     <!-- Logo container-->
                     <div class="logo">
                         <a href="{% url 'index' %}" class="logo logo-small"><span><i class="mdi mdi-36px mdi-layers"></i></a>
-                        <a href="{% url 'index' %}" class="logo logo-large"><span>Easy<span>Login</span></span></a>
+                        <a href="{% url 'index' %}" class="logo logo-large"><span>Easy<span>Login</span></span> Developer</a>
                     </div>
                     <!-- End Logo container-->
 
@@ -56,6 +56,18 @@
                                     </div>
                                 </a>
                                 <!-- End mobile menu toggle-->
+                            </li>
+                            <li class="menu-item-text">
+                                <a href="">Docs</a>
+                            </li>
+                            <li class="menu-item-text">
+                                <a href="">API References</a>
+                            </li>
+                            <li class="menu-item-text">
+                                <a href="">Support</a>
+                            </li>
+                            <li class="menu-item-text">
+                                <a href="{% url 'dashboard' %}">My Apps</a>
                             </li>
                             <li class="hide-phone">
                                 <form class="app-search app-search-custom" method="GET" action="{% url 'dashboard' %}">
@@ -148,7 +160,7 @@
         </div> <!-- content -->
 
         <footer class="footer text-right">
-            2016 - 2018 © EasyLogin
+            2016 - 2018 © <strong>EasyLogin</strong>
         </footer>
     </div>
 

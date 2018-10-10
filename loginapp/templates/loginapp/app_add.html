@@ -5,38 +5,17 @@
 <!-- Page title -->
 {% block topbar%}
 <!-- Page title -->
-<ul class="nav navbar-nav list-inline navbar-left" style="flex-direction: unset">
-    <li class="list-inline-item">
-        <button class="button-menu-mobile open-left">
-            <i class="mdi mdi-menu"></i>
-        </button>
-    </li>
-    <li class="list-inline-item">
-        <h4 class="page-title">Add new Application</h4>
-    </li>
-    <li class="list-inline-item">
-        <div class="create-app-button">
-            <a href="{% url 'dashboard' %}"
-               class="btn btn-danger btn-rounded w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i><span>Cancel</span>
-            </a>
-        </div>
-    </li>
-</ul>
+<li class="list-inline-item">
+    <h4 class="page-title">Add new Application</h4>
+</li>
+<li class="list-inline-item">
+    <div class="create-app-button">
+        <a href="{% url 'dashboard' %}"
+           class="btn btn-danger w-md waves-effect waves-light m-b-5"><i class="mdi mdi-cancel"></i><span>Cancel</span>
+        </a>
+    </div>
+</li>
 
-<nav class="navbar-custom">
-
-    <ul class="list-unstyled topbar-right-menu float-right mb-0">
-
-        <li class="hide-phone">
-            <form class="app-search" method="GET" action="{% url 'dashboard' %}">
-                <input type="text" placeholder="Search..."
-                       class="form-control" name="search" value="{{ request.GET.search }}">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </li>
-
-    </ul>
-</nav>
 {% endblock %}
 
 
