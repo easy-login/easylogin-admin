@@ -6,6 +6,7 @@ from django.utils import timezone
 from urllib import parse
 
 import json
+
 # Model's constant
 MAX_LENGTH_SHORT_FIELD = 100
 MAX_LENGTH_MEDIUM_FIELD = 255
@@ -42,6 +43,8 @@ class Provider(models.Model):
     advanced_fields = models.CharField(max_length=4095)
     options = models.CharField(null=True, max_length=4095)
 
+    PROVIDER_NAMES = []
+
     def required_permissions_as_list(self):
         if self.required_permissions == "":
             return []
@@ -64,7 +67,10 @@ class Provider(models.Model):
 
     @classmethod
     def provider_names(cls):
-        return ['amazon', 'facebook', 'line', 'yahoojp']
+        if not cls.PROVIDER_NAMES:
+            names = Provider.objects.order_by('name').values_list('name').distinct()
+            cls.PROVIDER_NAMES = [name[0] for name in names]
+        return cls.PROVIDER_NAMES
 
 
 class App(models.Model):
