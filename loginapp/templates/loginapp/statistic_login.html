@@ -50,8 +50,8 @@
                     <th>Login Count</th>
                     {% for provider in providers %}
                     <th class="no-order provider-datatable" style="text-transform: capitalize;">
-                        {% with src='/images/social-icon/'|add:provider.name|add:'.svg'%}
-                        <img src="{% static src %}" alt="{{ provider.name }}" width="40" height="40">
+                        {% with src='/images/social-icon/'|add:provider.name|add:'.png'%}
+                        <img src="{% static src %}" alt="{{ provider.name }}" width="36" height="36" style="border-radius: 10%;">
                         {% endwith %}
                     </th>
                     {% endfor %}
