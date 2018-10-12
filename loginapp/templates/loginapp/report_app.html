@@ -289,7 +289,7 @@ $(document).ready(function() {
 					label: 'Dataset 1'
 				}],
 				labels: [
-				{% for value in total_data_provider %}
+				    {% for value in total_data_provider %}
 						'{{ value.0 }}',
 					{% endfor %}
 				]
