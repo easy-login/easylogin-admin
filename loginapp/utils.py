@@ -41,10 +41,11 @@ def validateURL(url):
 
 def getChartColor(provider):
     color_dic = {
-        'total': '#188ae2',
+        'total': '#696969',
         'line': '#10c469',
         'yahoojp': '#ef5350',
         'amazon': '#f9c851',
+        'facebook': "#4267b2",
     }
     return color_dic.get(provider)
 

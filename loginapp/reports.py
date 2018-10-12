@@ -4,6 +4,7 @@ from django.db import connection
 
 from loginapp.models import Provider
 from loginapp.utils import dict_fetchall, convert_to_user_timezone
+from loginapp.utils import getChartColor
 
 
 def get_total_auth_report(app_id):
@@ -25,7 +26,7 @@ def get_total_provider_report(app_id):
             WHERE app_id = %s and status = 'succeeded'
             GROUP BY provider ORDER BY provider""", (app_id,))
         rows = cursor.fetchall()
-        return [(row[0], row[1]) for row in rows]
+        return [(row[0], row[1], getChartColor(row[0])) for row in rows]
 
 
 def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):

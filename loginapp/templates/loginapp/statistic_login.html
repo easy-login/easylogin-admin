@@ -18,7 +18,7 @@
         <div class="app-list-select">
             <div class="dropdown">
                 <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
-                        data-toggle="dropdown" aria-expanded="false">{{ app.name }}
+                        data-toggle="dropdown" aria-expanded="false"><span style=" float: left;"><i class="mdi mdi-layers"></i></span>{{ app.name }}
                 </button>
                 <div class="dropdown-menu app-navigation">
                     <!-- item-->
@@ -44,14 +44,15 @@
                 <thead>
                 <tr>
                     <th class="no-order">No</th>
-                    <th>Deleted</th>
                     <th>User ID</th>
                     <th>Social ID</th>
                     <th>Last Login</th>
                     <th>Login Count</th>
                     {% for provider in providers %}
                     <th class="no-order provider-datatable" style="text-transform: capitalize;">
-                        {{ provider.name }} <i class="fa fa-1x fa-{{ provider.name }}"></i>
+                        {% with src='/images/social-icon/'|add:provider.name|add:'.svg'%}
+                        <img src="{% static src %}" alt="{{ provider.name }}" width="40" height="40">
+                        {% endwith %}
                     </th>
                     {% endfor %}
                 </tr>
@@ -93,20 +94,13 @@ function loadInitialStatisticTable(){
                 d.flag_loading = 'load-data'
               }
         },
-        'order': [[ 2, 'asc' ]],
+        'order': [[ 1, 'asc' ]],
         'columnDefs': [
             {orderable: false, targets: 'no-order' },
             {
                 'targets': 'provider-datatable',
                 'render': function ( data, type, row ) {
                     if (data == 1) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
-                    else return ''
-                }
-            },
-            {
-                'targets': 1,
-                'render': function ( data, type, row ) {
-                    if (data == 1) return '<span class="text-danger"><i class="mdi mdi-24px mdi-account-remove"></i></span>'
                     else return ''
                 }
             }

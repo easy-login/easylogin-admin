@@ -6382,6 +6382,8 @@ input.app-search-input:-ms-input-placeholder {
 }
 .app-list-select button{
     border-radius: 5px;
+    min-width:150px;
+    text-align: right;
 }
 .success-messages{
     margin-bottom: 0px;

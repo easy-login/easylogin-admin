@@ -202,11 +202,10 @@ def delete_app(request, app_id):
 def user_report(request, app_id):
     app = get_object_or_404(App, pk=app_id, owner=request.user.id)
     column_dic = {
-        '1': 'deleted',
-        '2': 'user_id',
-        '3': 'social_id',
-        '4': 'last_login',
-        '5': 'login_total'
+        '1': 'user_id',
+        '2': 'social_id',
+        '3': 'last_login',
+        '4': 'login_total'
     }
 
     if request.GET.get('flag_loading'):
@@ -214,7 +213,7 @@ def user_report(request, app_id):
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
 
-        order_col = column_dic[request.GET.get('order[0][column]', '2')]
+        order_col = column_dic[request.GET.get('order[0][column]', '1')]
         order_dir = request.GET.get('order[0][dir]', 'asc')
         order_by = order_col + ' ' + order_dir
 
