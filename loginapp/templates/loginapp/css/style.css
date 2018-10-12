@@ -6376,9 +6376,11 @@ input.app-search-input:-ms-input-placeholder {
 }
 .create-app-button{
     margin-top: 5px;
+    margin-bottom: 5px;
 }
 .app-list-select{
     margin-top: 5px;
+    margin-bottom: 10px;
 }
 .app-list-select button{
     border-radius: 5px;
