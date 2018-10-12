@@ -51,7 +51,7 @@
                     {% for provider in providers %}
                     <th class="no-order provider-datatable" style="text-transform: capitalize;">
                         {% with src='/images/social-icon/'|add:provider.name|add:'.png'%}
-                        <img src="{% static src %}" alt="{{ provider.name }}" width="36" height="36" style="border-radius: 10%;">
+                        <img src="{% static src %}" alt="{{ provider.name }}" width="36" height="36" style="border-radius: 50%;">
                         {% endwith %}
                     </th>
                     {% endfor %}
