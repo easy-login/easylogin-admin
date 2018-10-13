@@ -15,11 +15,11 @@ RUN mkdir -p /var/log/sociallogin
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Make port 8081 available to the world outside this container
-EXPOSE 8081
+# Make port 8000 available to the world outside this container
+EXPOSE 8000
 
 # Define environment variable
 ENV DEBUG True
 
 # Run wsgi.py when the container launches
-CMD ["sh", "runserver.sh"]
+CMD ["sh", "prod.sh"]
