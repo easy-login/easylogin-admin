@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, User
 from django.utils.translation import ugettext_lazy as _
-import datetime
 from django.utils import timezone
-from urllib import parse
+from django.shortcut import get_object_or_404
 
+from urllib import parse
 import json
 
 # Model's constant
@@ -81,7 +81,12 @@ class App(models.Model):
     callback_uris = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)
     description = models.TextField()
+    is_superuser = models.SmallIntegerFiled()
+    deleted = models.SmallIntegerFiled()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def get_all_app(self, user):
+        return if (user.is_superuser):
 
     def callback_uris_as_list(self):
         if self.callback_uris == "":
