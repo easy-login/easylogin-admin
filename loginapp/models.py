@@ -86,7 +86,12 @@ class App(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_all_app(self, user):
-        return if (user.is_superuser):
+        return App.object.all().order_by('name') if user.is_superuser \
+            else App.object.filter(owner_id=user.id).order_by('name')
+
+    def get_app_by_user(self, app_id, user):
+        return get_object_or_404(App, pk=app_id) if user.is_superuser \
+            else get_object_or_404(App, pk=app_id, owner_id=user.id)
 
     def callback_uris_as_list(self):
         if self.callback_uris == "":
