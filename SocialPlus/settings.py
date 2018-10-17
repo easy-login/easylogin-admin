@@ -122,7 +122,8 @@ PASSWORD_HASHERS = (
 # User authentication
 AUTH_USER_MODEL = 'loginapp.User'
 
-AUTHENTICATION_BACKENDS = ['loginapp.backends.AuthenticationWithEmailBackend']
+AUTHENTICATION_BACKENDS = ['loginapp.backends.AuthenticationWithEmailBackend',
+                           'django.contrib.auth.backends.ModelBackend',]
 
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
@@ -165,4 +166,4 @@ STATICFILES_DIRS = [
 
 # App SETTING
 
-ADMIN_ENABLED = False
+# ADMIN_ENABLED = False

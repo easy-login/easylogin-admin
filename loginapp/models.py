@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, User
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-from django.shortcut import get_object_or_404
+from django.shortcuts import get_object_or_404
 
 from urllib import parse
 import json
@@ -30,6 +30,9 @@ class User(AbstractUser):
     address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD)
 
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
+
+    is_superuser = models.SmallIntegerField(default=0)
+
 
     class Meta:
         db_table = "admins"
@@ -81,17 +84,18 @@ class App(models.Model):
     callback_uris = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)
     description = models.TextField()
-    is_superuser = models.SmallIntegerFiled()
-    deleted = models.SmallIntegerFiled()
+    deleted = models.SmallIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def get_all_app(self, user):
-        return App.object.all().order_by('name') if user.is_superuser \
-            else App.object.filter(owner_id=user.id).order_by('name')
+    @staticmethod
+    def get_all_app(user):
+        return App.object.filter(deleted=0).order_by('name') if user.is_superuser \
+            else App.object.filter(owner_id=user.id, deleted=0).order_by('name')
 
-    def get_app_by_user(self, app_id, user):
-        return get_object_or_404(App, pk=app_id) if user.is_superuser \
-            else get_object_or_404(App, pk=app_id, owner_id=user.id)
+    @staticmethod
+    def get_app_by_user(app_id, user):
+        return get_object_or_404(App, pk=app_id, deleted=0) if user.is_superuser \
+            else get_object_or_404(App, pk=app_id, owner_id=user.id, deleted=0)
 
     def callback_uris_as_list(self):
         if self.callback_uris == "":

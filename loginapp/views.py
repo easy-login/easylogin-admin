@@ -30,8 +30,7 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        auth_backend = AuthenticationWithEmailBackend()
-        user = auth_backend.authenticate(username=email, password=password)
+        user = AuthenticationWithEmailBackend.authenticate(username=email, password=password)
         if user is not None:
             request.session.set_expiry(86400)
             signin(request, user)
