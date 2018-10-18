@@ -36,8 +36,9 @@
 
                     <!-- Logo container-->
                     <div class="logo">
-                        <a href="{% url 'index' %}" class="logo logo-small"><span><i class="mdi mdi-36px mdi-layers"></i></a>
-                        <a href="{% url 'index' %}" class="logo logo-large"><span>Easy<span>Login</span></span> Developer</a>
+                        <a href="{% url 'index' %}" class="logo logo-small"><span><i class="mdi mdi-36px mdi-layers"></i></span></a>
+                        <a href="{% url 'index' %}" class="logo logo-large"><span>Easy<span>Login</span></span>
+                            {% if request.user.is_superuser %}<span style="color:#f66b4a;">Admin</span>{% else %}Developer{% endif %}</a>
                     </div>
                     <!-- End Logo container-->
 
@@ -80,8 +81,8 @@
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
                                    aria-haspopup="false" aria-expanded="false">
-                                    <img src="{% static 'images/ninja.png' %}" alt="user-img" title="{{ request.user.username }}"
-                         class="rounded-circle img-thumbnail img-responsive">
+                                    <img src="{% if request.user.is_superuser %}{% static 'images/admin.png' %}{% else %}{% static 'images/ninja.png' %}{% endif %}" alt="user-img" title="{{ request.user.username }}"
+                         class="rounded-circle {% if not request.user.is_superuser %}img-thumbnail {% endif %} img-responsive">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
 

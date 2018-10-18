@@ -15,33 +15,30 @@
         </a>
     </div>
 </li>
-
 <li class="list-inline-item float-right create-app-button">
-    <form class="form-inline">
-        <div class="form-group select-order-by">
-            <label>Sort :</label>
-            <select class="form-control ml-2 form-control-sm" onchange="location = this.value;">
-                <option value="{% url 'dashboard' %}?order_by=-created_at">Date Created</option>
-                <option value="{% url 'dashboard' %}?order_by=-modified_at">Date Modified</option>
-                <option value="{% url 'dashboard' %}?order_by=name">Name</option>
-            </select>
-        </div>
-    </form>
-</li>
-
-<li class="list-inline-item float-right create-app-button m-r-10">
-    <form class="form-inline">
-        <div class="form-group select-user-id">
+    <form class="form-inline" method="GET" action="{% url 'dashboard' %}">
+        {% if request.user.is_superuser%}
+        <div class="form-group select-user-id m-r-10">
             <label>User :</label>
-            <select class="form-control ml-2 form-control-sm" onchange="location = this.value;">
-                <option value="{% url 'dashboard' %}?user_id=-1" selected>All</option>
+            <select name="user_id" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
+                <option value="-1" selected>All</option>
                 {% for option in users %}
-                    <option value="{% url 'dashboard' %}?user_id={{ option.id }}">{{ option.username }}</option>
+                <option value="{{ option.id }}">{{ option.username }}</option>
                 {% endfor %}
             </select>
         </div>
+        {% endif %}
+        <div class="form-group select-order-by">
+            <label>Sort :</label>
+            <select name="order_by" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
+                <option value="-created_at">Date Created</option>
+                <option value="-modified_at">Date Modified</option>
+                <option value="name">Name</option>
+            </select>
+        </div>
     </form>
 </li>
+
 
 {% endblock %}
 
@@ -147,10 +144,17 @@
 <script type="text/javascript">
 $(document).ready(function() {
    {% if request.GET.order_by %}
-   $(".select-order-by select").val("{% url 'dashboard' %}?order_by={{ request.GET.order_by }}")
+   $(".select-order-by select").val("{{ request.GET.order_by }}")
    {% else %}
-   $(".select-order-by select").val("{% url 'dashboard' %}?order_by=-modified_at")
+   $(".select-order-by select").val("-modified_at")
    {% endif %}
+
+   {% if request.GET.user_id %}
+   $(".select-user-id select").val("{{ request.GET.user_id }}")
+   {% else %}
+   $(".select-user-id select").val("-1")
+   {% endif %}
+
    $(".app-description").each(function(){
         len = $(this).text().length;
         if (len > 100) {
@@ -184,6 +188,5 @@ function deleteConfirm(event){
                 );
             });
 }
-
 </script>
 {% endblock %}

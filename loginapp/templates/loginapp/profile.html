@@ -33,7 +33,7 @@
 {% block content%}
         <div class="row card-box profile-info-name">
             <div class="col-md-3">
-                <img src="{% static 'images/ninja.png' %}"
+                <img src="{% if request.user.is_superuser %}{% static 'images/admin.png' %}{% else %}{% static 'images/ninja.png' %}{% endif %}"
                      class="img-thumbnail" alt="{{ request.user.username }}">
                 <!--<h4 class="m-0">{{ request.user.username }}</h4>-->
             </div>

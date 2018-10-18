@@ -6616,3 +6616,10 @@ input.app-search-input:-ms-input-placeholder {
   cursor: default;
   font-size: 13px;
 }
+
+.card-box:hover{
+    -webkit-box-shadow: 0px 9px 32px -9px rgba(0,0,0,0.6);
+    -moz-box-shadow: 0px 9px 32px -9px rgba(0,0,0,0.6);
+    box-shadow: 0px 9px 32px -9px rgba(0,0,0,0.6);
+
+}

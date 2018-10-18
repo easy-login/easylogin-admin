@@ -122,8 +122,7 @@ PASSWORD_HASHERS = (
 # User authentication
 AUTH_USER_MODEL = 'loginapp.User'
 
-AUTHENTICATION_BACKENDS = ['loginapp.backends.AuthenticationWithEmailBackend',
-                           'django.contrib.auth.backends.ModelBackend',]
+AUTHENTICATION_BACKENDS = ['loginapp.backends.AuthenticationWithEmailBackend']
 
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'

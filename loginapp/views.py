@@ -73,7 +73,9 @@ def register(request):
 @login_required
 def list_apps(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
-    apps1 = App.get_all_app(user=request.user, order_by=order_by)
+    user_id = int(request.GET.get('user_id')) if request.GET.get('user_id') else -1
+
+    apps1 = App.get_all_app(user=request.user, order_by=order_by, owner_id=user_id)
     if request.GET.get("search"):
         apps1 = apps1.filter(name__contains=request.GET.get("search"))
     apps = App.get_all_app(user=request.user)
@@ -356,7 +358,7 @@ def add_channel(request):
                 messages.error(request, "Add channel failed: App ID is required!")
                 return redirect('dashboard')
             else:
-                channel.app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+                channel.app = App.get_app_by_user(app_id=app_id, user=request.user)
 
             app = App.get_app_by_user(app_id=app_id, user=request.user)
 

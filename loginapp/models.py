@@ -92,6 +92,9 @@ class App(models.Model):
 
     @staticmethod
     def get_all_app(user, owner_id=-1, order_by='name'):
+        if user.is_superuser:
+            return App.objects.filter(deleted=0).order_by(order_by) if owner_id == -1 \
+                else App.objects.filter(deleted=0, owner_id=owner_id).order_by(order_by)
         return App.objects.filter(deleted=0).order_by(order_by) if user.is_superuser \
             else App.objects.filter(owner_id=user.id, deleted=0).order_by(order_by)
 
