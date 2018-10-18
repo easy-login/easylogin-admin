@@ -13,7 +13,7 @@ from django.template import loader
 
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
-from loginapp.models import App, Provider, Channel
+from loginapp.models import App, Provider, Channel, User
 from loginapp.reports import get_auth_report_per_provider, get_total_provider_report, \
     get_total_auth_report, get_user_report
 from loginapp.utils import generateApiKey, getChartColor
@@ -73,11 +73,12 @@ def register(request):
 @login_required
 def list_apps(request):
     order_by = request.GET.get('order_by') if request.GET.get('order_by') else '-modified_at'
-    apps1 = App.objects.filter(owner=request.user.id).order_by(order_by)
+    apps1 = App.get_all_app(user=request.user, order_by=order_by)
     if request.GET.get("search"):
         apps1 = apps1.filter(name__contains=request.GET.get("search"))
-    apps = App.objects.filter(owner=request.user.id).order_by('name')
-    return render(request, 'loginapp/app_list.html', {'apps1': apps1, 'apps': apps})
+    apps = App.get_all_app(user=request.user)
+    users = User.get_all_user(user=request.user)
+    return render(request, 'loginapp/app_list.html', {'apps1': apps1, 'apps': apps, 'users': users})
 
 
 @login_required
@@ -152,13 +153,13 @@ def add_app(request):
 
     else:
         form = AppForm()
-    apps = App.objects.filter(owner=request.user.id).order_by('name')
+    apps = App.get_all_app(user=request.user)
     return render(request, 'loginapp/app_add.html', {'apps': apps, 'form': form})
 
 
 @login_required
 def app_detail(request, app_id):
-    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
     if request.method == 'POST':
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
@@ -180,7 +181,7 @@ def app_detail(request, app_id):
             push_messages_error(request, form)
 
     form = AppForm()
-    apps = App.objects.filter(owner=request.user.id).order_by('name')
+    apps = App.get_all_app(user=request.user)
     return render(request, 'loginapp/app_detail.html',
                   {'app': app, 'apps': apps, 'form': form, })
 
@@ -188,8 +189,9 @@ def app_detail(request, app_id):
 @login_required
 def delete_app(request, app_id):
     if request.method == 'POST':
-        app = get_object_or_404(App, pk=app_id, owner=request.user.id)
-        app.delete()
+        app = App.get_app_by_user(app_id=app_id, user=request.user)
+        app.deleted = 1
+        app.save()
         messages.success(request, "App was deleted!")
         return redirect('dashboard')
     else:
@@ -199,7 +201,7 @@ def delete_app(request, app_id):
 
 @login_required
 def user_report(request, app_id):
-    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
     column_dic = {
         '1': 'user_id',
         '2': 'social_id',
@@ -239,14 +241,14 @@ def user_report(request, app_id):
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
-        apps = App.objects.filter(owner=request.user.id).order_by('name')
+        apps = App.get_all_app(user=request.user)
         providers = Provider.objects.order_by('name')
         return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
 
 
 @login_required
 def app_report(request, app_id):
-    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
 
     if request.GET.get('chart_loading'):
         isLogin = request.GET.get('is_login', '1')
@@ -291,7 +293,7 @@ def app_report(request, app_id):
     else:
         total_data_auth = get_total_auth_report(app_id=app_id)
         total_data_provider = get_total_provider_report(app_id=app_id)
-        apps = App.objects.filter(owner=request.user.id).order_by('name')
+        apps = App.get_all_app(user=request.user)
 
         return render(request, 'loginapp/report_app.html', {
             'app': app, 'apps': apps,
@@ -302,9 +304,9 @@ def app_report(request, app_id):
 
 @login_required
 def channel_list(request, app_id):
-    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
     channels = Channel.objects.filter(app=app_id).order_by('-created_at')
-    apps = App.objects.filter(owner=request.user.id).order_by('name')
+    apps = App.get_all_app(user=request.user)
     providers = Provider.objects.all()
     channel_form = ChannelForm()
     channel_form.fields['app_id'].widget = forms.HiddenInput()
@@ -356,7 +358,7 @@ def add_channel(request):
             else:
                 channel.app = get_object_or_404(App, pk=app_id, owner=request.user.id)
 
-            app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+            app = App.get_app_by_user(app_id=app_id, user=request.user)
 
             # try to catch exception unique but it catch more
             try:
@@ -377,7 +379,7 @@ def add_channel(request):
 
 @login_required
 def channel_detail(request, app_id, channel_id):
-    app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
     channel = get_object_or_404(Channel, pk=channel_id, app=app_id)
     if request.method == 'POST':
         form = ChannelForm(request.POST, instance=channel)
@@ -431,7 +433,7 @@ def channel_detail(request, app_id, channel_id):
             print(form.errors)
 
     channels = Channel.objects.filter(app=app_id)
-    apps = App.objects.filter(owner=request.user.id)
+    apps = App.get_all_app(user=request.user)
     providers = Provider.objects.all()
     provider_name_list = list(set(Provider.objects.values_list('name', flat=True)))
     provider = Provider.objects.filter(name=channel.provider, version=channel.api_version).first()
@@ -446,7 +448,7 @@ def channel_detail(request, app_id, channel_id):
 @login_required
 def delete_channel(request, app_id, channel_id):
     if request.method == 'POST':
-        app = get_object_or_404(App, pk=app_id, owner=request.user.id)
+        app = App.get_app_by_user(app_id=app_id, user=request.user)
         channel = get_object_or_404(Channel, pk=channel_id, app=app_id)
         channel.delete()
         app.update_modified_at()

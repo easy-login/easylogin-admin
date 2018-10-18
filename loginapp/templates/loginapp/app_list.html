@@ -15,6 +15,7 @@
         </a>
     </div>
 </li>
+
 <li class="list-inline-item float-right create-app-button">
     <form class="form-inline">
         <div class="form-group select-order-by">
@@ -23,6 +24,20 @@
                 <option value="{% url 'dashboard' %}?order_by=-created_at">Date Created</option>
                 <option value="{% url 'dashboard' %}?order_by=-modified_at">Date Modified</option>
                 <option value="{% url 'dashboard' %}?order_by=name">Name</option>
+            </select>
+        </div>
+    </form>
+</li>
+
+<li class="list-inline-item float-right create-app-button m-r-10">
+    <form class="form-inline">
+        <div class="form-group select-user-id">
+            <label>User :</label>
+            <select class="form-control ml-2 form-control-sm" onchange="location = this.value;">
+                <option value="{% url 'dashboard' %}?user_id=-1" selected>All</option>
+                {% for option in users %}
+                    <option value="{% url 'dashboard' %}?user_id={{ option.id }}">{{ option.username }}</option>
+                {% endfor %}
             </select>
         </div>
     </form>
