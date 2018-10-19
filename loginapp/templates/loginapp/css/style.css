@@ -6373,6 +6373,7 @@ input.app-search-input:-ms-input-placeholder {
 }
 .content{
     padding: 0px 10px;
+    margin-top:5px;
 }
 .create-app-button{
     margin-top: 5px;
@@ -6617,9 +6618,19 @@ input.app-search-input:-ms-input-placeholder {
   font-size: 13px;
 }
 
-.card-box:hover{
+.zoom{
+    transition: transform .2s;
+}
+.zoom:hover{
     -webkit-box-shadow: 0px 9px 32px -9px rgba(0,0,0,0.6);
     -moz-box-shadow: 0px 9px 32px -9px rgba(0,0,0,0.6);
     box-shadow: 0px 9px 32px -9px rgba(0,0,0,0.6);
 
+    -ms-transform: scale(1.01); /* IE 9 */
+    -webkit-transform: scale(1.01); /* Safari 3-8 */
+    transform: scale(1.01);
+}
+
+.zoom:hover .card-drop{
+    color: #007bff;
 }
