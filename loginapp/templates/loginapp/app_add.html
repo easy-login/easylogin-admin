@@ -25,7 +25,7 @@
 
 
 {% block content%}
-<div class="row card-box">
+<div class="row">
     <div class="col-md-12">
         {% if messages %}
         {% for message in messages %}
@@ -37,7 +37,8 @@
         {% endif %}
     </div>
     <div class="col-md-12">
-    <div class="p-20">
+        <div class="card-box">
+            <div class="p-20">
             <form class="form-horizontal m-t-20" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group row">
@@ -153,9 +154,9 @@
                         </button>
                     </div>
                 </div>
-
             </form>
         </div>
+    </div>
     </div>
     <div class="clearfix"></div>
 </div>
