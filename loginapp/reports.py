@@ -62,7 +62,7 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
 
         i = 0
         while True:
-            rows = cursor.fetchmany(500)
+            rows = cursor.fetchall()
             if not rows:
                 break
             for row in rows:
