@@ -63,13 +63,11 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
             ORDER BY provider
             """.format(tzoffset, tzoffset, tzoffset), (app_id, from_dt, to_dt, is_login))
 
-        i = 0
         while True:
-            rows = cursor.fetchall()
+            rows = cursor.fetchmany(500)
             if not rows:
                 break
             for row in rows:
-                i += 1
                 dt_str = row[1].strftime('%Y-%m-%d')
                 provider = row[0]
                 results[provider][dt_str] = int(row[2])
