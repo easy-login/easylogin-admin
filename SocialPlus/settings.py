@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 't*l53fi#t&zy2fue6qzmqpuwy@4ebhfz)_^%fe!rf%vm$^&kz*'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 't*l53fi#t&zy2fue6qzmqpuwy@4ebhfz)_^%fe!rf%vm$^&kz*')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str(os.getenv('DJANGO_DEBUG', 'True')) != 'False'
 
 ALLOWED_HOSTS = ['*']
 
@@ -81,12 +81,12 @@ WSGI_APPLICATION = 'SocialPlus.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sociallogin',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'ENGINE': os.getenv('DATABASE_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.getenv('DATABASE_NAME', 'sociallogin'),
+        'USER': os.getenv('DATABASE_USER', 'root'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'root'),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),   # Or an IP Address that your DB is hosted on
+        'PORT': os.getenv('DATABASE_PORT', '3306'),
     }
 }
 
@@ -142,8 +142,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Tokyo'
-# TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Tokyo')
 
 USE_I18N = True
 

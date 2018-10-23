@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
+import pytz
 
 from django.db import connection
+from django.conf import settings
 
 from loginapp.models import Provider
 from loginapp.utils import dict_fetchall, convert_to_user_timezone
@@ -48,20 +50,24 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
 
         from_dt += ' 00:00:00'
         to_dt += ' 23:59:59'
+        tzoffset = '+09:00'
         cursor.execute("""
-            SELECT provider, DATE(modified_at), COUNT(provider) 
+            SELECT provider, DATE(CONVERT_TZ(modified_at, '+00:00', '{}')) as dt, COUNT(id) 
             FROM auth_logs 
-            WHERE app_id = %s AND modified_at BETWEEN %s and %s AND status = 'succeeded' AND is_login = %s
-            GROUP BY DATE(modified_at), provider
-            ORDER BY provider""", (app_id, from_dt, to_dt, is_login))
+            WHERE app_id = %s 
+                AND modified_at 
+                    BETWEEN CONVERT_TZ(%s, '{}', '+00:00') AND CONVERT_TZ(%s, '{}', '+00:00')  
+                AND status IN ('succeeded', 'authorized') 
+                AND is_login = %s
+            GROUP BY dt, provider
+            ORDER BY provider
+            """.format(tzoffset, tzoffset, tzoffset), (app_id, from_dt, to_dt, is_login))
 
-        i = 0
         while True:
             rows = cursor.fetchmany(500)
             if not rows:
                 break
             for row in rows:
-                i += 1
                 dt_str = row[1].strftime('%Y-%m-%d')
                 provider = row[0]
                 results[provider][dt_str] = int(row[2])
