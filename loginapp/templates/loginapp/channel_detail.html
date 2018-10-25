@@ -150,7 +150,7 @@
                                     {% for field in provider.basic_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled
                                         {% if field.key in required_fields and provider.name == channel.provider %} checked {% endif %}>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
@@ -165,7 +165,7 @@
                                     {% for field in provider.advanced_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled
                                         {% if field.key in required_fields and provider.name == channel.provider %} checked {% endif %}>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>

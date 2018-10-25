@@ -76,8 +76,8 @@ def list_apps(request):
     user_id = int(request.GET.get('user_id')) if request.GET.get('user_id') else -1
 
     apps1 = App.get_all_app(user=request.user, order_by=order_by, owner_id=user_id)
-    if request.GET.get("search"):
-        apps1 = apps1.filter(name__contains=request.GET.get("search"))
+    if request.GET.get('search'):
+        apps1 = apps1.filter(name__contains=request.GET.get('search'))
     apps = App.get_all_app(user=request.user)
     users = User.get_all_user(user=request.user)
     return render(request, 'loginapp/app_list.html', {'apps1': apps1, 'apps': apps, 'users': users})
@@ -140,14 +140,14 @@ def add_app(request):
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
             if len(callback_uris) == 0:
-                messages.error(request, "Add failed app: callback uris is required!")
+                messages.error(request, 'Add failed app: callback uris is required!')
             if len(allowed_ips) != 0:
                 app.set_allowed_ips(allowed_ips)
             if len(callback_uris) > 0:
                 app.set_callback_uris(callback_uris)
                 app.owner = request.user
                 app.save()
-                messages.success(request, "App was successfully created!")
+                messages.success(request, 'App was successfully created!')
                 return redirect('dashboard')
         else:
             push_messages_error(request, form)
@@ -171,13 +171,13 @@ def app_detail(request, app_id):
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
             if len(callback_uris) == 0:
-                messages.error(request, "Add failed app: callback uris is required!")
+                messages.error(request, 'Add failed app: callback uris is required!')
             if len(allowed_ips) != 0:
                 app_update.set_allowed_ips(allowed_ips)
             if len(callback_uris) > 0 and len(allowed_ips) > 0:
                 app_update.set_callback_uris(callback_uris)
                 app_update.save()
-                messages.success(request, "Application was successfully updated!")
+                messages.success(request, 'Application was successfully updated!')
                 return redirect('app_detail', app_id=app_id)
         else:
             push_messages_error(request, form)
@@ -194,7 +194,7 @@ def delete_app(request, app_id):
         app = App.get_app_by_user(app_id=app_id, user=request.user)
         app.deleted = 1
         app.save()
-        messages.success(request, "App was deleted!")
+        messages.success(request, 'App was deleted!')
         return redirect('dashboard')
     else:
         messages.error(request, 'Delete failed APP!')
@@ -327,49 +327,48 @@ def add_channel(request):
             channel = form.save(commit=False)
             provider_id = request.POST.get('api_version')
             if provider_id is None:
-                messages.error(request, "Add channel failed: API version is required!")
+                messages.error(request, 'Add channel failed: API version is required!')
                 return redirect('dashboard')
             provider = Provider.objects.filter(pk=provider_id).first()
             provider_name = request.POST.get('provider')
             api_version = provider.version
             required_permission = provider.required_permissions
             field_permission = request.POST.getlist('required_field')
-            required_fields = ""
-            permissions = ""
+            required_fields = ''
+            permissions = set()
             for item in field_permission:
-                item_split = item.split('|')
+                item_split = item.split(':')
                 required_fields += item_split[0] + '|'
-                permissions += item_split[1] + '|'
+                if item_split[1]:
+                    permissions.add(item_split[1])
             required_fields = required_fields[:-1]
-            permissions += required_permission
-            permissions = '|'.join(set(permissions.split('|')))
-            options = ""
+            permissions.union(set(required_permission.split('|')))
+            options = ''
             for item in request.POST.getlist('option'):
-                options += item + "|"
+                options += item + '|'
             options = options[:-1]
             channel.provider = provider_name
             channel.api_version = api_version
-            channel.permissions = permissions
+            channel.permissions = '|'.join(permissions)
             channel.required_fields = required_fields
             channel.options = options
 
             app_id = request.POST['app_id']
             if app_id is None:
-                messages.error(request, "Add channel failed: App ID is required!")
+                messages.error(request, 'Add channel failed: App ID is required!')
                 return redirect('dashboard')
             else:
                 channel.app = App.get_app_by_user(app_id=app_id, user=request.user)
 
             app = App.get_app_by_user(app_id=app_id, user=request.user)
-
             # try to catch exception unique but it catch more
             try:
                 channel.save()
                 app.update_modified_at()
                 app.save()
-                messages.success(request, "Channel was successfully created!")
+                messages.success(request, 'Channel was successfully created!')
             except IntegrityError as error:
-                messages.error(request, "Channel with " + channel.provider + " provider already exists!")
+                messages.error(request, 'Channel with ' + channel.provider + ' provider already exists!')
 
             return redirect('channel_list', app_id=app_id)
         else:
@@ -391,29 +390,29 @@ def channel_detail(request, app_id, channel_id):
 
             provider = request.POST.get('api_version')
             if provider is None:
-                messages.error(request, "Add channel failed: API version is required!")
+                messages.error(request, 'Add channel failed: API version is required!')
                 return redirect('dashboard')
             provider = Provider.objects.filter(pk=provider).first()
             provider_name = request.POST.get('provider')
             api_version = provider.version
             required_permission = provider.required_permissions
             field_permission = request.POST.getlist('required_field')
-            required_fields = ""
-            permissions = ""
+            required_fields = ''
+            permissions = set()
             for item in field_permission:
-                item_split = item.split('|')
+                item_split = item.split(':')
                 required_fields += item_split[0] + '|'
-                permissions += item_split[1] + '|'
+                if item_split[1]:
+                    permissions.add(item_split[1])
             required_fields = required_fields[:-1]
-            permissions += required_permission
-            permissions = '|'.join(set(permissions.split('|')))
-            options = ""
+            permissions.union(set(required_permission.split('|')))
+            options = ''
             for item in request.POST.getlist('option'):
-                options += item + "|"
+                options += item + '|'
             options = options[:-1]
             channel_update.provider = provider_name
             channel_update.api_version = api_version
-            channel_update.permissions = permissions
+            channel_update.permissions = '|'.join(permissions)
             channel_update.required_fields = required_fields
             channel_update.options = options
 
@@ -424,10 +423,10 @@ def channel_detail(request, app_id, channel_id):
                 channel_update.save()
                 app.update_modified_at()
                 app.save()
-                messages.success(request, "Channel was successfully updated!")
+                messages.success(request, 'Channel was successfully updated!')
             except IntegrityError as error:
                 print('Add channel error', error)
-                messages.error(request, "Channel with " + channel.provider + " provider already exists!")
+                messages.error(request, 'Channel with ' + channel.provider + ' provider already exists!')
 
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
         else:
@@ -443,7 +442,7 @@ def channel_detail(request, app_id, channel_id):
     form.fields['app_id'].widget = forms.HiddenInput()
 
     return render(request, 'loginapp/channel_detail.html',
-                  {"app": app, 'apps': apps, 'channel': channel, 'channels': channels, 'providers': providers,
+                  {'app': app, 'apps': apps, 'channel': channel, 'channels': channels, 'providers': providers,
                    'provider_names': provider_name_list, 'provider_id': provider.id, 'form': form})
 
 
@@ -454,10 +453,10 @@ def delete_channel(request, app_id, channel_id):
         channel = get_object_or_404(Channel, pk=channel_id, app=app_id)
         channel.delete()
         app.update_modified_at()
-        messages.success(request, "Channel was deleted!")
+        messages.success(request, 'Channel was deleted!')
         return redirect('channel_list', app_id=app_id)
     else:
-        messages.error(request, "Delete failed Channel!")
+        messages.error(request, 'Delete failed Channel!')
         return redirect('channel_list', app_id=app_id)
 
 
@@ -472,11 +471,11 @@ def get_api_key(request):
 # pass messages error
 def push_messages_error(request, form):
     for key, val in form.errors.as_data().items():
-        key = key.replace("_", " ").capitalize()
+        key = key.replace('_', ' ').capitalize()
         for validError in val:
             errors = validError.messages
             for error in errors:
-                messages.error(request, "Update failed! " + key + ": " + error)
+                messages.error(request, 'Update failed! ' + key + ': ' + error)
 
 
 # link not found
