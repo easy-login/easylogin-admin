@@ -51,14 +51,14 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
         from_dt += ' 00:00:00'
         to_dt += ' 23:59:59'
         cursor.execute("""
-            SELECT provider, DATE(CONVERT_TZ(modified_at, '+00:00', '+09:00')) as dt, COUNT(id) 
+            SELECT provider, DATE(CONVERT_TZ(modified_at, '+00:00', %s)) as dt, COUNT(id) 
             FROM auth_logs 
             WHERE app_id = %s 
                 AND modified_at BETWEEN %s AND %s 
                 AND status IN ('succeeded', 'authorized') 
                 AND is_login = %s
             GROUP BY dt, provider
-            ORDER BY provider""", (app_id, from_dt, to_dt, is_login))
+            ORDER BY provider""", (settings.TIME_ZONE_OFFSET, app_id, from_dt, to_dt, is_login))
 
         i = 0
         while True:
