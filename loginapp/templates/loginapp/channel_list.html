@@ -102,10 +102,10 @@
                 <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client Secret :</strong></p>
                 {% str_length channel.client_secret as secret_length %}
                 <span class="text-muted">
-                    {% if secret_length < 40 %}
+                    {% if secret_length < 50 %}
                     {{ channel.client_secret }}
                     {% else %}
-                    {{ channel.client_secret|slice:"0:40" }}...
+                    {{ channel.client_secret|slice:"0:50" }}...
                     {% endif %}
                 </span>
             </div>
