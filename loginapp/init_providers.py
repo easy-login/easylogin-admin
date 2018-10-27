@@ -42,7 +42,7 @@ providers = [
     {
         "name": "amazon",
         "version": ["v2"],
-        "required_permissions": "profile:user_id|payments:widget",
+        "required_permissions": "profile:user_id",
         "basic_fields": [
             {
                 "key": "name",
@@ -53,23 +53,21 @@ providers = [
                 "key": "email",
                 "name": "Email",
                 "permission": "profile"
-            },
+            }
+        ],
+        "advanced_fields": [
             {
                 "key": "postal_code",
                 "name": "Postal Code",
                 "permission": "postal_code"
             }
         ],
-        "advanced_fields": [
+        "options": [
             {
-                "key": "shipping_address",
-                "name": "Payments Shipping Address",
-                "permission": "payments:shipping_address"
-            },
-            {
-                "key": "billing_address",
-                "name": "Payments Billing Address",
-                "permission": "payments:billing_address"
+                "key": "amazon_pay",
+                "name": "Associate with Amazon Pay",
+                "default": False,
+                "tooltip": "Indicates that your app use Login and Pay with Amazon"
             }
         ]
     },
@@ -144,7 +142,7 @@ providers = [
     },
     {
         "name": "facebook",
-        "version": ["v3.1"],
+        "version": ["v3.1", "v3.2"],
         "required_permissions": "public_profile",
         "basic_fields": [
             {
@@ -205,14 +203,119 @@ providers = [
                 "permission": "user_likes"
             },
             {
-                "key": "link",
-                "name": "Timeline Link",
-                "permission": "user_link"
+                "key": "location",
+                "name": "Location",
+                "permission": "user_location"
+            }
+        ],
+        "options": [
+            {
+                "key": "extra_fields",
+                "name": "Get all extra fields",
+                "default": False,
+                "tooltip": "Get all extra fields that not included in basic and advanced fields"
+            }
+        ]
+    },
+    {
+        "name": "twitter",
+        "version": ["v1.1"],
+        "required_permissions": "",
+        "basic_fields": [
+            {
+                "key": "name",
+                "name": "Name",
+                "permission": ""
+            },
+            {
+                "key": "screen_name",
+                "name": "Screen Name",
+                "permission": ""
             },
             {
                 "key": "location",
                 "name": "Location",
-                "permission": "user_location"
+                "permission": ""
+            },
+            {
+                "key": "url",
+                "name": "Personal URL",
+                "permission": ""
+            },
+            {
+                "key": "description",
+                "name": "Description",
+                "permission": ""
+            },
+            {
+                "key": "created_at",
+                "name": "Created At",
+                "permission": ""
+            },
+            {
+                "key": "lang",
+                "name": "Languages",
+                "permission": ""
+            },
+            {
+                "key": "profile_background_image_url_https",
+                "name": "Background Image URL",
+                "permission": ""
+            },
+            {
+                "key": "profile_banner_url",
+                "name": "Banner Image URL",
+                "permission": ""
+            },
+            {
+                "key": "profile_image_url_https",
+                "name": "Image URL",
+                "permission": "user_gender"
+            }
+        ],
+        "advanced_fields": [
+            {
+                "key": "email",
+                "name": "Email",
+                "permission": ""
+            },
+            {
+                "key": "verified",
+                "name": "Verified",
+                "permission": ""
+            },
+            {
+                "key": "statuses_count",
+                "name": "Statuses Count",
+                "permission": ""
+            },
+            {
+                "key": "followers_count",
+                "name": "Followers Count",
+                "permission": ""
+            },
+            {
+                "key": "friends_count",
+                "name": "Friends Count",
+                "permission": ""
+            },
+            {
+                "key": "listed_count",
+                "name": "Listed Count",
+                "permission": ""
+            },
+            {
+                "key": "favourites_count",
+                "name": "Favourites Count",
+                "permission": ""
+            }
+        ],
+        "options": [
+            {
+                "key": "extra_fields",
+                "name": "Get all extra fields",
+                "default": False,
+                "tooltip": "Get all extra fields that not included in basic and advanced fields"
             }
         ]
     }

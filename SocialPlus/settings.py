@@ -143,6 +143,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Tokyo')
+TIME_ZONE_OFFSET = os.getenv('TIME_ZONE_OFFSET', '+09:00')
 
 USE_I18N = True
 
@@ -163,5 +164,4 @@ STATICFILES_DIRS = [
 ]
 
 # App SETTING
-TIME_ZONE_OFFSET = os.getenv('TIME_ZONE_OFFSET', '+09:00')
 # ADMIN_ENABLED = False
