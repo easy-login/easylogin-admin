@@ -94,15 +94,15 @@
             </h4>
             <p class="text-muted font-13 app-description">
                 {% str_length app.description as des_len %}
-                {% if des_len < 50 %}
+                {% if des_len < 20 %}
                     {{ app.description }}
                 {% else %}
-                    {{ app.description|slice:"0:50" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
+                    {{ app.description|slice:"0:20" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
                 {% endif %}
             </p>
             <div class="text-left m-t-20">
                 <p class="text-inverse">
-                    <strong>App ID: <span class="badge badge-danger" style="right:300px;">{{ app.id }}</span></strong>
+                    <strong>App ID: <span class="badge badge-danger" style="position:unset;">{{ app.id }}</span></strong>
                 </p>
             </div>
             <ul class="list-inline">

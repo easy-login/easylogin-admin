@@ -244,8 +244,8 @@ def user_report(request, app_id):
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         apps = App.get_all_app(user=request.user)
-        providers = Provider.objects.order_by('name')
-        return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'providers': providers})
+        provider_names = Provider.provider_names()
+        return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'provider_names': provider_names})
 
 
 @login_required

@@ -91,21 +91,21 @@
             <div class="text-left">
                 <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client ID :</strong></p>
                 {% str_length channel.client_id as client_length %}
-                <span class="text-muted">
-                    {% if client_length < 50 %}
+                <p><span class="text-muted">
+                    {% if client_length < 20 %}
                     {{ channel.client_id }}
                     {% else %}
-                    {{ channel.client_id|slice:"0:50" }}...
+                    {{ channel.client_id|slice:"0:20" }}...
                     {% endif %}
-                </span>
+                </span></p>
 
                 <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client Secret :</strong></p>
                 {% str_length channel.client_secret as secret_length %}
                 <span class="text-muted">
-                    {% if secret_length < 50 %}
+                    {% if secret_length < 20 %}
                     {{ channel.client_secret }}
                     {% else %}
-                    {{ channel.client_secret|slice:"0:50" }}...
+                    {{ channel.client_secret|slice:"0:20" }}...
                     {% endif %}
                 </span>
             </div>
