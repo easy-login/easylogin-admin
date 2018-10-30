@@ -49,10 +49,9 @@
          <div class="col-md-3">
              <select id="provider-select" class="form-control">
                  <option value="all">All</option>
-                 <option value="amazon">Amazon</option>
-                 <option value="facebook">Facebook</option>
-                 <option value="line">Line</option>
-                 <option value="yahoojp">YahooJp</option>
+                 {% for provider_name in provider_names %}
+                 <option value="{{ provider_name }}">{{ provider_name }}</option>
+                 {% endfor %}
              </select>
          </div>
         <div class="col-md-3"></div>

@@ -295,10 +295,12 @@ def app_report(request, app_id):
     else:
         total_data_auth = get_total_auth_report(app_id=app_id)
         total_data_provider = get_total_provider_report(app_id=app_id)
+        provider_names = Provider.provider_names()
         apps = App.get_all_app(user=request.user)
 
         return render(request, 'loginapp/report_app.html', {
             'app': app, 'apps': apps,
+            'provider_names': provider_names,
             'total_data_auth': total_data_auth,
             'total_data_provider': total_data_provider
         })
