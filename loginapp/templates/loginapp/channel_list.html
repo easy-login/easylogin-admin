@@ -89,10 +89,25 @@
             </div>
             <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="clickable text-inverse">{{ channel.provider }}</a></h4>
             <div class="text-left">
-                <p class="text-inverse font-13"><strong>Client ID :</strong> <span class="m-l-15 text-muted">{{ channel.client_id }}</span></p>
+                <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client ID :</strong></p>
+                {% str_length channel.client_id as client_length %}
+                <p><span class="text-muted">
+                    {% if client_length < 20 %}
+                    {{ channel.client_id }}
+                    {% else %}
+                    {{ channel.client_id|slice:"0:20" }}...
+                    {% endif %}
+                </span></p>
 
-                <p class="text-inverse font-13"><strong>Client Secret :</strong> <span class="m-l-15 text-muted">{{ channel.client_secret }}</span>
-                </p>
+                <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client Secret :</strong></p>
+                {% str_length channel.client_secret as secret_length %}
+                <span class="text-muted">
+                    {% if secret_length < 20 %}
+                    {{ channel.client_secret }}
+                    {% else %}
+                    {{ channel.client_secret|slice:"0:20" }}...
+                    {% endif %}
+                </span>
             </div>
             <hr>
             <ul class="text-inverse list-inline m-b-0">
@@ -199,7 +214,7 @@
                                     {% for field in provider.basic_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
@@ -213,7 +228,7 @@
                                     {% for field in provider.advanced_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}

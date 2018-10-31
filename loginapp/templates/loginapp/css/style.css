@@ -6363,88 +6363,6 @@ input.app-search-input:-ms-input-placeholder {
     margin-left: 0;
   }
 }
-/*# sourceMappingURL=style.css.map */
-/*======================================================================*/
-/* Custom CSS
-/*======================================================================*/
-
-.wrapper .container-fluid{
-    max-width: 100%;
-}
-.content{
-    padding: 0px 10px;
-    margin-top:5px;
-}
-.create-app-button{
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-.app-list-select{
-    margin-top: 5px;
-    margin-bottom: 10px;
-}
-.app-list-select button{
-    border-radius: 5px;
-    min-width:150px;
-    text-align: right;
-}
-.success-messages{
-    margin-bottom: 0px;
-}
-
-.checkbox-handler-error{
-    border: 2px solid;
-    border-color: transparent;
-    border-radius: 4px;
-}
-
-.tab-custom-style{
-    border: none;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-top : 10px;
-}
-
-#statistic-table{
-    text-align: center;
-}
-
-.menu-narrow{
-    position: absolute;
-    right: 20px;
-}
-
-.clickable{
-
-}
-.clickable:hover{
-    text-decoration: underline !important;
-    color:#71b6f9 !important;
-}
-.tooltip{
-    font-size: 12px;
-}
-
-.label-required:after {
-  content:"*";
-  color:red;
-}
-
-.menu-item-text{
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.menu-item-text a{
-    color:#ffffff !important;
-}
-
-.menu-item-text a:hover{
-    text-shadow: 1px 0px 0px white;
-    text-decoration: underline;
-}
-
 /*======================================================================*/
 /*sidebar-menu*/
 /*======================================================================*/
@@ -6618,6 +6536,88 @@ input.app-search-input:-ms-input-placeholder {
   font-size: 13px;
 }
 
+/*# sourceMappingURL=style.css.map */
+/*======================================================================*/
+/* Custom CSS
+/*======================================================================*/
+
+.wrapper .container-fluid{
+    max-width: 100%;
+}
+.content{
+    padding: 0px 10px;
+    margin-top:5px;
+}
+.create-app-button{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.app-list-select{
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.app-list-select button{
+    border-radius: 5px;
+    min-width:150px;
+    text-align: right;
+}
+.success-messages{
+    margin-bottom: 0px;
+}
+
+.checkbox-handler-error{
+    border: 2px solid;
+    border-color: transparent;
+    border-radius: 4px;
+}
+
+.tab-custom-style{
+    border: none;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top : 10px;
+}
+
+#statistic-table{
+    text-align: center;
+}
+
+.menu-narrow{
+    position: absolute;
+    right: 20px;
+}
+
+.clickable{
+
+}
+.clickable:hover{
+    text-decoration: underline !important;
+    color:#71b6f9 !important;
+}
+.tooltip{
+    font-size: 12px;
+}
+
+.label-required:after {
+  content:"*";
+  color:red;
+}
+
+.menu-item-text{
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.menu-item-text a{
+    color:#ffffff !important;
+}
+
+.menu-item-text a:hover{
+    text-shadow: 1px 0px 0px white;
+    text-decoration: underline;
+}
+
 .zoom{
     transition: transform .2s;
 }
@@ -6633,4 +6633,9 @@ input.app-search-input:-ms-input-placeholder {
 
 .zoom:hover .card-drop{
     color: #007bff;
+}
+
+.text-hidden{
+    overflow:hidden;
+    white-space: nowrap;
 }
