@@ -33,6 +33,10 @@ class User(AbstractUser):
 
     is_superuser = models.SmallIntegerField(default=0)
 
+    is_active = models.SmallIntegerField(default=0)
+
+    deleted = models.SmallIntegerField(default=0)
+
     @staticmethod
     def get_all_user(user):
         return User.objects.all() if user.is_superuser else []

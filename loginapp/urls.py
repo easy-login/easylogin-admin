@@ -3,7 +3,7 @@ from django.conf.urls import url
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 
-from . import views
+from . import views, admin_views
 
 urlpatterns = [
     url(r'^$', views.login, name='index'),
@@ -58,4 +58,6 @@ urlpatterns = [
     path('apps/<int:app_id>/channels/<int:channel_id>/', views.channel_detail, name='channel_detail'),
 
     path('apps/<int:app_id>/channels/<int:channel_id>/delete', views.delete_channel, name='delete_channel'),
+
+    url(r'^users/$', admin_views.admin_list_users, name='admin_users')
 ]
