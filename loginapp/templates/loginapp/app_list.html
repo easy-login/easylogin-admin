@@ -92,12 +92,12 @@
             </div>
             <h4 class="mt-0 app-title"><a class="clickable text-inverse" href="{% url 'report_app' app.id %}">{{ app.name }}</a>
             </h4>
-            <p class="text-muted font-13 app-description">
+            <p class="text-muted font-13 app-description" style="height:42px;">
                 {% str_length app.description as des_len %}
-                {% if des_len < 20 %}
+                {% if des_len < 50 %}
                     {{ app.description }}
                 {% else %}
-                    {{ app.description|slice:"0:20" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
+                    {{ app.description|slice:"0:50" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
                 {% endif %}
             </p>
             <div class="text-left m-t-20">
