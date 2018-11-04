@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
 
-from loginapp.models import App, User
+from loginapp.models import App
 from loginapp.forms import RegisterForm
 from loginapp.views import push_messages_error
-
+from loginapp.reports import get_list_user
 import json
 
 
@@ -13,12 +13,12 @@ def admin_list_users(request):
     if not request.user.is_superuser:
         redirect('dashboard')
     column_dic = {
-        '1': '_id',
-        '2': 'username',
-        '3': 'email',
+        '1': 'admins.id',
+        '2': 'admins.username',
+        '3': 'admins.email',
         '4': 'number_apps',
         '5': 'last_login',
-        '6': 'is_active'
+        '6': 'admins.is_active'
     }
 
     if request.GET.get('flag_loading'):
@@ -30,24 +30,20 @@ def admin_list_users(request):
         order_dir = request.GET.get('order[0][dir]', 'asc')
         order_by = order_col + ' ' + order_dir
 
-        records_total = User.objects.all().count()
+        records_total, profiles = get_list_user(page_length=page_length, start_page=start_page, order_by=order_by,
+                                                search_value=search_value)
 
         records_filtered = len(profiles)
         data = []
-        providers = Provider.provider_names()
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_id'],
-                        str(profile['social_id']),
-                        profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
-                        profile['login_total']]
-            linked_providers = profile['linked_providers']
-            for provider in providers:
-                if provider in linked_providers:
-                    row_data.append(1)
-                else:
-                    row_data.append(0)
-
+                        profile['username'],
+                        profile['email'],
+                        profile['last_login'].strftime('%Y-%m-%d %H:%M:%S') if profile['last_login'] else 'Never',
+                        profile['total_apps'],
+                        profile['is_active'],
+                        profile['user_id']]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')

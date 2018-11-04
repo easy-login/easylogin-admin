@@ -60,10 +60,10 @@
                     <th>User ID</th>
                     <th>User Name</th>
                     <th>Email</th>
+                    <th class="no-order">Last Login</th>
                     <th>Number Apps</th>
-                    <th>Last Login</th>
                     <th class="active-status-datatable">Activate Status</th>
-                    <th class="no-order">Action</th>
+                    <th class="no-order action-datatable">Action</th>
                 </tr>
                 </thead>
             </table>
@@ -82,8 +82,9 @@
                 </div>
                 <form class="form-horizontal m-t-20" method="post" action="{% url 'admin_add_user' %}">
                     {% csrf_token %}
-                     <div class="form-group ">
-                    <div class="col-xs-12">
+                    <div class="form-group row">
+                         <label for="id_email" class="col-md-2 col-form-label label-required">Email</label>
+                    <div class="col-md-10">
                         {% if form.email.errors %}
                         {% render_field form.email class='form-control parsley-error' placeholder='Email' %}
                         {% else %}
@@ -99,8 +100,9 @@
                     </div>
                 </div>
 
-                <div class="form-group ">
-                    <div class="col-xs-12">
+                <div class="form-group row">
+                    <label for="id_username" class="col-md-2 col-form-label label-required">Username</label>
+                    <div class="col-md-10">
                         {% if form.username.errors %}
                         {% render_field form.username class='form-control parsley-error' placeholder='Username' %}
                         {% else %}
@@ -116,8 +118,9 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="col-xs-12">
+                <div class="form-group row">
+                    <label for="id_password" class="col-md-2 col-form-label label-required">Password</label>
+                    <div class="col-md-10">
                         {% if form.password.errors %}
                         {% render_field form.password class='form-control parsley-error' placeholder='Password' %}
                         {% else %}
@@ -181,18 +184,18 @@ function loadInitialUsersTable(){
                 'targets': 'active-status-datatable',
                 'render': function ( data, type, row ) {
                     if (data == 1) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
-                    else return ''
+                    else return '<span class="text-danger"><i class="mdi mdi-24px mdi-account-off"></i></span>'
                 }
             },
             {
-                'targets': 'action-datetable',
+                'targets': 'action-datatable',
                 'render': function (data, type, row){
-                    return '<button class="btn btn-danger">Del</button>'
+                    return '<a class="text-danger" href=""><i class="fas fa-trash-alt"></i></a>'
                 }
             }
         ],
         language: {
-        searchPlaceholder: "User Email"
+        searchPlaceholder: "Username"
         },
     }).draw();
 }

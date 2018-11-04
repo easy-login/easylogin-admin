@@ -33,7 +33,7 @@ class User(AbstractUser):
 
     is_superuser = models.SmallIntegerField(default=0)
 
-    is_active = models.SmallIntegerField(default=0)
+    is_active = models.SmallIntegerField(default=1)
 
     deleted = models.SmallIntegerField(default=0)
 

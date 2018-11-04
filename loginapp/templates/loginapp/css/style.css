@@ -6639,3 +6639,8 @@ input.app-search-input:-ms-input-placeholder {
     overflow:hidden;
     white-space: nowrap;
 }
+
+table.dataTable tbody td {
+  vertical-align: middle;
+  text-align: center;
+}
