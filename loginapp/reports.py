@@ -126,10 +126,10 @@ def get_list_user(page_length, start_page, order_by, search_value):
                     admins.is_active  
                 FROM admins
                 RIGHT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
-                WHERE admins.deleted = 0 AND (admins.id = %s OR admins.username = %s) 
+                WHERE admins.username = 'admin' 
                 GROUP BY admins.id
                 ORDER BY {} LIMIT {}, {}
-            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, search_value, search_value,))
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET,))
         else:
             cursor.execute("""
                 SELECT 
@@ -146,4 +146,5 @@ def get_list_user(page_length, start_page, order_by, search_value):
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET,))
         rows = dict_fetchall(cursor)
+        print(cursor)
         return len(rows), rows
