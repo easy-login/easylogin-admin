@@ -144,6 +144,46 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
+<!--Add Edit modal-->
+<div id="edit-user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editUserModal"
+         style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="editUserModal">Edit User</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <form class="form-horizontal m-t-20" method="post" action="">
+                    {% csrf_token %}
+                    <input type="text" name="edit_user_id" maxlength="100" class="form-control" id="user_id" style="display:none;">
+                    <div class="form-group row">
+                         <label for="edit_id_email" class="col-md-2 col-form-label">Email</label>
+                    <div class="col-md-10">
+                       <input type="email" name="email" maxlength="100" placeholder="Email" class="form-control" id="edit_id_email">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="edit_id_username" class="col-md-2 col-form-label">Username</label>
+                    <div class="col-md-10">
+                        <input type="text" name="username" maxlength="100" placeholder="Username" class="form-control" id="edit_id_username">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="edit_id_password" class="col-md-2 col-form-label">Password</label>
+                    <div class="col-md-10">
+                       <input type="password" name="password" maxlength="100" placeholder="Password" class="form-control" id="edit_id_password">
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save Change</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 {% endblock %}
 
 {% block js %}
@@ -190,7 +230,7 @@ function loadInitialUsersTable(){
             {
                 'targets': 'action-datatable',
                 'render': function (data, type, row){
-                    return '<form method="POST" action="/users/'+data+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></form><button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-edit"></i></button>'
+                    return '<form method="POST" action="/users/'+data+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button>'
                 }
             }
         ],
@@ -222,6 +262,19 @@ function deleteConfirm(event){
                     'success'
                 );
             });
+}
+
+function fillEditForm(e){
+    var tds = $(e).parent().parent().children()
+    var user_id = tds.eq(1).text()
+    var username = tds.eq(2).text()
+    var email = tds.eq(3).text()
+
+    $('#edit_user_id').val(user_id)
+    $('#edit_id_username').val(username)
+    $('#edit_id_email').val(email)
+    $('#edit_id_password').val('')
+
 }
 </script>
 {% endblock %}
