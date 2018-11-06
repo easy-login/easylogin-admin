@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
 
-from loginapp.models import App
+from loginapp.models import App, User
 from loginapp.forms import RegisterForm
 from loginapp.views import push_messages_error
 from loginapp.reports import get_list_user
@@ -65,10 +65,24 @@ def admin_add_user(request):
             user.set_password(password)
             user.email = email
             user.save()
-            messages.success(request,"User was successfully created!")
+            messages.success(request, "User was successfully created!")
             return redirect('admin_users')
         else:
             push_messages_error(request, form)
             print(form.errors)
 
     return redirect('admin_users')
+
+
+def admin_delete_user(request, user_id):
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+    if request.method == 'POST':
+        user = get_object_or_404(User, pk=user_id)
+        user.deleted = 1
+        user.save()
+        messages.success(request, 'User was deleted!')
+        return redirect('admin_users')
+    else:
+        messages.error(request, 'Delete failed User!')
+        return redirect('admin_users')

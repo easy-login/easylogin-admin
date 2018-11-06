@@ -190,7 +190,7 @@ function loadInitialUsersTable(){
             {
                 'targets': 'action-datatable',
                 'render': function (data, type, row){
-                    return '<a class="text-danger" href=""><i class="fas fa-trash-alt"></i></a>'
+                    return '<form method="POST" action="/users/'+data+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></form><button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-edit"></i></button>'
                 }
             }
         ],
@@ -198,6 +198,30 @@ function loadInitialUsersTable(){
         searchPlaceholder: "Username"
         },
     }).draw();
+}
+function deleteConfirm(event){
+    event.preventDefault();
+    var form = event.target.closest('form');
+    swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#4fa7f3',
+                confirmButtonColor: '#98a6ad',
+                reverseButtons: true,
+                confirmButtonText: 'Yes, delete it!',
+                onOpen: function(ele) {
+                    $('.swal2-cancel').focus()
+                }
+            }).then(function () {
+            form.submit();
+                swal(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                );
+            });
 }
 </script>
 {% endblock %}

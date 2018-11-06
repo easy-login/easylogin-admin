@@ -6644,3 +6644,9 @@ table.dataTable tbody td {
   vertical-align: middle;
   text-align: center;
 }
+
+.button-icon{
+    border: unset;
+    background: transparent;
+    cursor: pointer;
+}
