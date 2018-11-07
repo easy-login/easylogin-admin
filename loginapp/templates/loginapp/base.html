@@ -194,10 +194,7 @@
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    if ($('.sidebar-inner li.active').length > 0){
-        var position = $('.sidebar-inner li.active').offset().top+270;
-        $('#scroll-to').slimScroll().scrollTo(position+'px');
-    }
+
 });
     function logoutConfirm(event){
         event.preventDefault();
