@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth import update_session_auth_hash
 
 from loginapp.models import App, User
 from loginapp.forms import RegisterForm
@@ -86,3 +87,26 @@ def admin_delete_user(request, user_id):
     else:
         messages.error(request, 'Delete failed User!')
         return redirect('admin_users')
+
+
+def admin_update_user(request):
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+
+    print(request.POST['email']+":"+request.POST['username'])
+    if request.method == 'POST':
+        if 'user_id' not in request.POST:
+            messages.error(request, "Update failed User: user id is required!")
+            return redirect('admin_users')
+        user_id = request.POST['user_id']
+        user = get_object_or_404(User, pk=user_id)
+        if 'email' in request.POST:
+            user.email = request.POST['email']
+        if 'username' in request.POST:
+            user.username = request.POST['username']
+        if 'password' in request.POST:
+            user.set_password(request.POST['password'])
+        user.save()
+        update_session_auth_hash(request, user)
+        messages.success(request, "User was successfully updated!")
+    return redirect('admin_users')

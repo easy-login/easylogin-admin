@@ -153,9 +153,9 @@
                     <h4 class="modal-title" id="editUserModal">Edit User</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
-                <form class="form-horizontal m-t-20" method="post" action="">
+                <form class="form-horizontal m-t-20" method="post" action="{% url 'admin_update_user' %}">
                     {% csrf_token %}
-                    <input type="text" name="edit_user_id" maxlength="100" class="form-control" id="user_id" style="display:none;">
+                    <input type="text" name="user_id" maxlength="100" class="form-control" id="edit_user_id" style="display:none;">
                     <div class="form-group row">
                          <label for="edit_id_email" class="col-md-2 col-form-label">Email</label>
                     <div class="col-md-10">
@@ -230,7 +230,7 @@ function loadInitialUsersTable(){
             {
                 'targets': 'action-datatable',
                 'render': function (data, type, row){
-                    return '<form method="POST" action="/users/'+data+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button>'
+                    return '<li class="list-inline-item"><form method="POST" action="/users/'+data+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button></li>'
                 }
             }
         ],

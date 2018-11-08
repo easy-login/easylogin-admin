@@ -64,4 +64,6 @@ urlpatterns = [
     url(r'^add-user/$', admin_views.admin_add_user, name='admin_add_user'),
 
     path('users/<int:user_id>/delete', admin_views.admin_delete_user, name='admin_delete_user'),
+
+    url(r'^update-user/$', admin_views.admin_update_user, name='admin_update_user')
 ]
