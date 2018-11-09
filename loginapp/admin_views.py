@@ -88,11 +88,12 @@ def admin_delete_user(request, user_id):
         messages.error(request, 'Delete failed User!')
         return redirect('admin_users')
 
+
 def admin_update_user(request):
     if not request.user.is_superuser:
         return redirect('dashboard')
 
-    print(request.POST['email']+":"+request.POST['username'])
+    print(request.POST['email'] + ":" + request.POST['username'])
     if request.method == 'POST':
         if 'user_id' not in request.POST:
             messages.error(request, "Update failed User: user id is required!")
@@ -109,6 +110,7 @@ def admin_update_user(request):
         update_session_auth_hash(request, user)
         messages.success(request, "User was successfully updated!")
     return redirect('admin_users')
+
 
 def admin_list_app(request):
     if not request.user.is_superuser:
