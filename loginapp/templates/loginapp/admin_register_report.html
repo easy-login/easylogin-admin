@@ -11,7 +11,7 @@
 {% block topbar %}
 <!-- Page title -->
 <li class="list-inline-item">
-    <h4 class="page-title">Applications</h4>
+    <h4 class="page-title">User Register Report</h4>
 </li>
 {% endblock %}
 
@@ -51,10 +51,9 @@
                     <th>App ID</th>
                     <th>App Name</th>
                     <th>Owner</th>
-                    <th>Total User</th>
-                    <th>Create Date</th>
-                    <th>Update Date</th>
-                    <th class="active-status-datatable">Status</th>
+                    <th>Total</th>
+                    <th>Authorized</th>
+                    <th>Register Done</th>
                 </tr>
                 </thead>
             </table>
@@ -89,7 +88,7 @@ function loadInitialUsersTable(){
         'serverSide': true,
         'deferLoading': 0,
         'ajax': {
-              'url': '{% url 'admin_apps'%}',
+              'url': '{% url 'admin_report'%}',
               'method': 'GET',
               'data': function(d){
                 d.flag_loading = 'load-data'
@@ -113,7 +112,7 @@ function loadInitialUsersTable(){
             }
         ],
         language: {
-        searchPlaceholder: "App ID, App Name Or Owner"
+        searchPlaceholder: "Owner"
         },
     }).draw();
 }

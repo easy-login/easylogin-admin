@@ -21,10 +21,13 @@ class RegisterForm(ModelForm):
     address = forms.CharField(max_length=models.MAX_LENGTH_MEDIUM_FIELD, required=False)
     company = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)
 
+    CHOICES_LEVEL = [(0, 'Normal'), (1, 'Premium')]
+    level = forms.ChoiceField(choices=CHOICES_LEVEL, widget=forms.RadioSelect(), required=False)
+
     class Meta:
         model = User
         model._meta.get_field('username')._unique = False
-        fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company',)
+        fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company', 'level')
 
     # def clean(self):
     #     cleaned_data = super(RegisterForm, self).clean()

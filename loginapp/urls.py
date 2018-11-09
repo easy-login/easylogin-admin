@@ -59,11 +59,15 @@ urlpatterns = [
 
     path('apps/<int:app_id>/channels/<int:channel_id>/delete', views.delete_channel, name='delete_channel'),
 
-    url(r'^users/$', admin_views.admin_list_users, name='admin_users'),
+    url(r'^admin/users/$', admin_views.admin_list_users, name='admin_users'),
 
     url(r'^add-user/$', admin_views.admin_add_user, name='admin_add_user'),
 
     path('users/<int:user_id>/delete', admin_views.admin_delete_user, name='admin_delete_user'),
 
-    url(r'^update-user/$', admin_views.admin_update_user, name='admin_update_user')
+    url(r'^update-user/$', admin_views.admin_update_user, name='admin_update_user'),
+
+    url(r'^admin/apps/$', admin_views.admin_list_apps, name='admin_apps'),
+
+    url(r'^admin/report/$', admin_views.admin_report_register, name='admin_report'),
 ]

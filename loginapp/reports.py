@@ -111,7 +111,7 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         return len(rows), rows
 
 
-def get_list_user(page_length, start_page, order_by, search_value):
+def get_list_users(page_length, start_page, order_by, search_value):
     with connection.cursor() as cursor:
         offset = start_page * page_length
         limit = offset + page_length
@@ -126,7 +126,7 @@ def get_list_user(page_length, start_page, order_by, search_value):
                     admins.is_active  
                 FROM admins
                 LEFT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
-                WHERE admins.deleted = 0 AND (admins.username = %s OR admins.id = %s) 
+                WHERE admins.deleted=0 AND (admins.username=%s OR admins.id=%s) 
                 GROUP BY admins.id
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, search_value, search_value))
@@ -146,5 +146,74 @@ def get_list_user(page_length, start_page, order_by, search_value):
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET,))
         rows = dict_fetchall(cursor)
-        print(cursor)
+        return len(rows), rows
+
+
+def get_list_apps(page_length, start_page, order_by, search_value):
+    with connection.cursor() as cursor:
+        offset = start_page * page_length
+        limit = offset + page_length
+        if search_value:
+            cursor.execute("""
+                SELECT a.id, a.name, o.username AS owner, 
+                    COUNT(p.id) AS total_user, 
+                    DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
+                    DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
+                    a.deleted
+                FROM apps AS a
+                LEFT OUTER JOIN social_profiles AS p ON a.id = p.app_id
+                INNER JOIN admins AS o ON a.owner_id = o.id
+                WHERE a.id=%s OR a.name=%s OR o.username=%s
+                GROUP BY a.id 
+                ORDER BY {} LIMIT {}, {}
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET,
+                                                  search_value, search_value, search_value))
+        else:
+            cursor.execute("""
+                SELECT a.id, a.name, o.username AS owner, 
+                    COUNT(p.id) AS total_user, 
+                    DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
+                    DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
+                    a.deleted
+                FROM apps AS a
+                LEFT OUTER JOIN social_profiles AS p ON a.id = p.app_id
+                INNER JOIN admins AS o ON a.owner_id = o.id
+                GROUP BY a.id 
+                ORDER BY {} LIMIT {}, {}
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
+        rows = dict_fetchall(cursor)
+        return len(rows), rows
+
+
+def get_register_report(page_length, start_page, order_by, search_value):
+    with connection.cursor() as cursor:
+        offset = start_page * page_length
+        limit = offset + page_length
+        if search_value:
+            cursor.execute("""
+                SELECT a.id, a.name, o.username, 
+                    COUNT(p.id) AS total,
+                    SUM(CASE WHEN draft = 1 THEN 1 ELSE 0 END) AS authorized,
+                    SUM(CASE WHEN draft = 0 THEN 1 ELSE 0 END) AS register_done
+                FROM social_profiles AS p
+                INNER JOIN apps AS a ON p.app_id = a.id
+                INNER JOIN admins AS o ON a.owner_id = o.id
+                WHERE p.draft IS NOT NULL  AND o.username=%s
+                GROUP BY p.app_id
+                ORDER BY {} LIMIT {}, {}
+            """.format(order_by, offset, limit), (search_value, ))
+        else:
+            cursor.execute("""
+                SELECT a.id, a.name, o.username, 
+                    COUNT(p.id) AS total,
+                    SUM(CASE WHEN draft = 1 THEN 1 ELSE 0 END) AS authorized,
+                    SUM(CASE WHEN draft = 0 THEN 1 ELSE 0 END) AS register_done
+                FROM social_profiles AS p
+                INNER JOIN apps AS a ON p.app_id = a.id
+                INNER JOIN admins AS o ON a.owner_id = o.id
+                WHERE p.draft IS NOT NULL 
+                GROUP BY p.app_id
+                ORDER BY {} LIMIT {}, {}
+            """.format(order_by, offset, limit), )
+        rows = dict_fetchall(cursor)
         return len(rows), rows

@@ -245,7 +245,8 @@ def user_report(request, app_id):
     else:
         apps = App.get_all_app(user=request.user)
         provider_names = Provider.provider_names()
-        return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'provider_names': provider_names})
+        return render(request, 'loginapp/statistic_login.html',
+                      {'apps': apps, 'app': app, 'provider_names': provider_names})
 
 
 @login_required
@@ -352,6 +353,8 @@ def add_channel(request):
             channel.permissions = '|'.join(permissions)
             channel.required_fields = required_fields
             channel.options = options
+            if request.user.level > 0:
+                channel.is_premium = 1
 
             app_id = request.POST['app_id']
             if app_id is None:
