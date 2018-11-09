@@ -16,26 +16,17 @@ MAX_LENGTH_LONG_FIELD = 500
 # Create your models here.
 class User(AbstractUser):
     email = models.EmailField(unique=True, null=True, max_length=MAX_LENGTH_SHORT_FIELD)
-
     username = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     password = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     last_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD)
-
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     is_superuser = models.SmallIntegerField(default=0)
-
     is_active = models.SmallIntegerField(default=1)
-
     deleted = models.SmallIntegerField(default=0)
+    account_level = models.SmallIntegerField(default=0)
 
     @staticmethod
     def get_all_user(user):
@@ -155,6 +146,7 @@ class Channel(models.Model):
     required_fields = models.CharField(null=True, max_length=4095)
     options = models.CharField(null=True, max_length=1023)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
+    is_premium = models.SmallIntegerField(default=0)
 
     def required_fields_as_list(self):
         return self.required_fields.split('|')
