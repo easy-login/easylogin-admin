@@ -82,12 +82,12 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         if search_value:
             cursor.execute("""
                 SELECT alias AS social_id, 
-                    user_pk AS user_id, 
+                    user_pk 
                     MAX(authorized_at) AS last_login, 
                     SUM(login_count) AS login_total, 
                     GROUP_CONCAT(provider) AS linked_providers 
                 FROM social_profiles
-                WHERE app_id = %s AND user_id = %s 
+                WHERE app_id = %s AND user_pk = %s 
                 GROUP BY alias, user_pk
                 ORDER BY {} LIMIT {}, {}
                 """.format(order_by, offset, limit), (app_id, search_value,))
@@ -192,6 +192,9 @@ def get_register_report(page_length, start_page, order_by, search_value):
         if search_value:
             cursor.execute("""
                 SELECT a.id, a.name, o.username, 
+                    DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
+                    DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
+                    a.deleted,
                     COUNT(p.id) AS total,
                     SUM(CASE WHEN draft = 1 THEN 1 ELSE 0 END) AS authorized,
                     SUM(CASE WHEN draft = 0 THEN 1 ELSE 0 END) AS register_done
@@ -205,6 +208,9 @@ def get_register_report(page_length, start_page, order_by, search_value):
         else:
             cursor.execute("""
                 SELECT a.id, a.name, o.username, 
+                    DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
+                    DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
+                    a.deleted,
                     COUNT(p.id) AS total,
                     SUM(CASE WHEN draft = 1 THEN 1 ELSE 0 END) AS authorized,
                     SUM(CASE WHEN draft = 0 THEN 1 ELSE 0 END) AS register_done
@@ -214,6 +220,6 @@ def get_register_report(page_length, start_page, order_by, search_value):
                 WHERE p.draft IS NOT NULL 
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
-            """.format(order_by, offset, limit), )
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
         rows = dict_fetchall(cursor)
         return len(rows), rows

@@ -166,9 +166,12 @@ def admin_report_register(request):
         '1': 'a.id',
         '2': 'a.name',
         '3': 'o.username',
-        '4': 'total',
-        '5': 'authorized',
-        '6': 'register_done',
+        '4': 'created_at',
+        '5': 'modified_at',
+        '6': 'total',
+        '7': 'authorized',
+        '8': 'register_done',
+        '9': 'a.deleted',
     }
 
     if request.GET.get('flag_loading'):
@@ -190,9 +193,12 @@ def admin_report_register(request):
                         profile['id'],
                         profile['name'],
                         profile['username'],
+                        profile['created_at'],
+                        profile['modified_at'],
                         profile['total'],
                         profile['authorized'],
-                        profile['register_done']]
+                        profile['register_done'],
+                        profile['deleted']]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')

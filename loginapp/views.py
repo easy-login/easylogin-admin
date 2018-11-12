@@ -228,7 +228,7 @@ def user_report(request, app_id):
         providers = Provider.provider_names()
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
-                        profile['user_id'],
+                        profile['user_pk'],
                         str(profile['social_id']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
