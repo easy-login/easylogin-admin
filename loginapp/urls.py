@@ -12,7 +12,7 @@ urlpatterns = [
 
     url(r'^logout/$', views.logout, name='logout'),
 
-    url(r'^register/$', views.register, name='register'),
+    # url(r'^register/$', views.register, name='register'),
 
     url(r'^request-password-reset/$',
         auth_views.PasswordResetView.as_view(template_name='loginapp/password_reset_email.html',
