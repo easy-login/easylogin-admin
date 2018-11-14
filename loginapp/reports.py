@@ -204,7 +204,7 @@ def get_register_report(page_length, start_page, order_by, search_value):
                 WHERE p.draft IS NOT NULL  AND o.username=%s
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
-            """.format(order_by, offset, limit), (search_value, ))
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET, search_value, ))
         else:
             cursor.execute("""
                 SELECT a.id, a.name, o.username, 
