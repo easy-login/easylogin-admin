@@ -18,6 +18,16 @@
 {% endblock %}
 
 {% block sidemenu %}
+{% if request.user.is_superuser %}
+<li>
+    <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
+        <span> Users Manager </span> </a>
+</li>
+<li>
+    <a href="{% url 'admin_report' %}" class="waves-effect"><i class="fas fa-registered"></i>
+        <span> Register Report </span> </a>
+</li>
+{% endif%}
 <li class="has_sub">
     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-account"></i><span>My Profile</span>
          <i class="fa fa-angle-down menu-narrow"></i>
@@ -35,16 +45,6 @@
     <a href="{% url 'dashboard'%}" class="waves-effect"><i class="mdi mdi-apps"></i>
         <span> My Apps </span> </a>
 </li>
-{% if request.user.is_superuser %}
-<li>
-    <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
-        <span> Users Manager </span> </a>
-</li>
-<li>
-    <a href="{% url 'admin_report' %}" class="waves-effect"><i class="fas fa-registered"></i>
-        <span> Register Report </span> </a>
-</li>
-{% endif%}
 {% endblock %}
 {% block content%}
 <div class="row card-box profile-info-name justify-content-md-center">
