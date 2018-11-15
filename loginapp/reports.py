@@ -82,7 +82,7 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         if search_value:
             cursor.execute("""
                 SELECT alias AS social_id, 
-                    user_pk 
+                    user_pk,
                     MAX(authorized_at) AS last_login, 
                     SUM(login_count) AS login_total, 
                     GROUP_CONCAT(provider) AS linked_providers 
