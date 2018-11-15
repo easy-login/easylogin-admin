@@ -123,7 +123,8 @@ def get_list_users(page_length, start_page, order_by, search_value):
                     admins.email,
                     count(apps.id) as total_apps,
                     DATE(CONVERT_TZ(admins.last_login, '+00:00', %s)) as last_login,
-                    admins.is_active  
+                    admins.is_active ,
+                    admins.level
                 FROM admins
                 LEFT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
                 WHERE admins.deleted=0 AND (admins.username=%s OR admins.id=%s) 
@@ -138,7 +139,8 @@ def get_list_users(page_length, start_page, order_by, search_value):
                     admins.email,
                     count(apps.id) as total_apps,
                     DATE(CONVERT_TZ(admins.last_login, '+00:00', %s)) as last_login,
-                    admins.is_active
+                    admins.is_active,
+                    admins.level
                 FROM admins
                 LEFT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
                 WHERE admins.deleted = 0

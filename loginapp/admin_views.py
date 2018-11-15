@@ -14,12 +14,11 @@ def admin_list_users(request):
     if not request.user.is_superuser:
         redirect('dashboard')
     column_dic = {
-        '1': 'admins.id',
-        '2': 'admins.username',
-        '3': 'admins.email',
-        '4': 'number_apps',
-        '5': 'last_login',
-        '6': 'admins.is_active'
+        '1': 'admins.username',
+        '2': 'admins.email',
+        '3': 'number_apps',
+        '4': 'last_login',
+        '5': 'admins.is_active'
     }
 
     if request.GET.get('flag_loading'):
@@ -27,7 +26,7 @@ def admin_list_users(request):
         start_page = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
 
-        order_col = column_dic[request.GET.get('order[0][column]', '1')]
+        order_col = column_dic[request.GET.get('order[0][column]', '0')]
         order_dir = request.GET.get('order[0][dir]', 'asc')
         order_by = order_col + ' ' + order_dir
 
@@ -38,13 +37,12 @@ def admin_list_users(request):
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
-                        profile['user_id'],
                         profile['username'],
                         profile['email'],
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S') if profile['last_login'] else 'Never',
                         profile['total_apps'],
                         profile['is_active'],
-                        profile['user_id']]
+                        str(profile['user_id'])+"|"+str(profile['level'])]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')

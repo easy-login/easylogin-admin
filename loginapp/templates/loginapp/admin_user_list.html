@@ -57,7 +57,6 @@
                 <thead>
                 <tr>
                     <th class="no-order">No</th>
-                    <th>User ID</th>
                     <th>User Name</th>
                     <th>Email</th>
                     <th class="no-order">Last Login</th>
@@ -74,7 +73,7 @@
 <!--Add User modal-->
 <div id="add-user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addUserModal"
          style="display: none;" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-custom-width">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="addUserModal">New User</h4>
@@ -83,8 +82,8 @@
                 <form class="form-horizontal m-t-20" method="post" action="{% url 'admin_add_user' %}">
                     {% csrf_token %}
                     <div class="form-group row">
-                         <label for="id_email" class="col-md-2 col-form-label label-required">Email</label>
-                    <div class="col-md-10">
+                         <label for="id_email" class="col-md-3 col-form-label label-required">Email</label>
+                    <div class="col-md-9">
                         {% if form.email.errors %}
                         {% render_field form.email class='form-control parsley-error' placeholder='Email' %}
                         {% else %}
@@ -101,8 +100,8 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="id_username" class="col-md-2 col-form-label label-required">Username</label>
-                    <div class="col-md-10">
+                    <label for="id_username" class="col-md-3 col-form-label label-required">Username</label>
+                    <div class="col-md-9">
                         {% if form.username.errors %}
                         {% render_field form.username class='form-control parsley-error' placeholder='Username' %}
                         {% else %}
@@ -119,8 +118,8 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="id_password" class="col-md-2 col-form-label label-required">Password</label>
-                    <div class="col-md-10">
+                    <label for="id_password" class="col-md-3 col-form-label label-required">Password</label>
+                    <div class="col-md-9">
                         {% if form.password.errors %}
                         {% render_field form.password class='form-control parsley-error' placeholder='Password' %}
                         {% else %}
@@ -136,24 +135,19 @@
                         {% endif %}
                     </div>
                 </div>
-
                     <div class="form-group row">
-                    <label for="id_level" class="col-md-2 col-form-label">Account Level</label>
-                    <div class="col-md-10">
-                        {% if form.level.errors %}
-                        {% render_field form.level class='form-control parsley-error' %}
-                        {% else %}
-                        {{ form.level|add_class:'list-unstyled' }}
-                        {% endif %}
-                        {% if form.level.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.level.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
+                        <label for="id_add_level" class="col-md-3 col-form-label">Account Level</label>
+                        <div class="col-md-9">
+                            <ul id="id_add_level" class="list-unstyled" style="margin-top: 8px;">
+                                <li class="list-inline-item"><label for="id_level_0"><input type="radio" name="level" value="0" id="id_add_level_0">
+                                    Normal</label>
+                                </li>
+                                <li class="list-inline-item"><label for="id_level_1"><input type="radio" name="level" value="1" id="id_add_level_1">
+                                    Premium</label>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary waves-effect waves-light">Add User</button>
@@ -165,7 +159,7 @@
 <!--Add Edit modal-->
 <div id="edit-user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editUserModal"
          style="display: none;" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-custom-width">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="editUserModal">Edit User</h4>
@@ -175,33 +169,33 @@
                     {% csrf_token %}
                     <input type="text" name="user_id" maxlength="100" class="form-control" id="edit_user_id" style="display:none;">
                     <div class="form-group row">
-                         <label for="edit_id_email" class="col-md-2 col-form-label">Email</label>
-                    <div class="col-md-10">
+                         <label for="edit_id_email" class="col-md-3 col-form-label">Email</label>
+                    <div class="col-md-9">
                        <input type="email" name="email" maxlength="100" placeholder="Email" class="form-control" id="edit_id_email">
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label for="edit_id_username" class="col-md-2 col-form-label">Username</label>
-                    <div class="col-md-10">
+                    <label for="edit_id_username" class="col-md-3 col-form-label">Username</label>
+                    <div class="col-md-9">
                         <input type="text" name="username" maxlength="100" placeholder="Username" class="form-control" id="edit_id_username">
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label for="edit_id_password" class="col-md-2 col-form-label">Password</label>
-                    <div class="col-md-10">
+                    <label for="edit_id_password" class="col-md-3 col-form-label">Password</label>
+                    <div class="col-md-9">
                        <input type="password" name="password" maxlength="100" placeholder="Password" class="form-control" id="edit_id_password">
                     </div>
                 </div>
                     <div class="form-group row">
-                        <label for="id_level" class="col-md-2 col-form-label">Account Level</label>
-                        <div class="col-md-10">
-                            <ul id="id_level" class="list-unstyled">
-                                <li><label for="id_level_0"><input type="radio" name="level" value="0" id="id_level_0">
+                        <label for="id_level" class="col-md-3 col-form-label">Account Level</label>
+                        <div class="col-md-9">
+                            <ul id="id_level" class="list-unstyled" style="margin-top: 8px;">
+                                <li class="list-inline-item"><label for="id_level_0"><input type="radio" name="level" value="0" id="id_level_0">
                                     Normal</label>
                                 </li>
-                                <li><label for="id_level_1"><input type="radio" name="level" value="1" id="id_level_1">
+                                <li class="list-inline-item"><label for="id_level_1"><input type="radio" name="level" value="1" id="id_level_1">
                                     Premium</label>
                                 </li>
                             </ul>
@@ -261,7 +255,9 @@ function loadInitialUsersTable(){
             {
                 'targets': 'action-datatable',
                 'render': function (data, type, row){
-                    return '<li class="list-inline-item"><form method="POST" action="/users/'+data+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button></li>'
+                    var user_id = data.split("|")[0];
+                    var level = data.split("|")[1];
+                    return '<li class="list-inline-item"><form method="POST" action="/users/'+user_id+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" data-level="'+level+'" data-userid="'+user_id+'" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button></li>'
                 }
             }
         ],
@@ -298,15 +294,21 @@ function deleteConfirm(event){
 function fillEditForm(e){
 
     var tds = $(e).parent().parent().parent().children()
-    var user_id = tds.eq(1).text()
-    var username = tds.eq(2).text()
-    var email = tds.eq(3).text()
+    var user_id = $(e).attr('data-userid')
+    var username = tds.eq(1).text()
+    var email = tds.eq(2).text()
 
     $('#edit_user_id').val(user_id)
     $('#edit_id_username').val(username)
     $('#edit_id_email').val(email)
     $('#edit_id_password').val('')
 
+    var level = $(e).attr('data-level')
+    if (level==1){
+        $('#id_level_1').prop('checked', true)
+    }else{
+        $('#id_level_0').prop('checked', true)
+    }
 }
 </script>
 {% endblock %}

@@ -6615,9 +6615,17 @@ table.dataTable tbody td {
   text-align: center;
 }
 
+table.dataTable thead tr th {
+  vertical-align: middle;
+  text-align: center;
+}
+
 .button-icon{
     border: unset;
     background: transparent;
     cursor: pointer;
 }
 
+.modal-custom-width{
+    max-width:600px;
+}
