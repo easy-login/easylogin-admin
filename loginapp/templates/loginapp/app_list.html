@@ -18,17 +18,17 @@
 </li>
 <li class="list-inline-item float-right create-app-button">
     <form class="form-inline" method="GET" action="{% url 'dashboard' %}">
-        {% if request.user.is_superuser%}
-        <div class="form-group select-user-id m-r-10">
-            <label>User :</label>
-            <select name="user_id" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
-                <option value="-1" selected>All</option>
-                {% for option in users %}
-                <option value="{{ option.id }}">{{ option.username }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        {% endif %}
+        <!--{% if request.user.is_superuser%}-->
+        <!--<div class="form-group select-user-id m-r-10">-->
+            <!--<label>User :</label>-->
+            <!--<select name="user_id" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">-->
+                <!--<option value="-1" selected>All</option>-->
+                <!--{% for option in users %}-->
+                <!--<option value="{{ option.id }}">{{ option.username }}</option>-->
+                <!--{% endfor %}-->
+            <!--</select>-->
+        <!--</div>-->
+        <!--{% endif %}-->
         <div class="form-group select-order-by">
             <label>Sort :</label>
             <select name="order_by" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
