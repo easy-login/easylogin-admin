@@ -50,15 +50,26 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
 
         from_dt += ' 00:00:00'
         to_dt += ' 23:59:59'
+        if auth_state == 1: # login
+            is_login = 1
+            status = 'succeeded' 
+        elif auth_state == 2: # wait register
+            is_login = 0
+            status = 'wait_reg'
+        else:
+            is_login = 0
+            status = 'succeeded'
+
         cursor.execute("""
             SELECT provider, DATE(CONVERT_TZ(modified_at, '+00:00', %s)) as dt, COUNT(id) 
             FROM auth_logs 
             WHERE app_id = %s 
                 AND modified_at BETWEEN %s AND %s 
-                AND status IN ('succeeded', 'authorized') 
+                AND status = %s 
                 AND is_login = %s
             GROUP BY dt, provider
-            ORDER BY provider""", (settings.TIME_ZONE_OFFSET, app_id, from_dt, to_dt, auth_state))
+            ORDER BY provider
+            """, (settings.TIME_ZONE_OFFSET, app_id, from_dt, to_dt, status, is_login))
 
         i = 0
         while True:
@@ -203,7 +214,7 @@ def get_register_report(page_length, start_page, order_by, search_value):
                 FROM social_profiles AS p
                 INNER JOIN apps AS a ON p.app_id = a.id
                 INNER JOIN admins AS o ON a.owner_id = o.id
-                WHERE p.draft IS NOT NULL  AND o.username=%s
+                WHERE o.username = %s
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET, search_value, ))
@@ -214,12 +225,11 @@ def get_register_report(page_length, start_page, order_by, search_value):
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
                     a.deleted,
                     COUNT(p.id) AS total,
-                    SUM(CASE WHEN draft = 1 THEN 1 ELSE 0 END) AS authorized,
-                    SUM(CASE WHEN draft = 0 THEN 1 ELSE 0 END) AS register_done
+                    SUM(CASE WHEN verified = 0 THEN 1 ELSE 0 END) AS authorized,
+                    SUM(CASE WHEN verified = 1 THEN 1 ELSE 0 END) AS register_done
                 FROM social_profiles AS p
                 INNER JOIN apps AS a ON p.app_id = a.id
-                INNER JOIN admins AS o ON a.owner_id = o.id
-                WHERE p.draft IS NOT NULL 
+                INNER JOIN admins AS o ON a.owner_id = o.id 
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
