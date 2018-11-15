@@ -31,7 +31,7 @@ def get_total_provider_report(app_id):
         return [(row[0], row[1], getChartColor(row[0])) for row in rows]
 
 
-def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
+def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1):
     with connection.cursor() as cursor:
         _from = datetime.strptime(from_dt, '%Y-%m-%d')
         _to = datetime.strptime(to_dt, '%Y-%m-%d')
@@ -58,7 +58,7 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, is_login=1):
                 AND status IN ('succeeded', 'authorized') 
                 AND is_login = %s
             GROUP BY dt, provider
-            ORDER BY provider""", (settings.TIME_ZONE_OFFSET, app_id, from_dt, to_dt, is_login))
+            ORDER BY provider""", (settings.TIME_ZONE_OFFSET, app_id, from_dt, to_dt, auth_state))
 
         i = 0
         while True:

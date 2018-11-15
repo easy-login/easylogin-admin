@@ -254,13 +254,13 @@ def app_report(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
 
     if request.GET.get('chart_loading'):
-        isLogin = request.GET.get('is_login', '1')
+        auth_state = request.GET.get('auth_state', '1')
         provider = request.GET.get('provider', 'all')
         startDate = request.GET.get('startDate', datetime.datetime
                                     .strftime(datetime.datetime.today() - datetime.timedelta(days=7), '%Y-%m-%d'))
         endDate = request.GET.get('endDate', datetime.datetime.strftime(datetime.datetime.today(), '%Y-%m-%d'))
 
-        labels, dataChart = get_auth_report_per_provider(app_id=app_id, is_login=int(isLogin),
+        labels, dataChart = get_auth_report_per_provider(app_id=app_id, auth_state=int(auth_state),
                                                          from_dt=startDate, to_dt=endDate)
         datasets = []
         maxy = 0
