@@ -21,11 +21,11 @@
 {% if request.user.is_superuser %}
 <li>
     <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
-        <span> Users Manager </span> </a>
+        <span> User Manager </span> </a>
 </li>
 <li>
     <a href="{% url 'admin_report' %}" class="waves-effect"><i class="fas fa-registered"></i>
-        <span> Register Report </span> </a>
+        <span> Application Manager </span> </a>
 </li>
 {% endif%}
 <li class="has_sub">
