@@ -12,12 +12,19 @@ from loginapp.utils import getChartColor
 def get_total_auth_report(app_id):
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT is_login, count(id) 
+            SELECT is_login, status, count(id) 
             FROM auth_logs 
-            WHERE app_id = %s and status = 'succeeded' 
-            GROUP BY is_login""", (app_id,))
+            WHERE app_id = %s and status IN ('succeeded', 'wait_reg')
+            GROUP BY is_login, status""", (app_id,))
         rows = cursor.fetchall()
-        return [('Login' if int(row[0]) else 'Register', row[1]) for row in rows]
+        results = []
+        for row in rows:
+            if row[0]:
+                results.append(('Login', row[2]))
+            else:
+                reg_status = 'Pending Registration' if row[1] == 'wait_reg' else 'Done Registration'  
+                results.append((reg_status, row[2]))
+        return results
 
 
 def get_total_provider_report(app_id):
