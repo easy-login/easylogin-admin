@@ -84,6 +84,7 @@ class App(models.Model):
     description = models.TextField()
     deleted = models.SmallIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    options = models.CharField(max_length=255)
 
     @staticmethod
     def get_all_app(user, owner_id=-1, order_by='name'):
