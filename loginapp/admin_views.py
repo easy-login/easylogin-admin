@@ -18,7 +18,8 @@ def admin_list_users(request):
         '2': 'admins.email',
         '3': 'number_apps',
         '4': 'last_login',
-        '5': 'admins.is_active'
+        '5': 'admins.level',
+        '6': 'admins.deleted'
     }
 
     if request.GET.get('flag_loading'):
@@ -41,7 +42,8 @@ def admin_list_users(request):
                         profile['email'],
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S') if profile['last_login'] else 'Never',
                         profile['total_apps'],
-                        profile['is_active'],
+                        profile['level'],
+                        profile['deleted'],
                         str(profile['user_id'])+"|"+str(profile['level'])]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}

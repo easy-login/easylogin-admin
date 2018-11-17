@@ -61,6 +61,7 @@
                     <th>Email</th>
                     <th class="no-order">Last Login</th>
                     <th>Number Apps</th>
+                    <th class="level">Level</th>
                     <th class="active-status-datatable">Activate Status</th>
                     <th class="no-order action-datatable">Action</th>
                 </tr>
@@ -248,7 +249,7 @@ function loadInitialUsersTable(){
             {
                 'targets': 'active-status-datatable',
                 'render': function ( data, type, row ) {
-                    if (data == 1) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
+                    if (data == 0) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
                     else return '<span class="text-danger"><i class="mdi mdi-24px mdi-account-off"></i></span>'
                 }
             },
@@ -258,6 +259,13 @@ function loadInitialUsersTable(){
                     var user_id = data.split("|")[0];
                     var level = data.split("|")[1];
                     return '<li class="list-inline-item"><form method="POST" action="/users/'+user_id+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" data-level="'+level+'" data-userid="'+user_id+'" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button></li>'
+                }
+            },
+            {
+                'targets': 'level',
+                'render': function (data, type, row){
+                    if (data == 0) return '<span class="badge badge-secondary">Normal</span>'
+                    else return '<span class="badge badge-success">Premium</span>'
                 }
             }
         ],

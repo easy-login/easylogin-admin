@@ -131,6 +131,14 @@ class App(models.Model):
         self.modified_at = timezone.now()
         # self.modified_at = datetime.datetime.now()
 
+    def set_options(self, options):
+        self.options = "|".join(options)
+
+    def get_options_as_list(self):
+        if self.options == "":
+            return []
+        return self.options.split("|")
+
     class Meta:
         db_table = 'apps'
 

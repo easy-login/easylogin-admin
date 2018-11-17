@@ -139,11 +139,14 @@ def add_app(request):
 
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
+            options = request.POST.getlist('option')
+
+            if len(allowed_ips) > 0:
+                app.set_allowed_ips(allowed_ips)
             if len(callback_uris) == 0:
                 messages.error(request, 'Add failed app: callback uris is required!')
-            if len(allowed_ips) != 0:
-                app.set_allowed_ips(allowed_ips)
-            if len(callback_uris) > 0:
+            else:
+                app.set_options(options)
                 app.set_callback_uris(callback_uris)
                 app.owner = request.user
                 app.save()
@@ -170,11 +173,14 @@ def app_detail(request, app_id):
 
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
+            options = request.POST.getlist('option')
+
+            if len(allowed_ips) > 0:
+                app_update.set_allowed_ips(allowed_ips)
             if len(callback_uris) == 0:
                 messages.error(request, 'Add failed app: callback uris is required!')
-            if len(allowed_ips) != 0:
-                app_update.set_allowed_ips(allowed_ips)
-            if len(callback_uris) > 0 and len(allowed_ips) > 0:
+            else:
+                app_update.set_options(options)
                 app_update.set_callback_uris(callback_uris)
                 app_update.save()
                 messages.success(request, 'Application was successfully updated!')

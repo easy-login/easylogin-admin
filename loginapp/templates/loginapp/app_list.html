@@ -116,14 +116,14 @@
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Create Time</h5>
                     <p class="text-muted"> {{ app.created_at|date:'N j,Y' }}
-                        <small class="text-muted">{{ app.created_at|date:'P' }}</small>
+                        <small class="text-muted">{{ app.created_at|date:'h:i a' }}</small>
                     </p>
                 </li>
 
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Last Modify</h5>
                     <p class="text-muted"> {{ app.modified_at|date:'N j,Y' }}
-                        <small class="text-muted">{{ app.modified_at|date:'P' }}</small>
+                        <small class="text-muted">{{ app.modified_at|date:'h:i a' }}</small>
                     </p>
                 </li>
             </ul>
