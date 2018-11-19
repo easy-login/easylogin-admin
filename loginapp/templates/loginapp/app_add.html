@@ -42,24 +42,6 @@
             <form class="form-horizontal m-t-20" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group row">
-                    <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
-                    <div class="col-md-8">
-                        {% if form.name.errors %}
-                        {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
-                        {% else %}
-                        {% render_field form.name class='form-control' placeholder='Name' %}
-                        {% endif %}
-                        {% if form.name.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.name.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group row">
                     <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
                     <div class="col-md-6">
                         {% if form.api_key.errors %}
@@ -79,6 +61,24 @@
                         <button class="btn btn-danger btn-block waves-effect waves-light" type="button" onclick="getApiKey()">
                             Generate Key
                         </button>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
+                    <div class="col-md-8">
+                        {% if form.name.errors %}
+                        {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
+                        {% else %}
+                        {% render_field form.name class='form-control' placeholder='Name' %}
+                        {% endif %}
+                        {% if form.name.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.name.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
                     </div>
                 </div>
 

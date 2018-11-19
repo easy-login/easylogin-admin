@@ -65,23 +65,8 @@
                         <h5><span class="badge badge-secondary"> <strong>{{ app.id }}</strong></span></h5>
                     </div>
                 </div>
-                <form class="form-horizontal m-t-20" method="post" action="">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
-                        <div class="col-md-8">
-                            {% render_field form.name class='form-control' placeholder='Name' value=app.name %}
-                            {% if form.name.errors %}
-                            <ul class="parsley-errors-list filled">
-                                {% for error in form.name.errors %}
-                                <li class="">{{ error }}</li>
-                                {% endfor%}
-                            </ul>
-                            {% endif %}
-                        </div>
-                    </div>
 
-                    <div class="form-group row">
+                <div class="form-group row">
                         <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
                         <div class="col-md-6">
                             {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
@@ -98,6 +83,22 @@
                                     onclick="generateKeyConfirm()">
                                 Generate Key
                             </button>
+                        </div>
+                    </div>
+
+                <form class="form-horizontal m-t-20" method="post" action="">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
+                        <div class="col-md-8">
+                            {% render_field form.name class='form-control' placeholder='Name' value=app.name %}
+                            {% if form.name.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in form.name.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
                         </div>
                     </div>
 
