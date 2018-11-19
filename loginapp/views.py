@@ -359,8 +359,6 @@ def add_channel(request):
             channel.permissions = '|'.join(permissions)
             channel.required_fields = required_fields
             channel.options = options
-            if request.user.level > 0:
-                channel.is_premium = 1
 
             app_id = request.POST['app_id']
             if app_id is None:

@@ -154,7 +154,6 @@ class Channel(models.Model):
     required_fields = models.CharField(null=True, max_length=4095)
     options = models.CharField(null=True, max_length=1023)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
-    is_premium = models.SmallIntegerField(default=0)
 
     def required_fields_as_list(self):
         return self.required_fields.split('|')
