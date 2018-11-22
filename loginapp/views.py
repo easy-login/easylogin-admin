@@ -165,6 +165,7 @@ def add_app(request):
 @login_required
 def app_detail(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
+    print("post:" + str(request.POST))
     if request.method == 'POST':
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
@@ -178,7 +179,7 @@ def app_detail(request, app_id):
             if len(allowed_ips) > 0:
                 app_update.set_allowed_ips(allowed_ips)
             if len(callback_uris) == 0:
-                messages.error(request, 'Add failed app: callback uris is required!')
+                messages.error(request, 'Update failed app: callback uris is required!')
             else:
                 app_update.set_options(options)
                 app_update.set_callback_uris(callback_uris)
