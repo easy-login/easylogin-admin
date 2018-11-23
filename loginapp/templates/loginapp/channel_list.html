@@ -242,9 +242,11 @@
                                     <label class="col-form-label">Options</label>
                                     {% endif %}
                                     {% for field in provider.options_as_object %}
+                                    {% with restrict_levels=field.restrict_levels|split_string:"|" %}
                                     <div class="checkbox checkbox-pink">
                                         <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
-                                               type="checkbox" value="{{ field.key }}" disabled {% if key.default %} checked {% endif %}
+                                               type="checkbox" value="{{ field.key }}" {% if field.default %} checked {% endif %}
+                                               {% if request.user.level not in restrict_levels %} disabled {% endif %}
                                         >
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}">
                                             {{ field.name }} </label>
@@ -252,6 +254,7 @@
                                          data-placement="right" title="" data-original-title="{{ field.tooltip }}"></i>
                                         {% endif %}
                                     </div>
+                                    {% endwith %}
                                     {% endfor %}
                                 </div>
                                 {% endfor %}
