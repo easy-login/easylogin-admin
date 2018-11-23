@@ -34,7 +34,6 @@ def login(request):
         if user is not None:
             request.session.set_expiry(86400)
             signin(request, user)
-            print(request.POST.get('next'))
             next_redirect = request.POST.get('next') if request.POST.get('next') else 'dashboard'
             return redirect(next_redirect)
         else:
@@ -165,7 +164,6 @@ def add_app(request):
 @login_required
 def app_detail(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
-    print("post:" + str(request.POST))
     if request.method == 'POST':
         form = AppForm(request.POST, instance=app)
         if form.is_valid():
@@ -329,7 +327,6 @@ def channel_list(request, app_id):
 @login_required
 def add_channel(request):
     if request.method == 'POST':
-        print(request.POST)
         form = ChannelForm(request.POST)
         if form.is_valid():
             channel = form.save(commit=False)
@@ -433,7 +430,6 @@ def channel_detail(request, app_id, channel_id):
                 app.save()
                 messages.success(request, 'Channel was successfully updated!')
             except IntegrityError as error:
-                print('Add channel error', error)
                 messages.error(request, 'Channel with ' + channel.provider + ' provider already exists!')
 
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)
