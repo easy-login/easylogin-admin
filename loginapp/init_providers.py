@@ -34,9 +34,15 @@ providers = [
             {
                 "key": "add_friend",
                 "name": "Add friend",
-                "default": True,
+                "default": False,
                 "tooltip": "Show checkbox add LINE user as friend after logged in",
                 "restrict_levels": "1|2"
+            },
+            {
+                "key": "add_wife",
+                "name": "Add wife",
+                "default": False,
+                "tooltip": "show show cc",
             }
         ]
     },
@@ -71,6 +77,14 @@ providers = [
                 "key": "billing_address",
                 "name": "Payments Billing Address",
                 "permission": "payments:billing_address"
+            }
+        ],
+        "options": [
+            {
+                "key": "add_cmm",
+                "name": "Add CMM",
+                "default": True,
+                "tooltip": "Show checkbox add CMM",
             }
         ]
     },

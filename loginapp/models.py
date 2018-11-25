@@ -60,6 +60,16 @@ class Provider(models.Model):
     def options_as_object(self):
         return json.loads(self.options)
 
+    def options_as_restrict_map(self):
+        options_list = json.loads(self.options)
+        options_map = {}
+        for option in options_list:
+            if 'restrict_levels' in option:
+                print('key:'+option['key'])
+                options_map[option['key']] = option['restrict_levels'].split("|")
+        return options_map
+
+
     def __str__(self):
         return u'{0}'.format(self.name)
 
