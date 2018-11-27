@@ -37,12 +37,6 @@ providers = [
                 "default": False,
                 "tooltip": "Show checkbox add LINE user as friend after logged in",
                 "restrict_levels": "1|2"
-            },
-            {
-                "key": "add_wife",
-                "name": "Add wife",
-                "default": False,
-                "tooltip": "show show cc",
             }
         ]
     },
@@ -74,15 +68,8 @@ providers = [
                 "key": "amazon_pay",
                 "name": "Associate with Amazon Pay",
                 "default": False,
-                "tooltip": "Indicates that your app use Login and Pay with Amazon"
-            }
-        ],
-        "options": [
-            {
-                "key": "add_cmm",
-                "name": "Add CMM",
-                "default": True,
-                "tooltip": "Show checkbox add CMM",
+                "tooltip": "Indicates that your app use Login and Pay with Amazon",
+                "restrict_levels": "1|3"  
             }
         ]
     },
@@ -286,13 +273,6 @@ providers = [
                 "key": "profile_image_url_https",
                 "name": "Image URL",
                 "permission": "user_gender"
-            }
-        ],
-        "advanced_fields": [
-            {
-                "key": "email",
-                "name": "Email",
-                "permission": ""
             },
             {
                 "key": "verified",
@@ -322,6 +302,13 @@ providers = [
             {
                 "key": "favourites_count",
                 "name": "Favourites Count",
+                "permission": ""
+            }
+        ],
+        "advanced_fields": [
+            {
+                "key": "email",
+                "name": "Email",
                 "permission": ""
             }
         ],
