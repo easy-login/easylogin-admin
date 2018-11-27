@@ -35,7 +35,14 @@ providers = [
                 "key": "add_friend",
                 "name": "Add friend",
                 "default": False,
-                "tooltip": "Show checkbox add LINE user as friend after logged in"
+                "tooltip": "Show checkbox add LINE user as friend after logged in",
+                "restrict_levels": "1|2"
+            },
+            {
+                "key": "add_wife",
+                "name": "Add wife",
+                "default": False,
+                "tooltip": "show show cc",
             }
         ]
     },
@@ -68,6 +75,14 @@ providers = [
                 "name": "Associate with Amazon Pay",
                 "default": False,
                 "tooltip": "Indicates that your app use Login and Pay with Amazon"
+            }
+        ],
+        "options": [
+            {
+                "key": "add_cmm",
+                "name": "Add CMM",
+                "default": True,
+                "tooltip": "Show checkbox add CMM",
             }
         ]
     },

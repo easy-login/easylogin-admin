@@ -18,17 +18,17 @@
 </li>
 <li class="list-inline-item float-right create-app-button">
     <form class="form-inline" method="GET" action="{% url 'dashboard' %}">
-        {% if request.user.is_superuser%}
-        <div class="form-group select-user-id m-r-10">
-            <label>User :</label>
-            <select name="user_id" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
-                <option value="-1" selected>All</option>
-                {% for option in users %}
-                <option value="{{ option.id }}">{{ option.username }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        {% endif %}
+        <!--{% if request.user.is_superuser%}-->
+        <!--<div class="form-group select-user-id m-r-10">-->
+            <!--<label>User :</label>-->
+            <!--<select name="user_id" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">-->
+                <!--<option value="-1" selected>All</option>-->
+                <!--{% for option in users %}-->
+                <!--<option value="{{ option.id }}">{{ option.username }}</option>-->
+                <!--{% endfor %}-->
+            <!--</select>-->
+        <!--</div>-->
+        <!--{% endif %}-->
         <div class="form-group select-order-by">
             <label>Sort :</label>
             <select name="order_by" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
@@ -92,17 +92,17 @@
             </div>
             <h4 class="mt-0 app-title"><a class="clickable text-inverse" href="{% url 'report_app' app.id %}">{{ app.name }}</a>
             </h4>
-            <p class="text-muted font-13 app-description">
+            <p class="text-muted font-13 app-description" style="height:42px;">
                 {% str_length app.description as des_len %}
-                {% if des_len < 20 %}
+                {% if des_len < 50 %}
                     {{ app.description }}
                 {% else %}
-                    {{ app.description|slice:"0:20" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
+                    {{ app.description|slice:"0:50" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
                 {% endif %}
             </p>
             <div class="text-left m-t-20">
                 <p class="text-inverse">
-                    <strong>App ID: <span class="badge badge-danger" style="position:unset;">{{ app.id }}</span></strong>
+                    <strong>App ID: <span class="badge badge-secondary m-l-10" style="position:unset;">{{ app.id }}</span></strong>
                 </p>
             </div>
             <ul class="list-inline">
@@ -116,14 +116,14 @@
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Create Time</h5>
                     <p class="text-muted"> {{ app.created_at|date:'N j,Y' }}
-                        <small class="text-muted">{{ app.created_at|date:'P' }}</small>
+                        <small class="text-muted">{{ app.created_at|date:'h:i a' }}</small>
                     </p>
                 </li>
 
                 <li class="list-inline-item">
                     <h5 class="m-b-5">Last Modify</h5>
                     <p class="text-muted"> {{ app.modified_at|date:'N j,Y' }}
-                        <small class="text-muted">{{ app.modified_at|date:'P' }}</small>
+                        <small class="text-muted">{{ app.modified_at|date:'h:i a' }}</small>
                     </p>
                 </li>
             </ul>

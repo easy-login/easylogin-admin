@@ -34,7 +34,6 @@ def login(request):
         if user is not None:
             request.session.set_expiry(86400)
             signin(request, user)
-            print(request.POST.get('next'))
             next_redirect = request.POST.get('next') if request.POST.get('next') else 'dashboard'
             return redirect(next_redirect)
         else:
@@ -139,11 +138,14 @@ def add_app(request):
 
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
+            options = request.POST.getlist('option')
+
+            if len(allowed_ips) > 0:
+                app.set_allowed_ips(allowed_ips)
             if len(callback_uris) == 0:
                 messages.error(request, 'Add failed app: callback uris is required!')
-            if len(allowed_ips) != 0:
-                app.set_allowed_ips(allowed_ips)
-            if len(callback_uris) > 0:
+            else:
+                app.set_options(options)
                 app.set_callback_uris(callback_uris)
                 app.owner = request.user
                 app.save()
@@ -170,11 +172,14 @@ def app_detail(request, app_id):
 
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
-            if len(callback_uris) == 0:
-                messages.error(request, 'Add failed app: callback uris is required!')
-            if len(allowed_ips) != 0:
+            options = request.POST.getlist('option')
+
+            if len(allowed_ips) > 0:
                 app_update.set_allowed_ips(allowed_ips)
-            if len(callback_uris) > 0 and len(allowed_ips) > 0:
+            if len(callback_uris) == 0:
+                messages.error(request, 'Update failed app: callback uris is required!')
+            else:
+                app_update.set_options(options)
                 app_update.set_callback_uris(callback_uris)
                 app_update.save()
                 messages.success(request, 'Application was successfully updated!')
@@ -228,7 +233,7 @@ def user_report(request, app_id):
         providers = Provider.provider_names()
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
-                        profile['user_id'],
+                        profile['user_pk'],
                         str(profile['social_id']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total']]
@@ -245,7 +250,8 @@ def user_report(request, app_id):
     else:
         apps = App.get_all_app(user=request.user)
         provider_names = Provider.provider_names()
-        return render(request, 'loginapp/statistic_login.html', {'apps': apps, 'app': app, 'provider_names': provider_names})
+        return render(request, 'loginapp/statistic_login.html',
+                      {'apps': apps, 'app': app, 'provider_names': provider_names})
 
 
 @login_required
@@ -253,13 +259,13 @@ def app_report(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
 
     if request.GET.get('chart_loading'):
-        isLogin = request.GET.get('is_login', '1')
+        auth_state = request.GET.get('auth_state', '1')
         provider = request.GET.get('provider', 'all')
         startDate = request.GET.get('startDate', datetime.datetime
                                     .strftime(datetime.datetime.today() - datetime.timedelta(days=7), '%Y-%m-%d'))
         endDate = request.GET.get('endDate', datetime.datetime.strftime(datetime.datetime.today(), '%Y-%m-%d'))
 
-        labels, dataChart = get_auth_report_per_provider(app_id=app_id, is_login=int(isLogin),
+        labels, dataChart = get_auth_report_per_provider(app_id=app_id, auth_state=int(auth_state),
                                                          from_dt=startDate, to_dt=endDate)
         datasets = []
         maxy = 0
@@ -323,7 +329,6 @@ def channel_list(request, app_id):
 @login_required
 def add_channel(request):
     if request.method == 'POST':
-        print(request.POST)
         form = ChannelForm(request.POST)
         if form.is_valid():
             channel = form.save(commit=False)
@@ -346,8 +351,13 @@ def add_channel(request):
             required_fields = required_fields[:-1]
             permissions.union(set(required_permission.split('|')))
             options = ''
+            options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
-                options += item + '|'
+                if item in options_map:
+                    if request.user.level in options_map[item]:
+                        options += item + '|'
+                else:
+                    options += item + '|'
             options = options[:-1]
             channel.provider = provider_name
             channel.api_version = api_version
@@ -409,8 +419,13 @@ def channel_detail(request, app_id, channel_id):
             required_fields = required_fields[:-1]
             permissions.union(set(required_permission.split('|')))
             options = ''
+            options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
-                options += item + '|'
+                if item in options_map:
+                    if request.user.level in options_map[item]:
+                        options += item + '|'
+                else:
+                    options += item + '|'
             options = options[:-1]
             channel_update.provider = provider_name
             channel_update.api_version = api_version
@@ -427,7 +442,6 @@ def channel_detail(request, app_id, channel_id):
                 app.save()
                 messages.success(request, 'Channel was successfully updated!')
             except IntegrityError as error:
-                print('Add channel error', error)
                 messages.error(request, 'Channel with ' + channel.provider + ' provider already exists!')
 
             return redirect('channel_detail', app_id=app_id, channel_id=channel_id)

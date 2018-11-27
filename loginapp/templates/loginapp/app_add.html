@@ -42,24 +42,6 @@
             <form class="form-horizontal m-t-20" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group row">
-                    <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
-                    <div class="col-md-8">
-                        {% if form.name.errors %}
-                        {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
-                        {% else %}
-                        {% render_field form.name class='form-control' placeholder='Name' %}
-                        {% endif %}
-                        {% if form.name.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.name.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group row">
                     <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
                     <div class="col-md-6">
                         {% if form.api_key.errors %}
@@ -79,6 +61,38 @@
                         <button class="btn btn-danger btn-block waves-effect waves-light" type="button" onclick="getApiKey()">
                             Generate Key
                         </button>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
+                    <div class="col-md-8">
+                        {% if form.name.errors %}
+                        {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
+                        {% else %}
+                        {% render_field form.name class='form-control' placeholder='Name' %}
+                        {% endif %}
+                        {% if form.name.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.name.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row ">
+                    <label for="id_description" class="col-md-2 col-form-label">Description</label>
+                    <div class="col-md-8">
+                        {% render_field form.description class='form-control' placeholder='Description' %}
+                        {% if form.description.errors %}
+                        <ul class="parsley-errors-list filled">
+                            {% for error in form.description.errors %}
+                            <li class="">{{ error }}</li>
+                            {% endfor%}
+                        </ul>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -132,19 +146,17 @@
                 </div>
                 </div>
                 <div class="form-group row ">
-                    <label for="id_description" class="col-md-2 col-form-label">Description</label>
-                    <div class="col-md-8">
-                        {% render_field form.description class='form-control' placeholder='Description' %}
-                        {% if form.description.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.description.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
+                    <label class="col-md-2 col-form-label"><span>Options</span>
+                    <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title=""
+                       data-original-title="The customer site has an additional registration page that allows the end-user to verify the registration process before considered activate"></i></label>
+                    <div class="col-md-8 m-t-5">
+                        <div class="checkbox checkbox-pink">
+                            <input id="id_reg_page" name="option" type="checkbox" value="reg_page">
+                            <label class="" for="id_reg_page">Additional Registration Page</label>
+                        </div>
                     </div>
                 </div>
-
                 <div class="form-group text-center m-t-40 row">
                     <div class="col-md-2"></div>
                     <div class="col-md-8">

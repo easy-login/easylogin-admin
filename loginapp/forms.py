@@ -24,15 +24,15 @@ class RegisterForm(ModelForm):
     class Meta:
         model = User
         model._meta.get_field('username')._unique = False
-        fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company',)
+        fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company', 'level')
 
-    def clean(self):
-        cleaned_data = super(RegisterForm, self).clean()
-        try:
-            password = cleaned_data.get('password')
-            password_validation.validate_password(password, self.instance)
-        except forms.ValidationError as error:
-            self.add_error('password', error)
+    # def clean(self):
+    #     cleaned_data = super(RegisterForm, self).clean()
+    #     try:
+    #         password = cleaned_data.get('password')
+    #         password_validation.validate_password(password, self.instance)
+    #     except forms.ValidationError as error:
+    #         self.add_error('password', error)
 
 
 class UpdateProfileForm(ModelForm):

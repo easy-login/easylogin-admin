@@ -38,12 +38,13 @@
 {% endblock %}
 
 {% block content%}
-<div class="p-t-40 card-box">
+<div class="p-t-40 card-box table-responsive">
     <div class="row m-b-20">
          <div class="col-md-2 mt-20">
              <select id="is-login" class="form-control">
                  <option value="1">Login</option>
-                 <option value="0">Register</option>
+                 <option value="2">Pending Registration</option>
+                 <option value="3">Done Registration</option>
              </select>
          </div>
          <div class="col-md-3">
@@ -165,7 +166,7 @@ function reloadChartData(){
         url: '{% url 'report_app' app.id %}',
         data: {
             'chart_loading': 'true',
-            'is_login' : isLogin,
+            'auth_state' : isLogin,
             'provider' : provider,
             'endDate' : endDate,
             'startDate' : startDate,
@@ -252,6 +253,7 @@ $(document).ready(function() {
 					],
 					backgroundColor: [
 						'#f9c851',
+						'#ff5b5b',
 						'#10c469',
 					],
 					label: 'Dataset 1'

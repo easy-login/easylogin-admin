@@ -7,7 +7,6 @@ body {
   font-family: "Roboto", sans-serif;
   margin: 0;
   padding-bottom: 60px;
-  overflow-x: hidden;
   font-size: 14px;
 }
 
@@ -114,8 +113,6 @@ a:focus {
 
 #wrapper {
   height: 100%;
-  overflow: hidden;
-  width: 100%;
 }
 
 .page {
@@ -2609,36 +2606,6 @@ table.dataTable th.focus, table.dataTable td.focus {
   top: 2px;
 }
 
-/*
-Template Name: Adminto Dashboard
-Author: CoderThemes
-Email: coderthemes$gmail.com
-File: Pages
-*/
-/* =============
-  == Pages List==
-
-   - Calendar
-   - Form Elements
-   - Notification
-   - Range slider
-   - Sweet Alert
-   - Charts
-   - Timelines
-   - Count down
-   - Gallery
-   - Maintenance
-   - Maps
-   - Tree view page
-   - Tour page
-   - Pricing
-   - Taskboard & Task detail
-   - Projects
-   - Account pages
-   - Inbox
-   - Profile
-
-============= */
 /* =============
    Calendar
 ============= */
@@ -6179,18 +6146,12 @@ input.app-search-input:-ms-input-placeholder {
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-  body {
-    overflow-x: hidden;
-  }
   .fixedHeader-floating {
     top: 60px !important;
   }
 }
 
 @media (max-width: 768px) {
-  body {
-    overflow-x: hidden;
-  }
   .container-fluid {
     max-width: 100%;
   }
@@ -6525,7 +6486,6 @@ input.app-search-input:-ms-input-placeholder {
 
 .content-page{
     margin-left: 250px;
-    overflow: hidden;
 }
 
 .menu-title {
@@ -6638,4 +6598,24 @@ input.app-search-input:-ms-input-placeholder {
 .text-hidden{
     overflow:hidden;
     white-space: nowrap;
+}
+
+table.dataTable tbody td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+table.dataTable thead tr th {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.button-icon{
+    border: unset;
+    background: transparent;
+    cursor: pointer;
+}
+
+.modal-custom-width{
+    max-width:600px;
 }

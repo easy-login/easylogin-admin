@@ -16,22 +16,17 @@ MAX_LENGTH_LONG_FIELD = 500
 # Create your models here.
 class User(AbstractUser):
     email = models.EmailField(unique=True, null=True, max_length=MAX_LENGTH_SHORT_FIELD)
-
     username = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     password = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     last_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD)
-
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     is_superuser = models.SmallIntegerField(default=0)
+    is_active = models.SmallIntegerField(default=1)
+    deleted = models.SmallIntegerField(default=0)
+    level = models.SmallIntegerField(default=0)
 
     @staticmethod
     def get_all_user(user):
@@ -65,6 +60,16 @@ class Provider(models.Model):
     def options_as_object(self):
         return json.loads(self.options)
 
+    def options_as_restrict_map(self):
+        options_list = json.loads(self.options)
+        options_map = {}
+        for option in options_list:
+            if 'restrict_levels' in option:
+                print('key:'+option['key'])
+                options_map[option['key']] = option['restrict_levels'].split("|")
+        return options_map
+
+
     def __str__(self):
         return u'{0}'.format(self.name)
 
@@ -89,19 +94,19 @@ class App(models.Model):
     description = models.TextField()
     deleted = models.SmallIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    options = models.CharField(max_length=255)
 
     @staticmethod
     def get_all_app(user, owner_id=-1, order_by='name'):
-        if user.is_superuser:
-            return App.objects.filter(deleted=0).order_by(order_by) if owner_id == -1 \
-                else App.objects.filter(deleted=0, owner_id=owner_id).order_by(order_by)
-        return App.objects.filter(deleted=0).order_by(order_by) if user.is_superuser \
-            else App.objects.filter(owner_id=user.id, deleted=0).order_by(order_by)
+        # if user.is_superuser:
+        #     return App.objects.filter(deleted=0).order_by(order_by) if owner_id == -1 \
+        #         else App.objects.filter(deleted=0, owner_id=owner_id).order_by(order_by)
+        return App.objects.filter(owner_id=user.id, deleted=0).order_by(order_by)
 
     @staticmethod
     def get_app_by_user(app_id, user):
-        return get_object_or_404(App, pk=app_id, deleted=0) if user.is_superuser \
-            else get_object_or_404(App, pk=app_id, owner_id=user.id, deleted=0)
+        return get_object_or_404(App, pk=app_id, owner_id=user.id, deleted=0)
+        # get_object_or_404(App, pk=app_id, deleted=0) if user.is_superuser \
 
     def callback_uris_as_list(self):
         if self.callback_uris == '':
@@ -135,6 +140,14 @@ class App(models.Model):
     def update_modified_at(self):
         self.modified_at = timezone.now()
         # self.modified_at = datetime.datetime.now()
+
+    def set_options(self, options):
+        self.options = "|".join(options)
+
+    def get_options_as_list(self):
+        if self.options == "":
+            return []
+        return self.options.split("|")
 
     class Meta:
         db_table = 'apps'

@@ -3,7 +3,7 @@ from django.conf.urls import url
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 
-from . import views
+from . import views, admin_views
 
 urlpatterns = [
     url(r'^$', views.login, name='index'),
@@ -12,7 +12,7 @@ urlpatterns = [
 
     url(r'^logout/$', views.logout, name='logout'),
 
-    url(r'^register/$', views.register, name='register'),
+    # url(r'^register/$', views.register, name='register'),
 
     url(r'^request-password-reset/$',
         auth_views.PasswordResetView.as_view(template_name='loginapp/password_reset_email.html',
@@ -58,4 +58,16 @@ urlpatterns = [
     path('apps/<int:app_id>/channels/<int:channel_id>/', views.channel_detail, name='channel_detail'),
 
     path('apps/<int:app_id>/channels/<int:channel_id>/delete', views.delete_channel, name='delete_channel'),
+
+    url(r'^admin/users/$', admin_views.admin_list_users, name='admin_users'),
+
+    url(r'^add-user/$', admin_views.admin_add_user, name='admin_add_user'),
+
+    path('users/<int:user_id>/delete', admin_views.admin_delete_user, name='admin_delete_user'),
+
+    url(r'^update-user/$', admin_views.admin_update_user, name='admin_update_user'),
+
+    url(r'^admin/apps/$', admin_views.admin_list_apps, name='admin_apps'),
+
+    url(r'^admin/report/$', admin_views.admin_report_register, name='admin_report'),
 ]
