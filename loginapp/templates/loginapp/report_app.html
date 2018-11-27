@@ -38,7 +38,7 @@
 {% endblock %}
 
 {% block content%}
-<div class="p-t-40 card-box">
+<div class="p-t-40 card-box table-responsive">
     <div class="row m-b-20">
          <div class="col-md-2 mt-20">
              <select id="is-login" class="form-control">
@@ -50,10 +50,9 @@
          <div class="col-md-3">
              <select id="provider-select" class="form-control">
                  <option value="all">All</option>
-                 <option value="amazon">Amazon</option>
-                 <option value="facebook">Facebook</option>
-                 <option value="line">Line</option>
-                 <option value="yahoojp">YahooJp</option>
+                 {% for provider_name in provider_names %}
+                 <option value="{{ provider_name }}">{{ provider_name }}</option>
+                 {% endfor %}
              </select>
          </div>
         <div class="col-md-3"></div>

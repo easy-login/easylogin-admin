@@ -57,6 +57,7 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
 
         from_dt += ' 00:00:00'
         to_dt += ' 23:59:59'
+
         if auth_state == 1: # login
             is_login = 1
             status = 'succeeded' 
@@ -78,13 +79,11 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
             ORDER BY provider
             """, (settings.TIME_ZONE_OFFSET, app_id, from_dt, to_dt, status, is_login))
 
-        i = 0
         while True:
-            rows = cursor.fetchall()
+            rows = cursor.fetchmany(500)
             if not rows:
                 break
             for row in rows:
-                i += 1
                 dt_str = row[1].strftime('%Y-%m-%d')
                 provider = row[0]
                 results[provider][dt_str] = int(row[2])

@@ -301,10 +301,12 @@ def app_report(request, app_id):
     else:
         total_data_auth = get_total_auth_report(app_id=app_id)
         total_data_provider = get_total_provider_report(app_id=app_id)
+        provider_names = Provider.provider_names()
         apps = App.get_all_app(user=request.user)
 
         return render(request, 'loginapp/report_app.html', {
             'app': app, 'apps': apps,
+            'provider_names': provider_names,
             'total_data_auth': total_data_auth,
             'total_data_provider': total_data_provider
         })
@@ -349,8 +351,13 @@ def add_channel(request):
             required_fields = required_fields[:-1]
             permissions.union(set(required_permission.split('|')))
             options = ''
+            options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
-                options += item + '|'
+                if item in options_map:
+                    if request.user.level in options_map[item]:
+                        options += item + '|'
+                else:
+                    options += item + '|'
             options = options[:-1]
             channel.provider = provider_name
             channel.api_version = api_version
@@ -412,8 +419,13 @@ def channel_detail(request, app_id, channel_id):
             required_fields = required_fields[:-1]
             permissions.union(set(required_permission.split('|')))
             options = ''
+            options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
-                options += item + '|'
+                if item in options_map:
+                    if request.user.level in options_map[item]:
+                        options += item + '|'
+                else:
+                    options += item + '|'
             options = options[:-1]
             channel_update.provider = provider_name
             channel_update.api_version = api_version
