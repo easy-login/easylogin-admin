@@ -35,7 +35,14 @@ providers = [
                 "key": "add_friend",
                 "name": "Add friend",
                 "default": False,
-                "tooltip": "Show checkbox add LINE user as friend after logged in"
+                "tooltip": "Show checkbox add LINE user as friend after logged in",
+                "restrict_levels": "1|2"
+            },
+            {
+                "key": "add_wife",
+                "name": "Add wife",
+                "default": False,
+                "tooltip": "show show cc",
             }
         ]
     },
@@ -70,6 +77,14 @@ providers = [
                 "key": "billing_address",
                 "name": "Payments Billing Address",
                 "permission": "payments:billing_address"
+            }
+        ],
+        "options": [
+            {
+                "key": "add_cmm",
+                "name": "Add CMM",
+                "default": True,
+                "tooltip": "Show checkbox add CMM",
             }
         ]
     },
@@ -144,6 +159,80 @@ providers = [
     },
     {
         "name": "facebook",
+        "version": ["v3.1"],
+        "required_permissions": "public_profile",
+        "basic_fields": [
+            {
+                "key": "first_name",
+                "name": "First Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "last_name",
+                "name": "Last Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "middle_name",
+                "name": "Middle Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "name",
+                "name": "Name",
+                "permission": "public_profile"
+            },
+            {
+                "key": "picture",
+                "name": "Picture URL",
+                "permission": "public_profile"
+            },
+            {
+                "key": "email",
+                "name": "Email",
+                "permission": "email"
+            }
+        ],
+        "advanced_fields": [
+            {
+                "key": "age_range",
+                "name": "Age Range",
+                "permission": "user_age_range"
+            },
+            {
+                "key": "birthday",
+                "name": "Birthday",
+                "permission": "user_birthday"
+            },
+            {
+                "key": "gender",
+                "name": "Gender",
+                "permission": "user_gender"
+            },
+            {
+                "key": "hometown",
+                "name": "Hometown",
+                "permission": "user_hometown"
+            },
+            {
+                "key": "likes",
+                "name": "User Likes",
+                "permission": "user_likes"
+            },
+            {
+                "key": "link",
+                "name": "Timeline Link",
+                "permission": "user_link"
+            },
+            {
+                "key": "location",
+                "name": "Location",
+                "permission": "user_location"
+            }
+        ]
+    },
+    {
+        "name": "twitter",
         "version": ["v3.1"],
         "required_permissions": "public_profile",
         "basic_fields": [

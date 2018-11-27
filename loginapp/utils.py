@@ -46,6 +46,7 @@ def getChartColor(provider):
         'yahoojp': '#ef5350',
         'amazon': '#f9c851',
         'facebook': "#4267b2",
+        'twitter': "#51c0ec",
     }
     return color_dic.get(provider)
 

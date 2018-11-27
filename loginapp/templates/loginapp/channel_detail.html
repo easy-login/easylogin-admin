@@ -24,7 +24,8 @@
     <li class="list-inline-item">
         <div class="dropdown app-list-select ">
             <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
-                    data-toggle="dropdown" aria-expanded="false">{{ channel.provider }}
+                    data-toggle="dropdown" aria-expanded="false">
+                <span style=" float: left;"><i class="fas fa-code-branch"></i></span>{{ channel.provider }}
             </button>
             <div class="dropdown-menu">
                 <!-- item-->
@@ -148,8 +149,8 @@
                                     <label class="col-form-label">Basic fields</label>
                                     {% for field in provider.basic_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled
+                                        <input class="field" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled
                                         {% if field.key in required_fields and provider.name == channel.provider %} checked {% endif %}>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
@@ -163,8 +164,8 @@
                                     <label class="col-form-label">Advanced fields</label>
                                     {% for field in provider.advanced_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled
+                                        <input class="field" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled
                                         {% if field.key in required_fields and provider.name == channel.provider %} checked {% endif %}>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
@@ -185,7 +186,7 @@
                                     {% endif %}
                                     {% for field in provider.options_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
+                                        <input class="option{% if request.user.level in restrict_levels or not field.restrict_levels %}-available{% endif %}" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
                                                type="checkbox" value="{{ field.key }}" disabled
                                         {% if field.key in options %} checked {% endif %}>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}">
@@ -242,7 +243,8 @@ $(document).ready(function() {
     $('.version-'+$('#id_provider').val()).show();
     $('#id_api_version').val('{{ provider_id }}');
     $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
-    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
     $('#id_provider').change(function(){
         $('.api-version-option').hide();
         $('.version-'+$('#id_provider').val()).show();
@@ -252,14 +254,16 @@ $(document).ready(function() {
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
         $('.provider-fields input').prop('disabled', true)
-        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
     })
     $('#id_api_version').change(function(){
         $('.provider-fields').hide();
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
         $('.provider-fields input').prop('disabled', true)
-        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
     })
 
     var url = window.location.pathname;

@@ -3,7 +3,8 @@ from django.contrib.auth.backends import ModelBackend
 
 
 class AuthenticationWithEmailBackend(ModelBackend):
-    def authenticate(self, username=None, password=None, **kwargs):
+    @staticmethod
+    def authenticate(username=None, password=None, **kwargs):
         UserModel = get_user_model()
         try:
             user = UserModel.objects.get(email=username)

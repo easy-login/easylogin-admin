@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, User
 from django.utils.translation import ugettext_lazy as _
-import datetime
 from django.utils import timezone
-from urllib import parse
+from django.shortcuts import get_object_or_404
 
+from urllib import parse
 import json
 
 # Model's constant
@@ -16,23 +16,24 @@ MAX_LENGTH_LONG_FIELD = 500
 # Create your models here.
 class User(AbstractUser):
     email = models.EmailField(unique=True, null=True, max_length=MAX_LENGTH_SHORT_FIELD)
-
     username = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     password = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     last_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-
     address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD)
-
     company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
+    is_superuser = models.SmallIntegerField(default=0)
+    is_active = models.SmallIntegerField(default=1)
+    deleted = models.SmallIntegerField(default=0)
+    level = models.SmallIntegerField(default=0)
+
+    @staticmethod
+    def get_all_user(user):
+        return User.objects.all() if user.is_superuser else []
 
     class Meta:
-        db_table = "admins"
+        db_table = 'admins'
 
 
 class Provider(models.Model):
@@ -46,9 +47,9 @@ class Provider(models.Model):
     PROVIDER_NAMES = []
 
     def required_permissions_as_list(self):
-        if self.required_permissions == "":
+        if self.required_permissions == '':
             return []
-        return self.required_permissions.split("|")
+        return self.required_permissions.split('|')
 
     def basic_fields_as_object(self):
         return json.loads(self.basic_fields)
@@ -59,11 +60,21 @@ class Provider(models.Model):
     def options_as_object(self):
         return json.loads(self.options)
 
+    def options_as_restrict_map(self):
+        options_list = json.loads(self.options)
+        options_map = {}
+        for option in options_list:
+            if 'restrict_levels' in option:
+                print('key:'+option['key'])
+                options_map[option['key']] = option['restrict_levels'].split("|")
+        return options_map
+
+
     def __str__(self):
         return u'{0}'.format(self.name)
 
     class Meta:
-        db_table = "providers"
+        db_table = 'providers'
 
     @classmethod
     def provider_names(cls):
@@ -81,10 +92,24 @@ class App(models.Model):
     callback_uris = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)
     description = models.TextField()
+    deleted = models.SmallIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    options = models.CharField(max_length=255)
+
+    @staticmethod
+    def get_all_app(user, owner_id=-1, order_by='name'):
+        # if user.is_superuser:
+        #     return App.objects.filter(deleted=0).order_by(order_by) if owner_id == -1 \
+        #         else App.objects.filter(deleted=0, owner_id=owner_id).order_by(order_by)
+        return App.objects.filter(owner_id=user.id, deleted=0).order_by(order_by)
+
+    @staticmethod
+    def get_app_by_user(app_id, user):
+        return get_object_or_404(App, pk=app_id, owner_id=user.id, deleted=0)
+        # get_object_or_404(App, pk=app_id, deleted=0) if user.is_superuser \
 
     def callback_uris_as_list(self):
-        if self.callback_uris == "":
+        if self.callback_uris == '':
             return []
         callback_uris_view = parse.unquote_plus(self.callback_uris)
         return callback_uris_view.split('|')
@@ -92,12 +117,12 @@ class App(models.Model):
     def set_callback_uris(self, callback_uri_list):
         cu_value = ''
         for uri in callback_uri_list:
-            cu_value += parse.quote_plus(uri) + "|"
+            cu_value += parse.quote_plus(uri) + '|'
         cu_value = cu_value[:-1]
         self.callback_uris = cu_value
 
     def allowed_ips_as_list(self):
-        if self.allowed_ips == "":
+        if self.allowed_ips == '':
             return []
         return self.allowed_ips.split('|')
 
@@ -105,7 +130,7 @@ class App(models.Model):
         ai_value = ''
         for ip in allowed_ips_list:
             if ip:
-                ai_value += ip + "|"
+                ai_value += ip + '|'
         ai_value = ai_value[:-1]
         self.allowed_ips = ai_value
 
@@ -116,8 +141,16 @@ class App(models.Model):
         self.modified_at = timezone.now()
         # self.modified_at = datetime.datetime.now()
 
+    def set_options(self, options):
+        self.options = "|".join(options)
+
+    def get_options_as_list(self):
+        if self.options == "":
+            return []
+        return self.options.split("|")
+
     class Meta:
-        db_table = "apps"
+        db_table = 'apps'
 
 
 class Channel(models.Model):
@@ -139,5 +172,5 @@ class Channel(models.Model):
         return self.options.split('|')
 
     class Meta:
-        db_table = "channels"
+        db_table = 'channels'
         unique_together = ('app', 'provider')

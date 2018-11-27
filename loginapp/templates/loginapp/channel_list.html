@@ -70,7 +70,7 @@
     </div>
     {% for channel in channels %}
     <div class="col-md-4">
-        <div class="card-box project-box p-b-0" style="word-wrap: break-word">
+        <div class="card-box project-box p-b-0 zoom" style="word-wrap: break-word">
             <div class="dropdown pull-right">
                 <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown"
                    aria-expanded="false">
@@ -89,10 +89,25 @@
             </div>
             <h4 class="mt-0"><a href="{% url 'channel_detail' app.id channel.id %}" class="clickable text-inverse">{{ channel.provider }}</a></h4>
             <div class="text-left">
-                <p class="text-inverse font-13"><strong>Client ID :</strong> <span class="m-l-15 text-muted">{{ channel.client_id }}</span></p>
+                <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client ID :</strong></p>
+                {% str_length channel.client_id as client_length %}
+                <p><span class="text-muted">
+                    {% if client_length < 20 %}
+                    {{ channel.client_id }}
+                    {% else %}
+                    {{ channel.client_id|slice:"0:20" }}...
+                    {% endif %}
+                </span></p>
 
-                <p class="text-inverse font-13"><strong>Client Secret :</strong> <span class="m-l-15 text-muted">{{ channel.client_secret }}</span>
-                </p>
+                <p class="text-inverse font-13" style="margin-bottom:0px;"><strong>Client Secret :</strong></p>
+                {% str_length channel.client_secret as secret_length %}
+                <span class="text-muted">
+                    {% if secret_length < 20 %}
+                    {{ channel.client_secret }}
+                    {% else %}
+                    {{ channel.client_secret|slice:"0:20" }}...
+                    {% endif %}
+                </span>
             </div>
             <hr>
             <ul class="text-inverse list-inline m-b-0">
@@ -198,8 +213,8 @@
                                     <label class="col-form-label">Basic fields</label>
                                     {% for field in provider.basic_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
+                                        <input class="field" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
@@ -212,8 +227,8 @@
                                     <label class="col-form-label">Advanced fields</label>
                                     {% for field in provider.advanced_fields_as_object %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
-                                               type="checkbox" value="{{ field.key }}|{{ field.permission }}" disabled>
+                                        <input class="field" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled>
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
                                     </div>
                                     {% endfor %}
@@ -227,9 +242,11 @@
                                     <label class="col-form-label">Options</label>
                                     {% endif %}
                                     {% for field in provider.options_as_object %}
+                                    {% with restrict_levels=field.restrict_levels|split_string:"|" %}
                                     <div class="checkbox checkbox-pink">
-                                        <input id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
-                                               type="checkbox" value="{{ field.key }}" disabled {% if key.default %} checked {% endif %}
+                                        <input class="option{% if request.user.level in restrict_levels or not field.restrict_levels %}-available{% endif %}" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
+                                               type="checkbox" value="{{ field.key }}" {% if field.default %} checked {% endif %}
+                                               disabled
                                         >
                                         <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}">
                                             {{ field.name }} </label>
@@ -237,6 +254,7 @@
                                          data-placement="right" title="" data-original-title="{{ field.tooltip }}"></i>
                                         {% endif %}
                                     </div>
+                                    {% endwith %}
                                     {% endfor %}
                                 </div>
                                 {% endfor %}
@@ -265,7 +283,8 @@ $(document).ready(function() {
     $('.version-'+$('#id_provider').val()).show();
     $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
     $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
-    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
 
     $('#id_provider').change(function(){
         $('.api-version-option').hide();
@@ -276,14 +295,16 @@ $(document).ready(function() {
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
         $('.provider-fields input').prop('disabled', true)
-        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
     })
     $('#id_api_version').change(function(){
         $('.provider-fields').hide();
         $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
 
         $('.provider-fields input').prop('disabled', true)
-        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
     })
 });
 

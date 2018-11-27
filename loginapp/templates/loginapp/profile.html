@@ -12,6 +12,16 @@
 
 
 {% block sidemenu %}
+{% if request.user.is_superuser %}
+<li>
+    <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
+        <span> User Manager </span> </a>
+</li>
+<li>
+    <a href="{% url 'admin_report' %}" class="waves-effect"><i class="fas fa-registered"></i>
+        <span>  Application Manager </span> </a>
+</li>
+{% endif%}
 <li class="has_sub">
     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-account"></i><span>My Profile</span>
          <i class="fa fa-angle-down menu-narrow"></i>
@@ -29,11 +39,12 @@
     <a href="{% url 'dashboard'%}" class="waves-effect"><i class="mdi mdi-apps"></i>
         <span> My Apps </span> </a>
 </li>
+
 {% endblock %}
 {% block content%}
         <div class="row card-box profile-info-name">
             <div class="col-md-3">
-                <img src="{% static 'images/ninja.png' %}"
+                <img src="{% if request.user.is_superuser %}{% static 'images/admin.png' %}{% else %}{% static 'images/ninja.png' %}{% endif %}"
                      class="img-thumbnail" alt="{{ request.user.username }}">
                 <!--<h4 class="m-0">{{ request.user.username }}</h4>-->
             </div>
