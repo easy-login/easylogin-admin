@@ -76,7 +76,7 @@ class Provider(models.Model):
 
 class App(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=67)
     api_key = models.CharField(max_length=127)
     callback_uris = models.URLField(max_length=2047)
@@ -145,7 +145,7 @@ class App(models.Model):
 
 class Channel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     provider = models.CharField(max_length=30)
     api_version = models.CharField(max_length=7)
     client_id = models.CharField(max_length=255)
@@ -164,3 +164,13 @@ class Channel(models.Model):
     class Meta:
         db_table = 'channels'
         unique_together = ('app', 'provider')
+
+
+class AdminSetting(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    value = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'admin_settings'

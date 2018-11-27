@@ -70,4 +70,6 @@ urlpatterns = [
     url(r'^admin/apps/$', admin_views.admin_list_apps, name='admin_apps'),
 
     url(r'^admin/report/$', admin_views.admin_report_register, name='admin_report'),
+
+    url(r'^admin/setting/$', admin_views.admin_setting, name='admin_setting'),
 ]

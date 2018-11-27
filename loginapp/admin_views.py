@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import update_session_auth_hash
 
-from loginapp.models import App, User
+from loginapp.models import App, User, AdminSetting
 from loginapp.forms import RegisterForm
 from loginapp.views import push_messages_error
 from loginapp.reports import get_list_users, get_list_apps, get_register_report
@@ -44,7 +44,7 @@ def admin_list_users(request):
                         profile['total_apps'],
                         profile['level'],
                         profile['deleted'],
-                        str(profile['user_id'])+"|"+str(profile['level'])]
+                        str(profile['user_id']) + "|" + str(profile['level'])]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
@@ -205,3 +205,22 @@ def admin_report_register(request):
     else:
         apps = App.get_all_app(request.user)
         return render(request, 'loginapp/admin_register_report.html', {'apps': apps})
+
+
+def admin_setting(request):
+    if not request.user.is_superuser:
+        redirect('dashboard')
+    if request.method == 'POST':
+        for k in request.POST:
+            if k == 'csrfmiddlewaretoken':
+                continue
+            setting, created = AdminSetting.objects.get_or_create(name=k)
+            setting.name = k
+            setting.value = request.POST[k]
+            setting.save()
+        return redirect('admin_setting')
+    settings = AdminSetting.objects.all()
+    settings_map = {}
+    for setting in settings:
+        settings_map[setting.name] = setting.value
+    return render(request, 'loginapp/admin_setting.html', {'settings': settings_map})
