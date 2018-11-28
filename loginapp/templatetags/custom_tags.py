@@ -14,5 +14,4 @@ def str_length(value):
 
 @register.filter
 def split_string(str_split, split_char="|"):
-    print(str_split.split("|"))
-    return str_split.split(split_char)
+    return map(int, str_split.split(split_char))
