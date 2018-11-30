@@ -94,23 +94,24 @@ def admin_update_user(request):
     if not request.user.is_superuser:
         return redirect('dashboard')
 
-    print(request.POST['email'] + ":" + request.POST['username'])
+    print(str(request.POST))
     if request.method == 'POST':
-        if 'user_id' not in request.POST:
-            messages.error(request, "Update failed User: user id is required!")
+        if not request.POST.get('user_id', ''):
+            messages.error(request, 'Update failed User: user id is required!')
             return redirect('admin_users')
         user_id = request.POST['user_id']
         user = get_object_or_404(User, pk=user_id)
-        if 'email' in request.POST:
+        if request.POST.get('email', ''):
             user.email = request.POST['email']
-        if 'username' in request.POST:
+        if request.POST.get('username', ''):
             user.username = request.POST['username']
-        if 'password' in request.POST:
+        if request.POST.get('password', ''):
             user.set_password(request.POST['password'])
-        if 'level' in request.POST:
+            update_session_auth_hash(request, user)
+        if request.POST.get('level', ''):
             user.level = request.POST['level']
         user.save()
-        # update_session_auth_hash(request, user)
+
         messages.success(request, "User was successfully updated!")
     return redirect('admin_users')
 
