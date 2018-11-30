@@ -94,7 +94,6 @@ def admin_update_user(request):
     if not request.user.is_superuser:
         return redirect('dashboard')
 
-    print(str(request.POST))
     if request.method == 'POST':
         if not request.POST.get('user_id', ''):
             messages.error(request, 'Update failed User: user id is required!')
