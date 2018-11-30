@@ -110,7 +110,7 @@ def admin_update_user(request):
         if 'level' in request.POST:
             user.level = request.POST['level']
         user.save()
-        update_session_auth_hash(request, user)
+        # update_session_auth_hash(request, user)
         messages.success(request, "User was successfully updated!")
     return redirect('admin_users')
 
