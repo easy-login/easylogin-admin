@@ -1,5 +1,6 @@
 import MySQLdb
 import json
+from urllib import parse as up
 
 providers = [
     {
@@ -7,28 +8,12 @@ providers = [
         "version": ["v2.1"],
         "required_permissions": "openid",
         "basic_fields": [
-            {
-                "key": "displayName",
-                "name": "Display Name",
-                "permission": "profile"
-            },
-            {
-                "key": "pictureUrl",
-                "name": "Picture URL",
-                "permission": "profile"
-            },
-            {
-                "key": "statusMessage",
-                "name": "Status Message",
-                "permission": "profile"
-            }
+            "displayName,Display Name,profile",
+            "pictureUrl,Picture URL,profile",
+            "statusMessage,Status Message,profile"
         ],
         "advanced_fields": [
-            {
-                "key": "email",
-                "name": "Email",
-                "permission": "email"
-            }
+            "email,Email,email"
         ],
         "options": [
             {
@@ -45,23 +30,11 @@ providers = [
         "version": ["v2"],
         "required_permissions": "profile:user_id",
         "basic_fields": [
-            {
-                "key": "name",
-                "name": "Full Name",
-                "permission": "profile"
-            },
-            {
-                "key": "email",
-                "name": "Email",
-                "permission": "profile"
-            }
+            "name,Full Name,profile",
+            "email,Email,profile"
         ],
         "advanced_fields": [
-            {
-                "key": "postal_code",
-                "name": "Postal Code",
-                "permission": "postal_code"
-            }
+            "postal_code,Postal Code,postal_code"
         ],
         "options": [
             {
@@ -78,68 +51,20 @@ providers = [
         "version": ["v2"],
         "required_permissions": "openid",
         "basic_fields": [
-            {
-                "key": "name",
-                "name": "Full Name",
-                "permission": "profile"
-            },
-            {
-                "key": "given_name",
-                "name": "First Name",
-                "permission": "profile"
-            },
-            {
-                "key": "family_name",
-                "name": "Last Name",
-                "permission": "profile"
-            },
-            {
-                "key": "gender",
-                "name": "Gender",
-                "permission": "profile"
-            },
-            {
-                "key": "zoneinfo",
-                "name": "Zone Info",
-                "permission": "profile"
-            },
-            {
-                "key": "locale",
-                "name": "Locale",
-                "permission": "profile"
-            },
-            {
-                "key": "nickname",
-                "name": "Nick Name",
-                "permission": "profile"
-            },
-            {
-                "key": "picture",
-                "name": "Picture URL",
-                "permission": "profile"
-            }
+            "name,Full Name,profile",
+            "given_name,First Name,profile",
+            "family_name,Last Name,profile",
+            "gender,Gender,profile",
+            "zoneinfo,Zone Info,profile",
+            "locale,Locale,profile",
+            "nickname,Nick Name,profile",
+            "birth_date,Birth Date,profile",
+            "picture,Picture URL,profile"
         ],
         "advanced_fields": [
-            {
-                "key": "email",
-                "name": "Email",
-                "permission": "email"
-            },
-            {
-                "key": "email_verified",
-                "name": "Email Verified",
-                "permission": "email"
-            },
-            {
-                "key": "birth_date",
-                "name": "Birth Date",
-                "permission": "profile"
-            },
-            {
-                "key": "address",
-                "name": "Address",
-                "permission": "address"
-            }
+            "email,Email,email",
+            "email_verified,Email Verified,email",
+            "address,Address,address"
         ]
     },
     {
@@ -147,68 +72,20 @@ providers = [
         "version": ["v3.1", "v3.2"],
         "required_permissions": "public_profile",
         "basic_fields": [
-            {
-                "key": "first_name",
-                "name": "First Name",
-                "permission": "public_profile"
-            },
-            {
-                "key": "last_name",
-                "name": "Last Name",
-                "permission": "public_profile"
-            },
-            {
-                "key": "middle_name",
-                "name": "Middle Name",
-                "permission": "public_profile"
-            },
-            {
-                "key": "name",
-                "name": "Name",
-                "permission": "public_profile"
-            },
-            {
-                "key": "picture",
-                "name": "Picture URL",
-                "permission": "public_profile"
-            },
-            {
-                "key": "email",
-                "name": "Email",
-                "permission": "email"
-            }
+            "first_name,First Name,public_profile",
+            "last_name, Last Name,public_profile",
+            "middle_name,Middle Name,public_profile",
+            "name,Full Name,public_profile",
+            "picture,Picture URL,public_profile",
+            "email,Email,email"
         ],
         "advanced_fields": [
-            {
-                "key": "age_range",
-                "name": "Age Range",
-                "permission": "user_age_range"
-            },
-            {
-                "key": "birthday",
-                "name": "Birthday",
-                "permission": "user_birthday"
-            },
-            {
-                "key": "gender",
-                "name": "Gender",
-                "permission": "user_gender"
-            },
-            {
-                "key": "hometown",
-                "name": "Hometown",
-                "permission": "user_hometown"
-            },
-            {
-                "key": "likes",
-                "name": "User Likes",
-                "permission": "user_likes"
-            },
-            {
-                "key": "location",
-                "name": "Location",
-                "permission": "user_location"
-            }
+            "age_range,Age Range,user_age_range",
+            "birthday,Birthday,user_birthday",
+            "gender,Gender,user_gender",
+            "hometown,Hometown,user_hometown",
+            "likes,User Likes,user_likes",
+            "location,Location,user_location"
         ],
         "options": [
             {
@@ -224,93 +101,25 @@ providers = [
         "version": ["v1.1"],
         "required_permissions": "",
         "basic_fields": [
-            {
-                "key": "name",
-                "name": "Name",
-                "permission": ""
-            },
-            {
-                "key": "screen_name",
-                "name": "Screen Name",
-                "permission": ""
-            },
-            {
-                "key": "location",
-                "name": "Location",
-                "permission": ""
-            },
-            {
-                "key": "url",
-                "name": "Personal URL",
-                "permission": ""
-            },
-            {
-                "key": "description",
-                "name": "Description",
-                "permission": ""
-            },
-            {
-                "key": "created_at",
-                "name": "Created At",
-                "permission": ""
-            },
-            {
-                "key": "lang",
-                "name": "Languages",
-                "permission": ""
-            },
-            {
-                "key": "profile_background_image_url_https",
-                "name": "Background Image URL",
-                "permission": ""
-            },
-            {
-                "key": "profile_banner_url",
-                "name": "Banner Image URL",
-                "permission": ""
-            },
-            {
-                "key": "profile_image_url_https",
-                "name": "Image URL",
-                "permission": "user_gender"
-            },
-            {
-                "key": "verified",
-                "name": "Verified",
-                "permission": ""
-            },
-            {
-                "key": "statuses_count",
-                "name": "Statuses Count",
-                "permission": ""
-            },
-            {
-                "key": "followers_count",
-                "name": "Followers Count",
-                "permission": ""
-            },
-            {
-                "key": "friends_count",
-                "name": "Friends Count",
-                "permission": ""
-            },
-            {
-                "key": "listed_count",
-                "name": "Listed Count",
-                "permission": ""
-            },
-            {
-                "key": "favourites_count",
-                "name": "Favourites Count",
-                "permission": ""
-            }
+            "name,Name,",
+            "screen_name,Screen Name,",
+            "location,Location,",
+            "url,Personal URL,",
+            "description,Description,",
+            "created_at,Created At,",
+            "lang,Languages,",
+            "profile_background_image_url_https,Background Image URL,",
+            "profile_banner_url,Banner Image URL,",
+            "profile_image_url_https, Image URL,",
+            "verified,Verified,",
+            "statuses_count,Statuses Count,",
+            "followers_count,Followers Count,",
+            "friends_count,Friends Count,",
+            "listed_count,Listed Count,",
+            "favourites_count,Favourites Count,"
         ],
         "advanced_fields": [
-            {
-                "key": "email",
-                "name": "Email",
-                "permission": ""
-            }
+            "email,Email,"
         ],
         "options": [
             {
@@ -320,8 +129,42 @@ providers = [
                 "tooltip": "Get all extra fields that not included in basic and advanced fields"
             }
         ]
+    },
+    {
+        "name": "google",
+        "version": ["v1"],
+        "required_permissions": "openid",
+        "basic_fields": [
+            ",Primary Email,email",
+            "names,Name,profile",
+            "locales,Locale,profile",
+            "nicknames,Nickname,profile",
+            "coverPhotos,Cover Photo URL,profile",
+            "photos,Photo URL,profile",
+            "genders,Gender,profile",
+            "ageRanges,Age Range,profile"
+        ],
+        "advanced_fields": [
+            "phoneNumbers,Phone Number,https://www.googleapis.com/auth/user.phonenumbers.read",
+            "addresses,Address,https://www.googleapis.com/auth/user.addresses.read",
+            "birthdays,Birthday,https://www.googleapis.com/auth/user.birthday.read",
+            "emailAddresses,Secondary Email,https://www.googleapis.com/auth/user.emails.read"
+        ]
     }
 ]
+
+
+def convert_fields(fields):
+    converted = []
+    for field in fields:
+        parts = field.split(',')
+        converted.append({
+            'key': parts[0],
+            'name': parts[1],
+            'permission': up.quote_plus(parts[2])
+        })
+    return converted
+
 
 if __name__ == '__main__':
     data = []
@@ -331,8 +174,8 @@ if __name__ == '__main__':
                 provider['name'],
                 version,
                 provider['required_permissions'],
-                json.dumps(provider['basic_fields']),
-                json.dumps(provider['advanced_fields']),
+                json.dumps(convert_fields(provider['basic_fields'])),
+                json.dumps(convert_fields(provider['advanced_fields'])),
                 json.dumps(provider.get('options', []))
             )
             print(tup)
