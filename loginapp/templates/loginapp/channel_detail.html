@@ -80,7 +80,7 @@
                             <i class="fas fa-question-circle" data-toggle="tooltip"
                                          data-placement="right" title="" data-original-title="Provider is ..."></i></label>
                             <div class="col-md-8">
-                                <select name="provider" id="id_provider" value="{{ channel.provider }}" class="form-control">
+                                <select name="provider" id="id_provider" value="{{ channel.provider }}" class="form-control" disabled>
                                     {% for provider_name in provider_names %}
                                     <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
                                     {% endfor %}
