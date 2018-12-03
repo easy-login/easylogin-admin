@@ -349,7 +349,7 @@ def add_channel(request):
                 if item_split[1]:
                     permissions.add(item_split[1])
             required_fields = required_fields[:-1]
-            permissions.union(set(required_permission.split('|')))
+            permissions = permissions.union(set(required_permission.split('|')))
             options = ''
             options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
@@ -408,6 +408,7 @@ def channel_detail(request, app_id, channel_id):
             provider_name = request.POST.get('provider')
             api_version = provider.version
             required_permission = provider.required_permissions
+            print(required_permission)
             field_permission = request.POST.getlist('required_field')
             required_fields = ''
             permissions = set()
@@ -417,7 +418,8 @@ def channel_detail(request, app_id, channel_id):
                 if item_split[1]:
                     permissions.add(item_split[1])
             required_fields = required_fields[:-1]
-            permissions.union(set(required_permission.split('|')))
+            permissions = permissions.union(set(required_permission.split('|')))
+            print(permissions)
             options = ''
             options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
