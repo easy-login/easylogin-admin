@@ -90,7 +90,7 @@
                                     {% for provider_name in provider_names %}
                                     <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
                                     {% endfor %}
-                                </select>ương
+                                </select>
                                 {% if form.provider.errors %}
                                 <ul class="parsley-errors-list filled">
                                     {% for error in form.provider.errors %}
