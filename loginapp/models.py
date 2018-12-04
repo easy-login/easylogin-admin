@@ -69,7 +69,6 @@ class Provider(models.Model):
                 options_map[option['key']] = option['restrict_levels'].split("|")
         return options_map
 
-
     def __str__(self):
         return u'{0}'.format(self.name)
 
@@ -183,4 +182,4 @@ class AdminSetting(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'admin_settings'
+        db_table = 'system_settings'
