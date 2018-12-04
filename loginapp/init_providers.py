@@ -133,22 +133,22 @@ providers = [
     {
         "name": "google",
         "version": ["v1"],
-        "required_permissions": "openid",
+        "required_permissions": "openid|email",
         "basic_fields": [
-            ",Primary Email,email",
+            "#,Primary Email,email",
             "names,Name,profile",
             "locales,Locale,profile",
             "nicknames,Nickname,profile",
             "coverPhotos,Cover Photo URL,profile",
             "photos,Photo URL,profile",
-            "genders,Gender,profile",
-            "ageRanges,Age Range,profile"
+            "genders,Gender,profile"
         ],
         "advanced_fields": [
+            "emailAddresses,All Emails,https://www.googleapis.com/auth/user.emails.read",
             "phoneNumbers,Phone Number,https://www.googleapis.com/auth/user.phonenumbers.read",
             "addresses,Address,https://www.googleapis.com/auth/user.addresses.read",
             "birthdays,Birthday,https://www.googleapis.com/auth/user.birthday.read",
-            "emailAddresses,Secondary Email,https://www.googleapis.com/auth/user.emails.read"
+            "ageRanges,Age Range,https://www.googleapis.com/auth/plus.login"
         ]
     }
 ]
