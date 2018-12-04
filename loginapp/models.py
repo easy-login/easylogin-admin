@@ -183,4 +183,4 @@ class AdminSetting(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'admin_settings'
+        db_table = 'system_settings'
