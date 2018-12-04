@@ -25,7 +25,7 @@
         <div class="dropdown app-list-select ">
             <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
                     data-toggle="dropdown" aria-expanded="false">
-                <span style=" float: left;"><i class="fas fa-code-branch"></i></span>{{ channel.provider }}
+                <span style="float: left;"><i class="fas fa-code-branch"></i></span>{{ channel.provider }}
             </button>
             <div class="dropdown-menu">
                 <!-- item-->
@@ -75,12 +75,18 @@
                             </div>
                         </div>
 
+                    <select name="provider"  value="{{ channel.provider }}" class="form-control" style="display:none">
+                        {% for provider_name in provider_names %}
+                        <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
+                        {% endfor %}
+                    </select>
+
                     <div class="form-group row">
                             <label for="id_provider" class="col-md-2 col-form-label">Provider
                             <i class="fas fa-question-circle" data-toggle="tooltip"
                                          data-placement="right" title="" data-original-title="Provider is ..."></i></label>
                             <div class="col-md-8">
-                                <select name="provider" id="id_provider" value="{{ channel.provider }}" class="form-control" disabled>
+                                <select name="provider_disabled" id="id_provider" value="{{ channel.provider }}" class="form-control" disabled>
                                     {% for provider_name in provider_names %}
                                     <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
                                     {% endfor %}
