@@ -28,17 +28,18 @@
                 <form class="form-horizontal" method="post" action="{% url 'admin_setting' %}">
                     {% csrf_token %}
                     <div class="form-group row">
-                        <label for="id_return_scoped_id" class="col-md-4 col-form-label">Allow client get
+                        <label for="id_return_scoped_id" class="col-md-3 col-form-label">Allow client get
                             provider-scoped ID</label>
-                        <div class="col-md-4">
+                        <div class="col-md-7">
                             <select id="id_return_scoped_id" name="return_scoped_id" class="form-control">
                                 <option value="always" {%if settings.return_scoped_id == 'always'%}selected{% endif %}>Always Return</option>
-                                <option value="nerve" {%if settings.return_scoped_id == 'nerve'%}selected{% endif %}>Nerve Return</option>
+                                <option value="never" {%if settings.return_scoped_id == 'never'%}selected{% endif %}>Never Return</option>
                                 <option value="by_level" {%if settings.return_scoped_id == 'by_level'%}selected{% endif %}>By Account Level</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group text-center row m-t-40">
+                        <div class="col-md-8"></div>
                         <div class="col-md-2">
                             <button class="btn btn-info btn-block waves-effect waves-light"
                                     type="submit">
