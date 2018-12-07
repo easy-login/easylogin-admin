@@ -43,10 +43,11 @@ def getChartColor(provider):
     color_dic = {
         'total': '#696969',
         'line': '#10c469',
-        'yahoojp': '#ef5350',
+        'yahoojp': '#b936e7',
         'amazon': '#f9c851',
         'facebook': "#4267b2",
-        'twitter': "#51c0ec",
+        'twitter': '#51c0ec',
+        'google': '#DC4E41',
     }
     return color_dic.get(provider)
 
