@@ -1,6 +1,7 @@
 {% extends 'loginapp/base.html' %}
 {% load static %}
 {% load widget_tweaks %}
+{% load custom_tags %}
 
 {% block css %}
 <!-- Sweet Alert css -->
@@ -191,6 +192,7 @@
                                     <label class="col-form-label">Options</label>
                                     {% endif %}
                                     {% for field in provider.options_as_object %}
+                                    {% with restrict_levels=field.restrict_levels|split_string:"|" %}
                                     <div class="checkbox checkbox-pink">
                                         <input class="option{% if request.user.level in restrict_levels or not field.restrict_levels %}-available{% endif %}" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
                                                type="checkbox" value="{{ field.key }}" disabled
@@ -201,6 +203,7 @@
                                          data-placement="right" title="" data-original-title="{{ field.tooltip }}"></i>
                                         {% endif %}
                                     </div>
+                                    {% endwith %}
                                     {% endfor %}
                                 </div>
                                 {% endfor %}
