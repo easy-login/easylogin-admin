@@ -65,8 +65,7 @@ class Provider(models.Model):
         options_map = {}
         for option in options_list:
             if 'restrict_levels' in option:
-                print('key:'+option['key'])
-                options_map[option['key']] = option['restrict_levels'].split("|")
+                options_map[option['key']] = map(int, option['restrict_levels'].split("|"))
         return options_map
 
     def __str__(self):
