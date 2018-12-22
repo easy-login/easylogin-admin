@@ -111,10 +111,10 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         else:
             cursor.execute("""
                 SELECT alias AS social_id, 
-                    user_pk, 
+                    user_pk,
                     MAX(authorized_at) AS last_login,  
                     SUM(login_count) AS login_total, 
-                    GROUP_CONCAT(provider) AS linked_providers 
+                    GROUP_CONCAT(provider) AS linked_providers  
                 FROM social_profiles
                 WHERE app_id = %s
                 GROUP BY alias, user_pk

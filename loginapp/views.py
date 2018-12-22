@@ -1,5 +1,6 @@
 import datetime
 import json
+import requests
 
 from django import forms
 from django.contrib import messages
@@ -210,7 +211,7 @@ def delete_app(request, app_id):
 def user_report(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
     column_dic = {
-        '1': 'user_id',
+        '1': 'user_pk',
         '2': 'social_id',
         '3': 'last_login',
         '4': 'login_total'
@@ -236,14 +237,14 @@ def user_report(request, app_id):
                         profile['user_pk'],
                         str(profile['social_id']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
-                        profile['login_total']]
+                        profile['login_total'], ]
             linked_providers = profile['linked_providers']
             for provider in providers:
                 if provider in linked_providers:
                     row_data.append(1)
                 else:
                     row_data.append(0)
-
+            row_data.append(str(app_id) + "|" + str(profile['social_id']))
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
@@ -252,6 +253,27 @@ def user_report(request, app_id):
         provider_names = Provider.provider_names()
         return render(request, 'loginapp/statistic_login.html',
                       {'apps': apps, 'app': app, 'provider_names': provider_names})
+
+
+@login_required
+def delete_user_social(request, app_id):
+    if request.method == 'POST':
+        App.get_app_by_user(app_id, request.user)
+        social_id = request.POST.get('social_id', '')
+
+        response_info = requests.put('https://api.easy-login.jp/' + str(app_id) + '/users/delete-info',
+                                     {'social_id': social_id})
+        if response_info.status_code != 200:
+            messages.error(request, "Delete failed social user!")
+            return redirect('statistic_login', app_id=app_id)
+        response_user = requests.delete('https://api.easy-login.jp/' + str(app_id) + '/users',
+                                        data={'social_id': social_id})
+        if response_user.status_code != 200:
+            messages.error(request, "Delete failed social user!")
+            return redirect('statistic_login', app_id=app_id)
+        messages.success(request, "Delete success social user!")
+
+    return redirect('statistic_login', app_id=app_id)
 
 
 @login_required
