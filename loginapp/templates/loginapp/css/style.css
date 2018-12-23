@@ -6552,7 +6552,7 @@ input.app-search-input:-ms-input-placeholder {
 }
 .clickable:hover{
     text-decoration: underline !important;
-    color:#71b6f9 !important;
+    color:#177bff !important;
 }
 .tooltip{
     font-size: 12px;
@@ -6562,7 +6562,7 @@ input.app-search-input:-ms-input-placeholder {
   content:"*";
   color:red;
 }
-
+odal-custom-width
 .menu-item-text{
     margin-top: 20px;
     margin-left: 20px;
@@ -6618,4 +6618,8 @@ table.dataTable thead tr th {
 
 .modal-custom-width{
     max-width:600px;
+}
+
+.img-thumbnail-custom{
+    max-width:100px;
 }
