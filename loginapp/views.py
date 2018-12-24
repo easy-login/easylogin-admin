@@ -16,7 +16,7 @@ from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
 from loginapp.models import App, Provider, Channel, User
 from loginapp.reports import get_auth_report_per_provider, get_total_provider_report, \
-    get_total_auth_report, get_user_report
+    get_total_auth_report, get_user_report, get_social_users
 from loginapp.utils import generateApiKey, getChartColor
 
 
@@ -256,6 +256,19 @@ def user_report(request, app_id):
 
 
 @login_required
+def list_social_users(request):
+    social_id = request.GET.get('social_id', '')
+    data = {}
+    if social_id:
+        profiles = get_social_users(social_id)
+        for profile in profiles:
+            if profile['provider'] != 'twitter' and profile['provider'] != 'google':
+                data[profile['provider']] = json.loads(profile['attrs'])
+
+    return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+
+
+@login_required
 def delete_user_social(request, app_id):
     if request.method == 'POST':
         App.get_app_by_user(app_id, request.user)
@@ -335,7 +348,7 @@ def app_report(request, app_id):
 
 
 @login_required
-def channel_list(request, app_id):
+def list_channels(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
     channels = Channel.objects.filter(app=app_id).order_by('-created_at')
     apps = App.get_all_app(user=request.user)

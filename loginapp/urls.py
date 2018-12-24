@@ -51,13 +51,15 @@ urlpatterns = [
 
     path('apps/<int:app_id>/delete', views.delete_app, name='delete_app'),
 
-    path('apps/<int:app_id>/channels/', views.channel_list, name='channel_list'),
+    path('apps/<int:app_id>/channels/', views.list_channels, name='channel_list'),
 
     url(r'^apps/add-channel/$', views.add_channel, name='add_channel'),
 
     path('apps/<int:app_id>/channels/<int:channel_id>/', views.channel_detail, name='channel_detail'),
 
     path('apps/<int:app_id>/channels/<int:channel_id>/delete', views.delete_channel, name='delete_channel'),
+
+    url(r'^social_users/$', views.list_social_users, name='social_users_detail'),
 
     path('apps/<int:app_id>/users-social/delete', views.delete_user_social, name='delete_user_social'),
 

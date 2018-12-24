@@ -22,7 +22,7 @@ def get_total_auth_report(app_id):
             if row[0]:
                 results.append(('Login', row[2]))
             else:
-                reg_status = 'Pending Registration' if row[1] == 'wait_reg' else 'Done Registration'  
+                reg_status = 'Pending Registration' if row[1] == 'wait_reg' else 'Done Registration'
                 results.append((reg_status, row[2]))
         return results
 
@@ -58,10 +58,10 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
         from_dt += ' 00:00:00'
         to_dt += ' 23:59:59'
 
-        if auth_state == 1: # login
+        if auth_state == 1:  # login
             is_login = 1
-            status = 'succeeded' 
-        elif auth_state == 2: # wait register
+            status = 'succeeded'
+        elif auth_state == 2:  # wait register
             is_login = 0
             status = 'wait_reg'
         else:
@@ -222,7 +222,7 @@ def get_register_report(page_length, start_page, order_by, search_value):
                 WHERE o.username = %s
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
-            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET, search_value, ))
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET, search_value,))
         else:
             cursor.execute("""
                 SELECT a.id, a.name, o.username, 
@@ -240,3 +240,14 @@ def get_register_report(page_length, start_page, order_by, search_value):
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
         rows = dict_fetchall(cursor)
         return len(rows), rows
+
+
+def get_social_users(social_id):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT attrs,provider 
+            FROM social_profiles
+            WHERE alias = %s
+        """, (social_id,))
+        rows = dict_fetchall(cursor)
+        return rows
