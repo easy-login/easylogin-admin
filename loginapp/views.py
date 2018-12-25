@@ -264,7 +264,7 @@ def list_social_users(request):
         for profile in profiles:
             if profile['provider'] != 'twitter' and profile['provider'] != 'google':
                 data[profile['provider']] = json.loads(profile['attrs'])
-
+    print(json.dumps(data, cls=DjangoJSONEncoder))
     return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
 
 

@@ -93,24 +93,10 @@
                     <h4 class="modal-title" id="social-user-detail">Social Users</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
-                <div class="text-center card-box">
-                    <div>
+                <div class="text-center">
+                    <div id='social-users'>
                         <img src="{% static '/images/ninja.png'%}"
                              class="rounded-circle thumb-xl img-thumbnail m-b-10" alt="profile-image">
-
-                        <div class="text-left">
-                            <p class="text-muted font-13"><strong>Full Name :</strong> <span class="m-l-15">Johnathan Deo</span>
-                            </p>
-
-                            <p class="text-muted font-13"><strong>Mobile :</strong><span
-                                    class="m-l-15">(123) 123 1234</span></p>
-
-                            <p class="text-muted font-13"><strong>Email :</strong> <span class="m-l-15">coderthemes@gmail.com</span>
-                            </p>
-
-                            <p class="text-muted font-13"><strong>Location :</strong> <span class="m-l-15">USA</span>
-                            </p>
-                        </div>
                     </div>
 
                 </div>
@@ -187,14 +173,27 @@ function loadInitialStatisticTable(){
 }
 
 function showUserDetailModal(element){
-    social_id = $(element).text()
+    $('.text-left').remove();
+    social_id = $(element).text();
     $.ajax({
         url: '{% url "social_users_detail" %}',
         data: {'social_id': social_id},
         type: 'get',
         cache: false,
         success: function(data){
-            alert(data)
+            var html='';
+            Object.keys(data).forEach(function(key1){
+                 var html_detail='<div class="text-left card-box word-wrap"><img src="/static/images/social-icon/'+key1+'.png" class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10" alt="provider-image">';
+                 Object.keys(data[key1]).sort().forEach(function(key2){
+                    var value = data[key1][key2];
+                    if(typeof data[key1][key2] == 'object')
+                        value = JSON.stringify(data[key1][key2])
+                    html_detail += '<p class="font-13"><strong>'+key2+' :</strong> <span class="m-l-15">'+value+'</span></p>';
+                 });
+                 html_detail += '</div>';
+                 html += html_detail;
+            });
+            $('#social-users').append(html);
         },
         error: function(data){
             alert('get data error')

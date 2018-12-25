@@ -6562,7 +6562,7 @@ input.app-search-input:-ms-input-placeholder {
   content:"*";
   color:red;
 }
-odal-custom-width
+
 .menu-item-text{
     margin-top: 20px;
     margin-left: 20px;
@@ -6622,4 +6622,8 @@ table.dataTable thead tr th {
 
 .img-thumbnail-custom{
     max-width:100px;
+}
+
+.word-wrap{
+    word-wrap: break-word;
 }
