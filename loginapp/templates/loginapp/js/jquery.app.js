@@ -40,18 +40,18 @@
         }
         if(!$(this).hasClass("subdrop")) {
           // hide any open menus and remove all other classes
-          $("ul",$(this).parents("ul:first")).slideUp(350);
+          $("ul",$(this).parents("ul:first")).slideUp(0);
           $("a",$(this).parents("ul:first")).removeClass("subdrop");
           $("#sidebar-menu .pull-right i").removeClass("md-remove").addClass("md-add");
 
           // open our new menu and add the open class
-          $(this).next("ul").slideDown(350);
+          $(this).next("ul").slideDown(0);
           $(this).addClass("subdrop");
           $(".pull-right i",$(this).parents(".has_sub:last")).removeClass("md-add").addClass("md-remove");
           $(".pull-right i",$(this).siblings("ul")).removeClass("md-remove").addClass("md-add");
         }else if($(this).hasClass("subdrop")) {
           $(this).removeClass("subdrop");
-          $(this).next("ul").slideUp(350);
+          $(this).next("ul").slideUp(0);
           $(".pull-right i",$(this).parent()).removeClass("md-remove").addClass("md-add");
         }
       }

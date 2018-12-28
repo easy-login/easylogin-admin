@@ -131,7 +131,7 @@
                                        value="{{ callback_uris.0 }}" type="text">
                             </div>
                             <div class="col-xs-1">
-                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-uri" type="button"
                                         onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                                        value="{{ callback_uri }}" type="text">
                             </div>
                             <div class="col-xs-1">
-                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-uri" type="button"
                                         onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
                             </div>
                             <div class="col-xs-1 remove-input">
@@ -172,7 +172,7 @@
 
                             </div>
                             <div class="col-xs-1">
-                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button"
                                         onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
@@ -187,7 +187,7 @@
 
                             </div>
                             <div class="col-xs-1">
-                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10" type="button"
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button"
                                         onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
                             </div>
                             <div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div></div>
@@ -311,7 +311,8 @@ function generateKeyConfirm(event){
 function duplicateInput(element){
     var element_container = $(element).parent().parent().parent()
     var num_input = element_container.find('input').length
-    if ( num_input < 5){
+    var classes = $(element).attr('class')
+    if (((num_input < 10)&&(classes.includes('duplicate-uri')))||((num_input < 5)&&(classes.includes('duplicate-ip')))){
         var input = $(element).parent().parent().clone()
         input.children('label').empty()
 

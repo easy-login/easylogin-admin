@@ -185,10 +185,16 @@ function showUserDetailModal(element){
             Object.keys(data).forEach(function(key1){
                  var html_detail='<div class="text-left card-box word-wrap"><img src="/static/images/social-icon/'+key1+'.png" class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10" alt="provider-image">';
                  Object.keys(data[key1]).sort().forEach(function(key2){
-                    var value = data[key1][key2];
-                    if(typeof data[key1][key2] == 'object')
-                        value = JSON.stringify(data[key1][key2])
-                    html_detail += '<p class="font-13"><strong>'+key2+' :</strong> <span class="m-l-15">'+value+'</span></p>';
+                    var value = '';
+                    if(typeof data[key1][key2] == 'object'){
+                        Object.keys(data[key1][key2]).forEach(function(key3){
+                            value += '<p class="font-13"><strong>'+key3+' :</strong> <span class="m-l-15">'+data[key1][key2][key3]+'</span></p>';
+                        })
+                        value = '<p></p>'+value;
+                    }else{
+                        value = data[key1][key2];
+                    }
+                    html_detail += '<div class="row"><div class="col-md-3"><p class="font-13"><strong>'+key2+' :</strong> </p></div><div class="col-md-9">'+value+'</div></div>';
                  });
                  html_detail += '</div>';
                  html += html_detail;

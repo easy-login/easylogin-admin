@@ -114,8 +114,9 @@ class App(models.Model):
 
     def set_callback_uris(self, callback_uri_list):
         cu_value = ''
-        for uri in callback_uri_list:
-            cu_value += parse.quote_plus(uri) + '|'
+        for idx, uri in enumerate(callback_uri_list):
+            if uri and idx < 10:
+                cu_value += parse.quote_plus(uri) + '|'
         cu_value = cu_value[:-1]
         self.callback_uris = cu_value
 
@@ -126,8 +127,8 @@ class App(models.Model):
 
     def set_allowed_ips(self, allowed_ips_list):
         ai_value = ''
-        for ip in allowed_ips_list:
-            if ip:
+        for idx, ip in enumerate(allowed_ips_list):
+            if ip and idx <= 5:
                 ai_value += ip + '|'
         ai_value = ai_value[:-1]
         self.allowed_ips = ai_value
