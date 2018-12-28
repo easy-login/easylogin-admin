@@ -98,26 +98,28 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         limit = offset + page_length
         if search_value:
             cursor.execute("""
-                SELECT alias AS social_id, 
-                    user_pk,
-                    MAX(authorized_at) AS last_login, 
-                    SUM(login_count) AS login_total, 
-                    GROUP_CONCAT(provider) AS linked_providers 
-                FROM social_profiles
-                WHERE app_id = %s AND user_pk = %s 
-                GROUP BY alias, user_pk
+                SELECT p.alias AS social_id, 
+                    u.pk AS user_pk,
+                    MAX(p.authorized_at) AS last_login, 
+                    SUM(p.login_count) AS login_total, 
+                    GROUP_CONCAT(p.provider) AS linked_providers 
+                FROM social_profiles p
+                LEFT JOIN users u ON u.id = p.user_id
+                WHERE p.app_id = %s AND u.pk = %s 
+                GROUP BY alias, u.pk
                 ORDER BY {} LIMIT {}, {}
                 """.format(order_by, offset, limit), (app_id, search_value,))
         else:
             cursor.execute("""
-                SELECT alias AS social_id, 
-                    user_pk,
-                    MAX(authorized_at) AS last_login,  
-                    SUM(login_count) AS login_total, 
-                    GROUP_CONCAT(provider) AS linked_providers  
-                FROM social_profiles
-                WHERE app_id = %s
-                GROUP BY alias, user_pk
+                SELECT p.alias AS social_id, 
+                    u.pk as user_pk,
+                    MAX(p.authorized_at) AS last_login,  
+                    SUM(p.login_count) AS login_total, 
+                    GROUP_CONCAT(p.provider) AS linked_providers  
+                FROM social_profiles p 
+                LEFT JOIN users u ON u.id = p.user_id
+                WHERE p.app_id = %s AND p.deleted = 0
+                GROUP BY p.alias, u.pk
                 ORDER BY {} LIMIT {}, {}
                 """.format(order_by, offset, limit), (app_id,))
 
@@ -128,7 +130,7 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         return len(rows), rows
 
 
-def get_list_users(page_length, start_page, order_by, search_value):
+def get_list_admin_users(page_length, start_page, order_by, search_value):
     with connection.cursor() as cursor:
         offset = start_page * page_length
         limit = offset + page_length
