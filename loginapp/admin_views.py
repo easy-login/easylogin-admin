@@ -6,7 +6,7 @@ from django.contrib.auth import update_session_auth_hash
 from loginapp.models import App, User, AdminSetting
 from loginapp.forms import RegisterForm
 from loginapp.views import push_messages_error
-from loginapp.reports import get_list_users, get_list_apps, get_register_report
+from loginapp.reports import get_list_admin_users, get_list_apps, get_register_report
 import json
 
 
@@ -31,8 +31,9 @@ def admin_list_users(request):
         order_dir = request.GET.get('order[0][dir]', 'asc')
         order_by = order_col + ' ' + order_dir
 
-        records_total, profiles = get_list_users(page_length=page_length, start_page=start_page, order_by=order_by,
-                                                 search_value=search_value)
+        records_total, profiles = get_list_admin_users(page_length=page_length,
+                                                       start_page=start_page, order_by=order_by,
+                                                       search_value=search_value)
 
         records_filtered = len(profiles)
         data = []
