@@ -15,11 +15,11 @@ function deleteConfirm(event){
                 }
             }).then(function () {
             form.submit();
-                swal(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                );
+//                swal(
+//                    'Deleted!',
+//                    'Your file has been deleted.',
+//                    'success'
+//                );
             });
 }
 

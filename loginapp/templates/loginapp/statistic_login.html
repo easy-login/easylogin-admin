@@ -113,8 +113,6 @@
 {% block js %}
 <!-- Validation form-->
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
-<!-- Sweet Alert Js  -->
-<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 
 <!-- Datatables Js-->
 <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
@@ -162,12 +160,15 @@ function loadInitialStatisticTable(){
                 'render': function (data, type, row){
                     var app_id = data.split("|")[0];
                     var social_id = data.split("|")[1];
-                    return '<form method="POST" action="{%url "delete_user_social" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form>'
+                    return '<li class="list-inline-item"><form method="POST" action="{%url "delete_user_social" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"></form></li><li class="list-inline-item"><form method="POST" action="{%url "delete_user_social_info" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-folder-minus"></i></button></li><li class="list-inline-item"></form></li>'
                 }
             },
         ],
         language: {
         searchPlaceholder: "User ID"
+        },
+        "drawCallback": function( settings ) {
+            $('[data-toggle="tooltip"]').tooltip();
         },
     }).draw();
 }
@@ -208,7 +209,5 @@ function showUserDetailModal(element){
     });
     $('#social-user-modal').modal('show');
 }
-
-
 </script>
 {% endblock %}

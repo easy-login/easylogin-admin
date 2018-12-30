@@ -63,6 +63,8 @@ urlpatterns = [
 
     path('apps/<int:app_id>/users-social/delete', views.delete_user_social, name='delete_user_social'),
 
+    path('apps/<int:app_id>/users-social-info/delete', views.delete_user_social_info, name='delete_user_social_info'),
+
     url(r'^admin/users/$', admin_views.admin_list_users, name='admin_users'),
 
     url(r'^add-user/$', admin_views.admin_add_user, name='admin_add_user'),
