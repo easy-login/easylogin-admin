@@ -102,8 +102,8 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
                     u.pk AS user_pk,
                     MAX(p.authorized_at) AS last_login, 
                     SUM(p.login_count) AS login_total, 
-                    GROUP_CONCAT(p.provider) AS linked_providers ,
-                    p.scope_id
+                    GROUP_CONCAT(p.provider) AS linked_providers,
+                    prohibited
                 FROM social_profiles p
                 LEFT JOIN users u ON u.id = p.user_id
                 WHERE p.app_id = %s AND u.pk = %s 
@@ -117,7 +117,7 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
                     MAX(p.authorized_at) AS last_login,  
                     SUM(p.login_count) AS login_total, 
                     GROUP_CONCAT(p.provider) AS linked_providers,
-                    p.scope_id
+                    prohibited
                 FROM social_profiles p 
                 LEFT JOIN users u ON u.id = p.user_id
                 WHERE p.app_id = %s AND p.deleted = 0

@@ -235,7 +235,7 @@ def user_report(request, app_id):
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_pk'],
-                        str(profile['social_id'])+'|'+profile['scope_id'],
+                        str(profile['social_id'])+'|'+str(profile['prohibited']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total'], ]
             linked_providers = profile['linked_providers']
@@ -244,7 +244,7 @@ def user_report(request, app_id):
                     row_data.append(1)
                 else:
                     row_data.append(0)
-            row_data.append(str(app_id) + '|' + str(profile['social_id'])+'|'+profile['scope_id'])
+            row_data.append(str(app_id) + '|' + str(profile['social_id']) + '|'+ str(profile['prohibited']))
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
