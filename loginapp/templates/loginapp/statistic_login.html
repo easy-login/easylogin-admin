@@ -152,8 +152,8 @@ function loadInitialStatisticTable(){
                 'targets': 'social-user-detail',
                 'render': function ( data, type, row ) {
                     var social_id = data.split('|')[0];
-                    var scope_id = data.split('|')[1]
-                    if (scope_id != ''){
+                    var prohibited = data.split('|')[1]
+                    if (prohibited != '1'){
                         return '<a class="clickable" href="javascript:void(0);" onclick="showUserDetailModal(this)">'+social_id+'</a>'
                     }else{
                         return '<span class="text-muted">'+social_id+'</span>'
