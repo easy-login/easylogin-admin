@@ -32,7 +32,7 @@ def admin_list_users(request):
         order_by = order_col + ' ' + order_dir
 
         records_total, profiles = get_list_admin_users(page_length=page_length,
-                                                       start_page=start_page, order_by=order_by,
+                                                       start_row=start_page, order_by=order_by,
                                                        search_value=search_value)
 
         records_filtered = len(profiles)
@@ -131,17 +131,17 @@ def admin_list_apps(request):
 
     if request.GET.get('flag_loading'):
         page_length = int(request.GET.get('length', 25))
-        start_page = int(request.GET.get('start', 0))
+        start_row = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
 
         order_col = column_dic[request.GET.get('order[0][column]', '1')]
         order_dir = request.GET.get('order[0][dir]', 'asc')
         order_by = order_col + ' ' + order_dir
 
-        records_total, profiles = get_list_apps(page_length=page_length, start_page=start_page, order_by=order_by,
+        records_total, profiles = get_list_apps(page_length=page_length, start_row=start_row, order_by=order_by,
                                                 search_value=search_value)
 
-        records_filtered = len(profiles)
+        records_filtered = records_total
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
@@ -177,17 +177,17 @@ def admin_report_register(request):
 
     if request.GET.get('flag_loading'):
         page_length = int(request.GET.get('length', 25))
-        start_page = int(request.GET.get('start', 0))
+        start_row = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
 
         order_col = column_dic[request.GET.get('order[0][column]', '1')]
         order_dir = request.GET.get('order[0][dir]', 'asc')
         order_by = order_col + ' ' + order_dir
 
-        records_total, profiles = get_register_report(page_length=page_length, start_page=start_page, order_by=order_by,
+        records_total, profiles = get_register_report(page_length=page_length, start_row=start_row, order_by=order_by,
                                                       search_value=search_value)
 
-        records_filtered = len(profiles)
+        records_filtered = records_total
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1,

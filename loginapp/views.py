@@ -219,7 +219,7 @@ def user_report(request, app_id):
 
     if request.GET.get('flag_loading'):
         page_length = int(request.GET.get('length', 25))
-        start_page = int(request.GET.get('start', 0))
+        start_row = int(request.GET.get('start', 0))
         search_value = request.GET.get('search[value]')
 
         order_col = column_dic[request.GET.get('order[0][column]', '1')]
@@ -227,15 +227,15 @@ def user_report(request, app_id):
         order_by = order_col + ' ' + order_dir
 
         records_total, profiles = get_user_report(app_id=app_id, search_value=search_value,
-                                                  page_length=page_length, start_page=start_page,
+                                                  page_length=page_length, start_row=start_row,
                                                   order_by=order_by)
-        records_filtered = len(profiles)
+        records_filtered = records_total
         data = []
         providers = Provider.provider_names()
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_pk'],
-                        str(profile['social_id']),
+                        str(profile['social_id'])+'|'+profile['scope_id'],
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total'], ]
             linked_providers = profile['linked_providers']
@@ -244,7 +244,7 @@ def user_report(request, app_id):
                     row_data.append(1)
                 else:
                     row_data.append(0)
-            row_data.append(str(app_id) + "|" + str(profile['social_id']))
+            row_data.append(str(app_id) + '|' + str(profile['social_id'])+'|'+profile['scope_id'])
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
@@ -264,7 +264,6 @@ def list_social_users(request):
         for profile in profiles:
             if profile['provider'] != 'twitter' and profile['provider'] != 'google':
                 data[profile['provider']] = json.loads(profile['attrs'])
-    print(json.dumps(data, cls=DjangoJSONEncoder))
     return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
 
 
@@ -290,7 +289,7 @@ def delete_user_social_info(request, app_id):
         App.get_app_by_user(app_id, request.user)
         social_id = request.POST.get('social_id', '')
 
-        response_info = requests.put('http://localhost:5000/' + str(app_id) + '/users/delete-info',
+        response_info = requests.put('http://localhost:5000/' + str(app_id) + '/users/reset',
                                      {'social_id': social_id})
         if response_info.status_code != 200:
             messages.error(request, "Delete failed social user!")

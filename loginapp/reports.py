@@ -92,17 +92,18 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
         return list(labels), results
 
 
-def get_user_report(app_id, page_length, start_page, order_by, search_value):
+def get_user_report(app_id, page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
-        offset = start_page * page_length
+        offset = start_row
         limit = offset + page_length
         if search_value:
             cursor.execute("""
-                SELECT p.alias AS social_id, 
+                SELECT SQL_CALC_FOUND_ROWS p.alias AS social_id, 
                     u.pk AS user_pk,
                     MAX(p.authorized_at) AS last_login, 
                     SUM(p.login_count) AS login_total, 
-                    GROUP_CONCAT(p.provider) AS linked_providers 
+                    GROUP_CONCAT(p.provider) AS linked_providers ,
+                    scope_id
                 FROM social_profiles p
                 LEFT JOIN users u ON u.id = p.user_id
                 WHERE p.app_id = %s AND u.pk = %s 
@@ -111,11 +112,12 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
                 """.format(order_by, offset, limit), (app_id, search_value,))
         else:
             cursor.execute("""
-                SELECT p.alias AS social_id, 
+                SELECT SQL_CALC_FOUND_ROWS p.alias AS social_id, 
                     u.pk as user_pk,
                     MAX(p.authorized_at) AS last_login,  
                     SUM(p.login_count) AS login_total, 
-                    GROUP_CONCAT(p.provider) AS linked_providers  
+                    GROUP_CONCAT(p.provider) AS linked_providers,
+                    scope_id
                 FROM social_profiles p 
                 LEFT JOIN users u ON u.id = p.user_id
                 WHERE p.app_id = %s AND p.deleted = 0
@@ -127,12 +129,16 @@ def get_user_report(app_id, page_length, start_page, order_by, search_value):
         for row in rows:
             row['last_login'] = convert_to_user_timezone(row['last_login'])
             row['linked_providers'] = row['linked_providers'].split(',')
-        return len(rows), rows
+        cursor.execute("""
+                    SELECT FOUND_ROWS()
+                """)
+        records_total = cursor.fetchone()[0]
+        return records_total, rows
 
 
-def get_list_admin_users(page_length, start_page, order_by, search_value):
+def get_list_admin_users(page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
-        offset = start_page * page_length
+        offset = start_row
         limit = offset + page_length
         if search_value:
             cursor.execute("""
@@ -166,12 +172,16 @@ def get_list_admin_users(page_length, start_page, order_by, search_value):
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET,))
         rows = dict_fetchall(cursor)
-        return len(rows), rows
+        cursor.execute("""
+                            SELECT FOUND_ROWS()
+                        """)
+        records_total = cursor.fetchone()[0]
+        return records_total, rows
 
 
-def get_list_apps(page_length, start_page, order_by, search_value):
+def get_list_apps(page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
-        offset = start_page * page_length
+        offset = start_row
         limit = offset + page_length
         if search_value:
             cursor.execute("""
@@ -202,12 +212,16 @@ def get_list_apps(page_length, start_page, order_by, search_value):
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
         rows = dict_fetchall(cursor)
-        return len(rows), rows
+        cursor.execute("""
+                            SELECT FOUND_ROWS()
+                        """)
+        records_total = cursor.fetchone()[0]
+        return records_total, rows
 
 
-def get_register_report(page_length, start_page, order_by, search_value):
+def get_register_report(page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
-        offset = start_page * page_length
+        offset = start_row
         limit = offset + page_length
         if search_value:
             cursor.execute("""
@@ -241,7 +255,11 @@ def get_register_report(page_length, start_page, order_by, search_value):
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
         rows = dict_fetchall(cursor)
-        return len(rows), rows
+        cursor.execute("""
+                            SELECT FOUND_ROWS()
+                        """)
+        records_total = cursor.fetchone()[0]
+        return records_total, rows
 
 
 def get_social_users(social_id):

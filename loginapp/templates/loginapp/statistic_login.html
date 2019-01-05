@@ -98,7 +98,6 @@
                         <img src="{% static '/images/ninja.png'%}"
                              class="rounded-circle thumb-xl img-thumbnail m-b-10" alt="profile-image">
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
@@ -152,15 +151,26 @@ function loadInitialStatisticTable(){
             {
                 'targets': 'social-user-detail',
                 'render': function ( data, type, row ) {
-                    return '<a class="clickable" href="javascript:void(0);" onclick="showUserDetailModal(this)">'+data+'</a>'
+                    var social_id = data.split('|')[0];
+                    var scope_id = data.split('|')[1]
+                    if (scope_id != ''){
+                        return '<a class="clickable" href="javascript:void(0);" onclick="showUserDetailModal(this)">'+social_id+'</a>'
+                    }else{
+                        return '<span class="text-muted">'+social_id+'</span>'
+                    }
                 }
             },
             {
                 'targets': 'action-datatable',
                 'render': function (data, type, row){
-                    var app_id = data.split("|")[0];
-                    var social_id = data.split("|")[1];
-                    return '<li class="list-inline-item"><form method="POST" action="{%url "delete_user_social" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"></form></li><li class="list-inline-item"><form method="POST" action="{%url "delete_user_social_info" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-folder-minus"></i></button></li><li class="list-inline-item"></form></li>'
+                    var app_id = data.split('|')[0];
+                    var social_id = data.split('|')[1];
+                    var scope_id = data.split('|')[2];
+                    if (scope_id != ''){
+                        return '<li class="list-inline-item"><form method="POST" action="{%url "delete_user_social" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></form></li><li class="list-inline-item"><form method="POST" action="{%url "delete_user_social_info" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-folder-minus"></i></button></form></li>'
+                    }else{
+                        return '<li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-secondary button-icon" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon" type="submit"> <i class="fas fa-folder-minus"></i></button></form></li>'
+                    }
                 }
             },
         ],
