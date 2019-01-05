@@ -235,7 +235,7 @@ def user_report(request, app_id):
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_pk'],
-                        str(profile['social_id'])+'|'+profile['prohibited'],
+                        str(profile['social_id'])+'|'+str(profile['prohibited']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total'], ]
             linked_providers = profile['linked_providers']
