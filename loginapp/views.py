@@ -269,12 +269,15 @@ def list_social_users(request):
 
 @login_required
 def delete_user_social(request, app_id):
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
+    api_key = app.api_key
     if request.method == 'POST':
         App.get_app_by_user(app_id, request.user)
         social_id = request.POST.get('social_id', '')
 
-        response_user = requests.delete('http://localhost:5000/' + str(app_id) + '/users',
-                                        data={'social_id': social_id})
+        response_user = requests.delete('https://api.easy-login.jp/' + str(app_id) + '/users',
+                                        json={'social_id': social_id}, verify=False,
+                                        headers={'X-Api-Key': api_key})
         if response_user.status_code != 200:
             messages.error(request, "Delete failed social user!")
             return redirect('statistic_login', app_id=app_id)
@@ -285,12 +288,15 @@ def delete_user_social(request, app_id):
 
 @login_required
 def delete_user_social_info(request, app_id):
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
+    api_key = app.api_key
     if request.method == 'POST':
         App.get_app_by_user(app_id, request.user)
         social_id = request.POST.get('social_id', '')
 
-        response_info = requests.put('http://localhost:5000/' + str(app_id) + '/users/reset',
-                                     {'social_id': social_id})
+        response_info = requests.put('https://api.easy-login.jp/' + str(app_id) + '/users/delete_info',
+                                     json={'social_id': social_id}, verify=False,
+                                     headers={'X-Api-Key': api_key})
         if response_info.status_code != 200:
             messages.error(request, "Delete failed social user!")
             return redirect('statistic_login', app_id=app_id)
