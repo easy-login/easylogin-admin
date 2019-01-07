@@ -278,6 +278,7 @@ def delete_user_social(request, app_id):
         response_user = requests.delete('https://api.easy-login.jp/' + str(app_id) + '/users',
                                         json={'social_id': social_id}, verify=False,
                                         headers={'X-Api-Key': api_key})
+        print(response_user.status_code)
         if response_user.status_code != 200:
             return HttpResponse(
                 json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),

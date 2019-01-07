@@ -39,7 +39,7 @@
 
 {% block content%}
 <div class="row">
-    <div class="col-md-12">
+    <div id="message-container" class="col-md-12">
         {% if messages %}
         {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
@@ -165,7 +165,7 @@ function loadInitialStatisticTable(){
                     var social_id = data.split('|')[1];
                     var prohibited = data.split('|')[2];
                     if (prohibited != '1'){
-                        return '<li class="list-inline-item">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li>'
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li>'
                     }else{
                         return '<li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-secondary button-icon" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon" type="submit"> <i class="fas fa-user-slash"></i></button></form></li>'
                     }
@@ -247,24 +247,61 @@ function deleteConfirm(event){
 }
 
 function deleteSocialUser(e){
-    var app_id = $(e).parent().children('input[name="app_id"]').val();
-    var social_id = $(e).parent().children('input[name="social_id"]').val();
-    var csrf_token = $(e).parent().children('input[name="csrfmiddlewaretoken"]').val();
+    var app_id = $(e).parent().parent().children('input[name="app_id"]').val();
+    var social_id = $(e).parent().parent().children('input[name="social_id"]').val();
+    var csrf_token = $(e).parent().parent().children('input[name="csrfmiddlewaretoken"]').val();
+
     $.post('{% url "delete_user_social" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
-        alert(data.status)
+        if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').append(html);
+        }else{
+            var html = '<div class="alert alert-success alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').append(html);
+        }
     }).fail(function(data){
-        alert('failed')
+        if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').append(html);
+        }
     })
 }
 
 function deleteUserInfo(e){
-    var app_id = $(e).parent().children('input[name="app_id"]').val();
-    var social_id = $(e).parent().children('input[name="social_id"]').val();
-    var csrf_token = $(e).parent().children('input[name="csrfmiddlewaretoken"]').val();
+    var app_id = $(e).parent().parent().children('input[name="app_id"]').val();
+    var social_id = $(e).parent().parent().children('input[name="social_id"]').val();
+    var csrf_token = $(e).parent().parent().children('input[name="csrfmiddlewaretoken"]').val();
     $.post('{% url "delete_user_social_info" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
-        alert(data.status)
+        if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').append(html);
+        }else{
+            var html = '<div class="alert alert-success alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').append(html);
+        }
     }).fail(function(data){
-        alert('failed')
+       if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').append(html);
+       }
     })
 }
 </script>
