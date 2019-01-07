@@ -235,7 +235,7 @@ def user_report(request, app_id):
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_pk'],
-                        str(profile['social_id'])+'|'+str(profile['prohibited']),
+                        str(profile['social_id']) + '|' + str(profile['prohibited']),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total'], ]
             linked_providers = profile['linked_providers']
@@ -244,7 +244,7 @@ def user_report(request, app_id):
                     row_data.append(1)
                 else:
                     row_data.append(0)
-            row_data.append(str(app_id) + '|' + str(profile['social_id']) + '|'+ str(profile['prohibited']))
+            row_data.append(str(app_id) + '|' + str(profile['social_id']) + '|' + str(profile['prohibited']))
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
@@ -279,11 +279,15 @@ def delete_user_social(request, app_id):
                                         json={'social_id': social_id}, verify=False,
                                         headers={'X-Api-Key': api_key})
         if response_user.status_code != 200:
-            messages.error(request, "Delete failed social user!")
-            return redirect('statistic_login', app_id=app_id)
-        messages.success(request, "Delete success social user!")
-
-    return redirect('statistic_login', app_id=app_id)
+            return HttpResponse(
+                json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),
+                content_type='application/json')
+        return HttpResponse(
+            json.dumps({'status': 'success', 'message': 'Delete success social user!'}, cls=DjangoJSONEncoder),
+            content_type='application/json')
+    return HttpResponse(
+        json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),
+        content_type='application/json')
 
 
 @login_required
@@ -298,10 +302,15 @@ def delete_user_social_info(request, app_id):
                                      json={'social_id': social_id}, verify=False,
                                      headers={'X-Api-Key': api_key})
         if response_info.status_code != 200:
-            messages.error(request, "Delete failed social user!")
-            return redirect('statistic_login', app_id=app_id)
-
-    return redirect('statistic_login', app_id=app_id)
+            return HttpResponse(
+                json.dumps({'status': 'failed', 'message': 'Delete failed social user info!'}, cls=DjangoJSONEncoder),
+                content_type='application/json')
+        return HttpResponse(
+            json.dumps({'status': 'success', 'message': 'Delete success social user info!'}, cls=DjangoJSONEncoder),
+            content_type='application/json')
+    return HttpResponse(
+        json.dumps({'status': 'failed', 'message': 'Delete failed social user info!'}, cls=DjangoJSONEncoder),
+        content_type='application/json')
 
 
 @login_required

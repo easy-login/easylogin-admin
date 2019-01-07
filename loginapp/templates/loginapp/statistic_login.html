@@ -116,8 +116,6 @@
 <!-- Datatables Js-->
 <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
 <script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
-<!--My js-->
-<script src="{% static 'js/my.js' %} "></script>
 <script type="text/javascript">
 $(document).ready(function(){
     loadInitialStatisticTable()
@@ -165,11 +163,11 @@ function loadInitialStatisticTable(){
                 'render': function (data, type, row){
                     var app_id = data.split('|')[0];
                     var social_id = data.split('|')[1];
-                    var scope_id = data.split('|')[2];
-                    if (scope_id != ''){
-                        return '<li class="list-inline-item"><form method="POST" action="{%url "delete_user_social" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></form></li><li class="list-inline-item"><form method="POST" action="{%url "delete_user_social_info" app.id %}">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></form></li>'
+                    var prohibited = data.split('|')[2];
+                    if (prohibited != '1'){
+                        return '<li class="list-inline-item">{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li>'
                     }else{
-                        return '<li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-secondary button-icon" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon" type="submit"> <i class="fas fa-trash-alt"></i></button></form></li>'
+                        return '<li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-secondary button-icon" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon" type="submit"> <i class="fas fa-user-slash"></i></button></form></li>'
                     }
                 }
             },
@@ -218,6 +216,56 @@ function showUserDetailModal(element){
 
     });
     $('#social-user-modal').modal('show');
+}
+
+function deleteConfirm(event){
+    event.preventDefault();
+    var form = event.target.closest('form');
+    swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#4fa7f3',
+                confirmButtonColor: '#98a6ad',
+                reverseButtons: true,
+                confirmButtonText: 'Yes, delete it!',
+                onOpen: function(ele) {
+                    $('.swal2-cancel').focus()
+                }
+            }).then(function () {
+                if($(event.target).attr('class').includes('del-user')){
+                    deleteSocialUser(event.target);
+                }else if($(event.target).parent().attr('class').includes('del-user')){
+                    deleteSocialUser(event.target.parentNode);
+                }else if($(event.target).attr('class').includes('del-info')){
+                    deleteUserInfo(event.target);
+                }else if($(event.target).parent().attr('class').includes('del-info')){
+                    deleteUserInfo(event.target.parentNode);
+                }
+            });
+}
+
+function deleteSocialUser(e){
+    var app_id = $(e).parent().children('input[name="app_id"]').val();
+    var social_id = $(e).parent().children('input[name="social_id"]').val();
+    var csrf_token = $(e).parent().children('input[name="csrfmiddlewaretoken"]').val();
+    $.post('{% url "delete_user_social" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
+        alert(data.status)
+    }).fail(function(data){
+        alert('failed')
+    })
+}
+
+function deleteUserInfo(e){
+    var app_id = $(e).parent().children('input[name="app_id"]').val();
+    var social_id = $(e).parent().children('input[name="social_id"]').val();
+    var csrf_token = $(e).parent().children('input[name="csrfmiddlewaretoken"]').val();
+    $.post('{% url "delete_user_social_info" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
+        alert(data.status)
+    }).fail(function(data){
+        alert('failed')
+    })
 }
 </script>
 {% endblock %}
