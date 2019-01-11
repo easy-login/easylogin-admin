@@ -6627,3 +6627,13 @@ table.dataTable thead tr th {
 .word-wrap{
     word-wrap: break-word;
 }
+
+.shopify-form{
+    border: solid 1px #e4dcdc;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#id_store_url::placeholder{
+    color:#98a6ad;
+}

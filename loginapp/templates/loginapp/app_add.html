@@ -155,6 +155,27 @@
                             <input id="id_reg_page" name="option" type="checkbox" value="reg_page">
                             <label class="" for="id_reg_page">Additional Registration Page</label>
                         </div>
+                        <div class="checkbox checkbox-pink">
+                            <input id="id_shopify" name="option" type="checkbox" value="shopify">
+                            <label class="" for="id_shopify">Enable for Shopify</label>
+                        </div>
+                        <div class="shopify-form" style="display:none;">
+                            <div class="row form-group">
+                                <label class="text-muted col-md-12 col-form-label" for="id_store_url">Your store's
+                                    URL</label>
+                                <div class="col-md-12">
+                                    <input type="url" class="form-control" id="id_store_url" placeholder="URL">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10"></div>
+                                <div class="col-md-2">
+                                    <button id="install-shopify" type="button" class="btn btn-primary pull-right">
+                                        Install
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group text-center m-t-40 row">
@@ -181,6 +202,17 @@
 <script type="text/javascript">
             $(document).ready(function() {
                 $('form').parsley();
+                $('#id_shopify').change(function(){
+                    if(this.checked){
+                        $('.shopify-form').show()
+                    }else{
+                        $('.shopify-form').hide()
+                    }
+                })
+
+                $('#install-shopify').click(function(){
+                    window.open('https://api.easy-login.jp/hosted/shopify?shop='+$('#id_store_url').val(), '_blank');
+                })
             });
 
 function getApiKey(){
