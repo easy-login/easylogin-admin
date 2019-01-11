@@ -193,7 +193,6 @@
 <!-- Sweet Alert Js  -->
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <script type="text/javascript">
-$(document).ready(function() {
     function logoutConfirm(event){
         event.preventDefault();
         swal({
@@ -211,7 +210,6 @@ $(document).ready(function() {
                  window.location.href = {% url 'logout' %}
             });
     }
-});
 </script>
 {% block js%}
 {% endblock %}
