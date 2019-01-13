@@ -166,9 +166,9 @@ function loadInitialStatisticTable(){
                     var social_id = data.split('|')[1];
                     var prohibited = data.split('|')[2];
                     if (prohibited != '1'){
-                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li>'
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li>'
                     }else{
-                        return '<li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-secondary button-icon" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon" type="submit"> <i class="fas fa-user-slash"></i></button></form></li>'
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon clickable del-info" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li>'
                     }
                 }
             },
@@ -258,12 +258,14 @@ function deleteSocialUser(e){
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
             <strong> '+data.message+' </strong>\
             </div>';
+            $('#message-container').empty();
             $('#message-container').append(html);
         }else{
             var html = '<div class="alert alert-success alert-dismissable">\
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
             <strong> '+data.message+' </strong>\
             </div>';
+            $('#message-container').empty();
             $('#message-container').append(html);
 
             socialUserTable.ajax.reload();
@@ -274,6 +276,7 @@ function deleteSocialUser(e){
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
             <strong> '+data.message+' </strong>\
             </div>';
+            $('#message-container').empty();
             $('#message-container').append(html);
         }
     })

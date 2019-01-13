@@ -106,7 +106,7 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
                     prohibited
                 FROM social_profiles p
                 LEFT JOIN users u ON u.id = p.user_id
-                WHERE p.app_id = %s AND u.pk = %s 
+                WHERE p.app_id = %s AND p.deleted = 0 AND u.pk = %s 
                 GROUP BY alias, u.pk, prohibited
                 ORDER BY {} LIMIT {}, {}
                 """.format(order_by, offset, limit), (app_id, search_value,))
