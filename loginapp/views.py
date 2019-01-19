@@ -257,12 +257,14 @@ def user_report(request, app_id):
 
 @login_required
 def list_social_users(request, app_id, social_id):
+    app = App.get_app_by_user(app_id=app_id, user=request.user)
     data = {}
     profiles = get_social_users(social_id)
     for profile in profiles:
         if profile['provider'] != 'twitter' and profile['provider'] != 'google':
             data[profile['provider']] = json.loads(profile['attrs'])
-    return render(request, 'loginapp/social_user_detail.html', {'profiles': data})
+    apps = App.get_all_app(user=request.user)
+    return render(request, 'loginapp/social_user_detail.html', {'apps': apps, 'profiles': data})
 
 
 @login_required

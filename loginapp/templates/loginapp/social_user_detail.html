@@ -18,12 +18,35 @@
 
 {% block content%}
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-4"></div>
+    <div class="col-md-8">
         <div class="text-center">
-            <div id='social-users'>
-                <img src="{% static '/images/ninja.png'%}"
-                     class="rounded-circle thumb-xl img-thumbnail m-b-10" alt="profile-image">
-
+            <div id="social-users">
+                <img src="/static/images/ninja.png" class="rounded-circle thumb-xl img-thumbnail m-b-10"
+                     alt="profile-image">
+                {% for provider, profile in profiles.items %}
+                <div class="text-left card-box word-wrap"><img src="/static/images/social-icon/yahoojp.png"
+                                                               class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10"
+                                                               alt="provider-image">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-md-3"><p class="font-13"><strong>address :</strong></p></div>
+                            <div class="col-md-9"><p></p>
+                                <p class="font-13"><strong>country :</strong> <span class="m-l-15">jp</span></p>
+                                <p class="font-13"><strong>postal_code :</strong> <span class="m-l-15">2720137</span>
+                                </p>
+                                <p class="font-13"><strong>region :</strong> <span class="m-l-15">千葉県</span></p>
+                                <p class="font-13"><strong>locality :</strong> <span class="m-l-15">市川市</span></p>
+                                <p class="font-13"><strong>formatted :</strong> <span class="m-l-15">千葉県市川市</span></p>
+                            </div>
+                        </div>
+                        {% for key, value in profile.items %}
+                        <div class="row">
+                            <div class="col-md-3"><p class="font-13"><strong>{{ key }} :</strong></p></div>
+                            <div class="col-md-9">{{ value }}</div>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
             </div>
         </div>
     </div>
