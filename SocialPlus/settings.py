@@ -163,5 +163,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'loginapp/templates/loginapp'),
 ]
 
+# time re-auth
+
+TIME_AUTH_SECONDS = os.getenv('TIME_AUTH_SECONDS', 300)
+
 # App SETTING
 # ADMIN_ENABLED = False

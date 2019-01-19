@@ -1,6 +1,8 @@
 import datetime
 import json
 import requests
+import collections
+import time
 
 from django import forms
 from django.contrib import messages
@@ -11,6 +13,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
+from django.conf import settings
 
 from loginapp.backends import AuthenticationWithEmailBackend
 from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
@@ -235,7 +238,7 @@ def user_report(request, app_id):
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_pk'],
-                        str(profile['social_id']) + '|' + str(profile['prohibited']+'|'+str(app_id)),
+                        str(profile['social_id']) + '|' + str(profile['prohibited']) + '|' + str(app_id),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total'], ]
             linked_providers = profile['linked_providers']
@@ -258,13 +261,32 @@ def user_report(request, app_id):
 @login_required
 def list_social_users(request, app_id, social_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
+    last_auth = int(request.session.get('last_auth', 0))
+    if time.time() - last_auth > settings.TIME_AUTH_SECONDS:
+        return render(request, 'loginapp/page-auth.html',
+                      {'next_url': '/apps/' + str(app_id) + '/' + str(social_id) + '/social-users'})
     data = {}
     profiles = get_social_users(social_id)
     for profile in profiles:
         if profile['provider'] != 'twitter' and profile['provider'] != 'google':
-            data[profile['provider']] = json.loads(profile['attrs'])
+            data[profile['provider']] = collections.OrderedDict(sorted(json.loads(profile['attrs']).items()))
     apps = App.get_all_app(user=request.user)
     return render(request, 'loginapp/social_user_detail.html', {'apps': apps, 'profiles': data})
+
+
+@login_required
+def re_auth(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        user = AuthenticationWithEmailBackend.authenticate(username=email, password=password)
+        if user is not None:
+            request.session['last_auth'] = time.time()
+        else:
+            messages.error(request, 'Email or Password Incorrect !')
+        next_redirect = request.POST.get('next') if request.POST.get('next') else 'dashboard'
+        return redirect(next_redirect)
+    return redirect('dashboard')
 
 
 @login_required
@@ -278,7 +300,6 @@ def delete_user_social(request, app_id):
         response_user = requests.delete('https://api.easy-login.jp/' + str(app_id) + '/users',
                                         json={'social_id': social_id}, verify=False,
                                         headers={'X-Api-Key': api_key})
-        print(response_user.status_code)
         if response_user.status_code != 200:
             return HttpResponse(
                 json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),

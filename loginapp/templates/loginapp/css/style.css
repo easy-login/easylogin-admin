@@ -6637,3 +6637,37 @@ table.dataTable thead tr th {
 #id_store_url::placeholder{
     color:#98a6ad;
 }
+
+.provider-menu > ul > li{
+    min-width: 300px;
+    min-height: 35px;
+    background-color: #ffffff;
+    vertical-align: middle;
+    padding: 5px 20px;
+    border-bottom: solid 1px #dcd8d8;
+    border-left: solid 1px #dcd8d8;
+    border-right: solid 1px #dcd8d8;
+
+}
+
+.provider-menu > ul > li:first-child{
+    border-top: solid 1px #dcd8d8;
+}
+
+.provider-menu > ul > li > a{
+    display: block;
+    color: #435966;
+}
+
+.provider-menu > ul > li > a > i{
+    line-height: 1.6em !important;
+}
+
+.provider-menu > ul > li:hover > a{
+    color: #E73434;
+    font-weight: bold;
+}
+
+.provider-menu > ul > li:hover{
+    border-left: solid 2px #E73434;
+}
