@@ -260,7 +260,7 @@ function deleteConfirm(event){
                         }
                     })
                     .catch(error => {
-                        swal.showValidationMessage(`${error}`)
+                        swal.showValidationMessage('${error}')
                     })
                 },
                 allowOutsideClick: () => !swal.isLoading()
