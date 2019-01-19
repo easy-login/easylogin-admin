@@ -12,6 +12,8 @@ urlpatterns = [
 
     url(r'^re_auth/$', views.re_auth, name='re_auth'),
 
+    url(r'^password-confirmation/$', views.password_confirm, name='password_confirmation'),
+
     url(r'^logout/$', views.logout, name='logout'),
 
     # url(r'^register/$', views.register, name='register'),

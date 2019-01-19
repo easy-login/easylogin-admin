@@ -290,6 +290,17 @@ def re_auth(request):
 
 
 @login_required
+def password_confirm(request):
+    body = json.loads(request.body)
+    if request.method == 'POST' and 'password' in body:
+        user = AuthenticationWithEmailBackend.authenticate(username=request.user.email,
+                                                           password=body['password'])
+        if user is not None:
+            return HttpResponse(json.dumps({'authenticate_ok': True}), content_type='application/json')
+    return HttpResponse(json.dumps({'authenticate_ok': False}), content_type='application/json')
+
+
+@login_required
 def delete_user_social(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
     api_key = app.api_key

@@ -234,16 +234,47 @@ function deleteConfirm(event){
                 confirmButtonText: 'Yes, delete it!',
                 onOpen: function(ele) {
                     $('.swal2-cancel').focus()
-                }
-            }).then(function () {
-                if($(event.target).attr('class').includes('del-user')){
-                    deleteSocialUser(event.target);
-                }else if($(event.target).parent().attr('class').includes('del-user')){
-                    deleteSocialUser(event.target.parentNode);
-                }else if($(event.target).attr('class').includes('del-info')){
-                    deleteUserInfo(event.target);
-                }else if($(event.target).parent().attr('class').includes('del-info')){
-                    deleteUserInfo(event.target.parentNode);
+                },
+                input: 'password',
+                inputPlaceholder: 'enter password to delete',
+                preConfirm: (password) => {
+                    return fetch('{% url 'password_confirmation' %}?',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'text/plain; charset=utf-8',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({'password':password})
+                    })
+                    .then(response => {
+                        if (!response.ok){
+                            throw new Error(response.statusText)
+                        }
+                        return response.json()
+                    })
+                    .then(json => {
+                        if (!json.authenticate_ok){
+                            throw new Error('Password Incorrect!')
+                        }
+                    })
+                    .catch(error => {
+                        swal.showValidationMessage(`${error}`)
+                    })
+                },
+                allowOutsideClick: () => !swal.isLoading()
+            }).then((result) => {
+                if(result.value){
+                    if($(event.target).attr('class').includes('del-user')){
+                        deleteSocialUser(event.target);
+                    }else if($(event.target).parent().attr('class').includes('del-user')){
+                        deleteSocialUser(event.target.parentNode);
+                    }else if($(event.target).attr('class').includes('del-info')){
+                        deleteUserInfo(event.target);
+                    }else if($(event.target).parent().attr('class').includes('del-info')){
+                        deleteUserInfo(event.target.parentNode);
+                    }
                 }
             });
 }
