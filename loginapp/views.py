@@ -235,7 +235,7 @@ def user_report(request, app_id):
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
                         profile['user_pk'],
-                        str(profile['social_id']) + '|' + str(profile['prohibited']),
+                        str(profile['social_id']) + '|' + str(profile['prohibited']+'|'+str(app_id)),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
                         profile['login_total'], ]
             linked_providers = profile['linked_providers']
@@ -256,15 +256,13 @@ def user_report(request, app_id):
 
 
 @login_required
-def list_social_users(request):
-    social_id = request.GET.get('social_id', '')
+def list_social_users(request, app_id, social_id):
     data = {}
-    if social_id:
-        profiles = get_social_users(social_id)
-        for profile in profiles:
-            if profile['provider'] != 'twitter' and profile['provider'] != 'google':
-                data[profile['provider']] = json.loads(profile['attrs'])
-    return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+    profiles = get_social_users(social_id)
+    for profile in profiles:
+        if profile['provider'] != 'twitter' and profile['provider'] != 'google':
+            data[profile['provider']] = json.loads(profile['attrs'])
+    return render(request, 'loginapp/social_user_detail.html', {'profiles': data})
 
 
 @login_required

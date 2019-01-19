@@ -1,0 +1,37 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+{% endblock %}
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Social Users</h4>
+</li>
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
+            <div id='social-users'>
+                <img src="{% static '/images/ninja.png'%}"
+                     class="rounded-circle thumb-xl img-thumbnail m-b-10" alt="profile-image">
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!--My js-->
+<script type="text/javascript">
+</script>
+{% endblock %}

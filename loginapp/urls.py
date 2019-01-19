@@ -59,7 +59,7 @@ urlpatterns = [
 
     path('apps/<int:app_id>/channels/<int:channel_id>/delete', views.delete_channel, name='delete_channel'),
 
-    url(r'^social_users/$', views.list_social_users, name='social_users_detail'),
+    path('apps/<int:app_id>/<str:social_id>/social-users', views.list_social_users, name='social_users_detail'),
 
     path('apps/<int:app_id>/users-social/delete', views.delete_user_social, name='delete_user_social'),
 

@@ -3,9 +3,6 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<!-- Sweet Alert css -->
-<link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css"/>
-<link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 <!-- Page title -->
 {% block topbar %}
@@ -55,14 +52,6 @@
 {% endblock %}
 
 {% block js %}
-<!-- Validation form-->
-<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
-<!-- Sweet Alert Js  -->
-<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
-
-<!-- Datatables Js-->
-<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
-<script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
 <!--My js-->
 <script type="text/javascript">
 </script>

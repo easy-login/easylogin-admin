@@ -152,8 +152,9 @@ function loadInitialStatisticTable(){
                 'render': function ( data, type, row ) {
                     var social_id = data.split('|')[0];
                     var prohibited = data.split('|')[1]
+                    var app_id = data.split('|')[2]
                     if (prohibited != '1'){
-                        return '<a class="clickable" href="javascript:void(0);" onclick="showUserDetailModal(this)">'+social_id+'</a>'
+                        return '<a class="clickable" href="/apps/'+app_id+'/'+social_id+'/social-users">'+social_id+'</a>'
                     }else{
                         return '<span class="text-muted">'+social_id+'</span>'
                     }
@@ -186,7 +187,7 @@ function showUserDetailModal(element){
     $('.text-left').remove();
     social_id = $(element).text();
     $.ajax({
-        url: '{% url "social_users_detail" %}',
+        url: '',
         data: {'social_id': social_id},
         type: 'get',
         cache: false,
