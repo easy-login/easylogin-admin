@@ -11,7 +11,7 @@
 {% block topbar %}
 <!-- Page title -->
 <li class="list-inline-item">
-    <h4 class="page-title">User Statistic</h4>
+    <h4 class="page-title">Users List</h4>
 </li>
 <ul class="list-unstyled topbar-right-menu float-right mb-0">
     <li class="list-inline-item">
@@ -154,7 +154,7 @@ function loadInitialStatisticTable(){
                     var prohibited = data.split('|')[1]
                     var app_id = data.split('|')[2]
                     if (prohibited != '1'){
-                        return '<a class="clickable" href="/apps/'+app_id+'/'+social_id+'/social-users">'+social_id+'</a>'
+                        return '<a class="clickable" href="/apps/'+app_id+'/users/'+social_id+'/">'+social_id+'</a>'
                     }else{
                         return '<span class="text-muted">'+social_id+'</span>'
                     }

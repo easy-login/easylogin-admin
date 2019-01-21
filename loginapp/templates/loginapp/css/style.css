@@ -8,6 +8,7 @@ body {
   margin: 0;
   padding-bottom: 60px;
   font-size: 14px;
+  position:relative;
 }
 
 html {
@@ -6638,8 +6639,10 @@ table.dataTable thead tr th {
     color:#98a6ad;
 }
 
+.provider-menu > ul{
+    width: 20%;
+}
 .provider-menu > ul > li{
-    min-width: 300px;
     min-height: 35px;
     background-color: #ffffff;
     vertical-align: middle;
@@ -6654,9 +6657,14 @@ table.dataTable thead tr th {
     border-top: solid 1px #dcd8d8;
 }
 
+.provider-menu > ul > li:last-child{
+    border-bottom: solid 1px #dcd8d8;
+}
+
 .provider-menu > ul > li > a{
     display: block;
     color: #435966;
+    padding: 5px;
 }
 
 .provider-menu > ul > li > a > i{
@@ -6666,8 +6674,24 @@ table.dataTable thead tr th {
 .provider-menu > ul > li:hover > a{
     color: #E73434;
     font-weight: bold;
+    background-color: #ffffff;
 }
 
 .provider-menu > ul > li:hover{
     border-left: solid 2px #E73434;
+    background-color: #ffffff;
+}
+
+.card-box-custom{
+    box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.25), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+}
+
+.provider-menu > ul > li > a.active{
+    color: #E73434;
+    font-weight: bold;
+    background-color: #ffffff;
+}
+
+.provider-menu > ul > li > a.active:hover{
+    background-color: #ffffff;
 }

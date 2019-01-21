@@ -49,7 +49,7 @@ urlpatterns = [
 
     path('apps/<int:app_id>/settings', views.app_detail, name='app_detail'),
 
-    path('apps/<int:app_id>/users/statistic', views.user_report, name='statistic_login'),
+    path('apps/<int:app_id>/users/', views.user_report, name='statistic_login'),
 
     path('apps/<int:app_id>/dashboard', views.app_report, name='report_app'),
 
@@ -63,7 +63,7 @@ urlpatterns = [
 
     path('apps/<int:app_id>/channels/<int:channel_id>/delete', views.delete_channel, name='delete_channel'),
 
-    path('apps/<int:app_id>/<str:social_id>/social-users', views.list_social_users, name='social_users_detail'),
+    path('apps/<int:app_id>/users/<str:social_id>/', views.list_social_users, name='social_users_detail'),
 
     path('apps/<int:app_id>/users-social/delete', views.delete_user_social, name='delete_user_social'),
 

@@ -37,6 +37,7 @@ def login(request):
         user = AuthenticationWithEmailBackend.authenticate(username=email, password=password)
         if user is not None:
             request.session.set_expiry(86400)
+            request.session['last_auth'] = time.time()
             signin(request, user)
             next_redirect = request.POST.get('next') if request.POST.get('next') else 'dashboard'
             return redirect(next_redirect)
@@ -48,6 +49,8 @@ def login(request):
 
 @login_required
 def logout(request):
+    del request.session['last_auth']
+    request.session.modified = True
     signout(request)
     return redirect('index')
 
@@ -264,7 +267,7 @@ def list_social_users(request, app_id, social_id):
     last_auth = int(request.session.get('last_auth', 0))
     if time.time() - last_auth > settings.TIME_AUTH_SECONDS:
         return render(request, 'loginapp/page-auth.html',
-                      {'next_url': '/apps/' + str(app_id) + '/' + str(social_id) + '/social-users'})
+                      {'next_url': '/apps/' + str(app_id) + '/users/' + str(social_id) + '/'})
     data = {}
     profiles = get_social_users(social_id)
     for profile in profiles:
