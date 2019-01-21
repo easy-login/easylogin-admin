@@ -6639,59 +6639,40 @@ table.dataTable thead tr th {
     color:#98a6ad;
 }
 
-.provider-menu > ul{
-    width: 20%;
+.provider-menu .list-group{
+    width: 23%;
 }
-.provider-menu > ul > li{
-    min-height: 35px;
+.provider-menu .list-group > a{
+    min-height: 40px;
     background-color: #ffffff;
     vertical-align: middle;
     padding: 5px 20px;
-    border-bottom: solid 1px #dcd8d8;
-    border-left: solid 1px #dcd8d8;
-    border-right: solid 1px #dcd8d8;
-
-}
-
-.provider-menu > ul > li:first-child{
-    border-top: solid 1px #dcd8d8;
-}
-
-.provider-menu > ul > li:last-child{
-    border-bottom: solid 1px #dcd8d8;
-}
-
-.provider-menu > ul > li > a{
-    display: block;
+    border: solid 1px #dcd8d8;
     color: #435966;
-    padding: 5px;
 }
 
-.provider-menu > ul > li > a > i{
-    line-height: 1.6em !important;
+.provider-menu .list-group > a > i{
+    line-height: 1.7em !important;
 }
 
-.provider-menu > ul > li:hover > a{
+.provider-menu .list-group > a:hover{
     color: #E73434;
     font-weight: bold;
     background-color: #ffffff;
-}
-
-.provider-menu > ul > li:hover{
     border-left: solid 2px #E73434;
-    background-color: #ffffff;
 }
 
 .card-box-custom{
     box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.25), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
 }
 
-.provider-menu > ul > li > a.active{
+.provider-menu .list-group > a.active{
     color: #E73434;
     font-weight: bold;
     background-color: #ffffff;
+    border-left: solid 2px #E73434;
 }
-
-.provider-menu > ul > li > a.active:hover{
-    background-color: #ffffff;
+.provider-menu .list-group > a.active:hover{
+    border: solid 1px #dcd8d8;
+    border-left: solid 2px #E73434;
 }

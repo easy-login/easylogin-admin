@@ -20,15 +20,15 @@
 {% block content%}
 <div class="row">
     <div id="provider-menu" class="col-md-4 p-20 provider-menu">
-        <ul class="list-unstyled m-t-40 position-fixed list-group">
+        <div class="m-t-40 position-fixed list-group">
             {% for k, v in profiles.items %}
-            <li><a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a></li>
+             <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
             {% endfor %}
-        </ul>
+        </div>
     </div>
     <div class="col-md-8">
         <div class="text-center card-box">
-            <div id="social-users" data-spy="scroll" data-target="#provider-menu" data-offset="10">
+            <div id="social-users">
                 <img src="/static/images/ninja.png" class="rounded-circle thumb-xl img-thumbnail m-b-10"
                      alt="profile-image">
                 {% for provider, profile in profiles.items %}
@@ -71,17 +71,7 @@
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function(){
-    $('body').scrollspy({ target: '#provider-menu' })
-    $('#provider-menu a.active').parent().css('border-left', 'solid 2px #E73434');
-    $('.active-css').click(function(){
-        $(this).parent().parent().children().each(function(){
-            $(this).css('border-left', 'solid 1px #dcd8d8');
-        })
-        $(this).parent().css('border-left', 'solid 2px #E73434');
-    });
-    $('window').scroll(function(){
-        $('#provider-menu a.active').parent().css('border-left', 'solid 2px #E73434');
-    });
+    $('body').scrollspy({ target: '#provider-menu', offset: 200 });
 })
 </script>
 {% endblock %}
