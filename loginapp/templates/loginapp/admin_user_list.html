@@ -195,6 +195,7 @@
                                 <option value="1">Premium</option>
                                 <option value="2">Premium (only Line)</option>
                                 <option value="3">Premium (only Amazon)</option>
+                                <option value="4">Premium (only Amazon and Line)</option>
                             </select>
                         </div>
                     </div>
@@ -264,6 +265,7 @@ function loadInitialUsersTable(){
                     else if (data==1) return '<span class="badge badge-info">Premium</span>'
                     else if (data==2) return '<span class="badge badge-success">Premium (only Line)</span>'
                     else if (data==3) return '<span class="badge badge-warning">Premium (only Amazon)</span>'
+                    else if (data==4) return '<span class="badge badge-danger">Premium (only Amazon and Line)</span>'
                 }
             }
         ],

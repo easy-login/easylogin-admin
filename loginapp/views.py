@@ -157,7 +157,7 @@ def add_app(request):
                 app.owner = request.user
                 app.save()
                 messages.success(request, 'App was successfully created!')
-                return redirect('dashboard')
+                return redirect('report_app', app.id)
         else:
             push_messages_error(request, form)
             print(form.errors)

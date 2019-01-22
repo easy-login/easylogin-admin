@@ -22,7 +22,7 @@
     <div id="provider-menu" class="col-md-4 p-20 provider-menu">
         <div class="m-t-40 position-fixed list-group">
             {% for k, v in profiles.items %}
-             <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
+            <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
             {% endfor %}
         </div>
     </div>
@@ -42,14 +42,16 @@
                         {% for key, value in profile.items %}
                         {% type_of value as type %}
                         {% if type != 'dict' %}
-                        <div class="row">
-                            <div class="col-md-3 text-right"><p class="font-13"><strong>{{ key }} :</strong></p></div>
-                            <div class="col-md-9 text-left">{{ value }}</div>
+                        <div class="row" style="margin-bottom:15px;">
+                            <div class="col-md-3 text-right info-label"><p class="font-13"><strong>{{ key }} :</strong>
+                            </p></div>
+                            <div class="col-md-9 text-left info-value">{{ value }}</div>
                         </div>
                         {% elif type == 'dict' %}
-                        <div class="row">
-                            <div class="col-md-3 text-right"><p class="font-13"><strong>{{ key }} :</strong></p></div>
-                            <div class="col-md-9"><p></p>
+                        <div class="row" style="margin-bottom:15px;">
+                            <div class="col-md-3 text-right info-label"><p class="font-13"><strong>{{ key }} :</strong>
+                            </p></div>
+                            <div class="col-md-9 info-value"><p></p>
                                 {% for k, v in value.items %}
                                 <p class="font-13 text-left"><strong>{{ k }} :</strong> <span
                                         class="m-l-15">{{ v }}</span></p>
@@ -73,5 +75,7 @@
 $(document).ready(function(){
     $('body').scrollspy({ target: '#provider-menu', offset: 200 });
 })
+
+
 </script>
 {% endblock %}
