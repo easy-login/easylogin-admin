@@ -6649,10 +6649,11 @@ table.dataTable thead tr th {
     padding: 5px 20px;
     border: solid 1px #dcd8d8;
     color: #435966;
+    line-height: 2em;
 }
 
 .provider-menu .list-group > a > i{
-    line-height: 1.7em !important;
+    line-height: 2em !important;
 }
 
 .provider-menu .list-group > a:hover{
