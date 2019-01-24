@@ -265,7 +265,7 @@ def user_report(request, app_id):
 def list_social_users(request, app_id, social_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
     last_auth = int(request.session.get('last_auth', 0))
-    if time.time() - last_auth > settings.TIME_AUTH_SECONDS:
+    if int(time.time()) - last_auth > int(settings.TIME_AUTH_SECONDS):
         return render(request, 'loginapp/page-auth.html',
                       {'next_url': '/apps/' + str(app_id) + '/users/' + str(social_id) + '/'})
     data = {}
@@ -290,7 +290,6 @@ def re_auth(request):
         next_redirect = request.POST.get('next') if request.POST.get('next') else 'dashboard'
         return redirect(next_redirect)
     return redirect('dashboard')
-
 
 @login_required
 def password_confirm(request):
