@@ -6639,6 +6639,10 @@ table.dataTable thead tr th {
     color:#98a6ad;
 }
 
+.provider-menu{
+    padding-top: 0px !important;
+}
+
 .provider-menu .list-group{
     width: 23%;
     max-width: 250px;

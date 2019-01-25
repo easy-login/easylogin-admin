@@ -20,7 +20,7 @@
 {% block content%}
 <div class="row">
     <div id="provider-menu" class="col-md-3 p-20 provider-menu">
-        <div class="m-t-40 position-fixed list-group">
+        <div class="position-fixed list-group">
             {% for k, v in profiles.items %}
             <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
             {% endfor %}
