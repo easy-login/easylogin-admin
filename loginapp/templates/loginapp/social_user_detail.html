@@ -19,14 +19,14 @@
 
 {% block content%}
 <div class="row">
-    <div id="provider-menu" class="col-md-4 p-20 provider-menu">
+    <div id="provider-menu" class="col-md-3 p-20 provider-menu">
         <div class="m-t-40 position-fixed list-group">
             {% for k, v in profiles.items %}
             <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
             {% endfor %}
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
         <div class="text-center card-box">
             <div id="social-users">
                 <img src="/static/images/ninja.png" class="rounded-circle thumb-xl img-thumbnail m-b-10"
@@ -37,7 +37,9 @@
                         <img src="/static/images/social-icon/{{ provider }}.png"
                              class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10"
                              alt="provider-image">
+                        <p class="social-user-title">{{ provider }}</p>
                     </div>
+
                     <div class="p-20">
                         {% for key, value in profile.items %}
                         {% type_of value as type %}
@@ -74,7 +76,25 @@
 <script type="text/javascript">
 $(document).ready(function(){
     $('body').scrollspy({ target: '#provider-menu', offset: 200 });
+
+    var url = window.location.pathname;
+    var urlSplit = url.split('/')
+    url = urlSplit.slice(0, urlSplit.length - 2).join('/')
+    url = url+'/'
+    var target = $('li.li-left-menu a[href="'+url+'"]');
+    target.parent().parent().parent().children().first().addClass('subdrop');
+    target.parent().parent().show(500);
+    target.parent().addClass('active');
+    target.addClass('active');
+
+    $('#provider-menu a').click(function(event) {
+    event.preventDefault();
+    $($(this).attr('href'))[0].scrollIntoView();
+    scrollBy(0, -90);
+});
 })
+
+
 
 
 </script>

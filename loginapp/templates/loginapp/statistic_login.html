@@ -283,7 +283,6 @@ function deleteSocialUser(e){
     var app_id = $(e).parent().parent().children('input[name="app_id"]').val();
     var social_id = $(e).parent().parent().children('input[name="social_id"]').val();
     var csrf_token = $(e).parent().parent().children('input[name="csrfmiddlewaretoken"]').val();
-
     $.post('{% url "delete_user_social" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
         if(data.status == 'failed'){
             var html = '<div class="alert alert-danger alert-dismissable">\
@@ -324,6 +323,7 @@ function deleteUserInfo(e){
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
             <strong> '+data.message+' </strong>\
             </div>';
+            $('#message-container').empty();
             $('#message-container').append(html);
         }else{
             var html = '<div class="alert alert-success alert-dismissable">\

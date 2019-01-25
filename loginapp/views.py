@@ -291,6 +291,7 @@ def re_auth(request):
         return redirect(next_redirect)
     return redirect('dashboard')
 
+
 @login_required
 def password_confirm(request):
     body = json.loads(request.body)
@@ -298,6 +299,7 @@ def password_confirm(request):
         user = AuthenticationWithEmailBackend.authenticate(username=request.user.email,
                                                            password=body['password'])
         if user is not None:
+            request.session['pass_confirmed'] = True
             return HttpResponse(json.dumps({'authenticate_ok': True}), content_type='application/json')
     return HttpResponse(json.dumps({'authenticate_ok': False}), content_type='application/json')
 
@@ -306,6 +308,10 @@ def password_confirm(request):
 def delete_user_social(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
     api_key = app.api_key
+    if not request.session.get('pass_confirmed', False):
+        return HttpResponse(
+            json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),
+            content_type='application/json')
     if request.method == 'POST':
         App.get_app_by_user(app_id, request.user)
         social_id = request.POST.get('social_id', '')
@@ -317,9 +323,14 @@ def delete_user_social(request, app_id):
             return HttpResponse(
                 json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),
                 content_type='application/json')
+
+        del request.session['pass_confirmed']
+        request.session.modified = True
+
         return HttpResponse(
             json.dumps({'status': 'success', 'message': 'Delete success social user!'}, cls=DjangoJSONEncoder),
             content_type='application/json')
+
     return HttpResponse(
         json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),
         content_type='application/json')
@@ -329,6 +340,11 @@ def delete_user_social(request, app_id):
 def delete_user_social_info(request, app_id):
     app = App.get_app_by_user(app_id=app_id, user=request.user)
     api_key = app.api_key
+    if not request.session.get('pass_confirmed', False):
+        return HttpResponse(
+            json.dumps({'status': 'failed', 'message': 'Delete failed social user!'}, cls=DjangoJSONEncoder),
+            content_type='application/json')
+
     if request.method == 'POST':
         App.get_app_by_user(app_id, request.user)
         social_id = request.POST.get('social_id', '')
@@ -340,9 +356,14 @@ def delete_user_social_info(request, app_id):
             return HttpResponse(
                 json.dumps({'status': 'failed', 'message': 'Delete failed social user info!'}, cls=DjangoJSONEncoder),
                 content_type='application/json')
+
+        del request.session['pass_confirmed']
+        request.session.modified = True
+
         return HttpResponse(
             json.dumps({'status': 'success', 'message': 'Delete success social user info!'}, cls=DjangoJSONEncoder),
             content_type='application/json')
+
     return HttpResponse(
         json.dumps({'status': 'failed', 'message': 'Delete failed social user info!'}, cls=DjangoJSONEncoder),
         content_type='application/json')

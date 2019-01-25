@@ -6641,7 +6641,9 @@ table.dataTable thead tr th {
 
 .provider-menu .list-group{
     width: 23%;
+    max-width: 250px;
 }
+
 .provider-menu .list-group > a{
     min-height: 40px;
     background-color: #ffffff;
@@ -6690,4 +6692,10 @@ table.dataTable thead tr th {
     line-height: 30.8px;
     border: 1px solid #dcd8d8;
     background-color: #f0f4fb;
+}
+
+.social-user-title{
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 600;
 }
