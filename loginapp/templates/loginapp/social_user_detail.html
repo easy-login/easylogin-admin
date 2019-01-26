@@ -38,7 +38,8 @@
         <div class="text-center">
             <div id="social-users">
                 {% for provider, profile in profiles.items %}
-                <div id="{{ provider }}" class="card-box word-wrap card-box-custom">
+                <div id="" class="card-box word-wrap card-box-custom">
+                    <a id="{{ provider }}"></a>
                     <div class="text-left">
                         <img src="/static/images/social-icon/{{ provider }}.png"
                              class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10"
@@ -81,7 +82,7 @@
 <!--My js-->
 <script type="text/javascript">
 $(document).ready(function(){
-    $('body').scrollspy({ target: '#provider-menu', offset: 200 });
+    $('body').scrollspy({ target: '#provider-menu', offset: 150 });
 
     var url = window.location.pathname;
     var urlSplit = url.split('/')
@@ -93,5 +94,6 @@ $(document).ready(function(){
     target.parent().addClass('active');
     target.addClass('active');
 })
+
 </script>
 {% endblock %}

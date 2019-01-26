@@ -6703,3 +6703,10 @@ table.dataTable thead tr th {
     font-size: 18px;
     font-weight: 600;
 }
+
+:target {
+  display: block;
+  position: relative;
+  top: -140px;
+  visibility: hidden;
+}
