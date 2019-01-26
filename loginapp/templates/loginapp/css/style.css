@@ -6640,12 +6640,11 @@ table.dataTable thead tr th {
 }
 
 .provider-menu{
-    padding-top: 0px !important;
+    left: 270px;
 }
 
 .provider-menu .list-group{
-    width: 23%;
-    max-width: 250px;
+    width: 250px;
 }
 
 .provider-menu .list-group > a{

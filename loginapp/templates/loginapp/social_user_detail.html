@@ -18,19 +18,22 @@
 {% endblock %}
 
 {% block content%}
-<div class="row">
-    <div id="provider-menu" class="col-md-3 p-20 provider-menu">
-        <div class="position-fixed list-group">
-            {% for k, v in profiles.items %}
-            <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
-            {% endfor %}
-        </div>
+<style>
+    .content-page{
+        margin-left:520px;
+    }
+</style>
+<div id="provider-menu" class="provider-menu position-fixed">
+    <div class="list-group">
+        {% for k, v in profiles.items %}
+        <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
+        {% endfor %}
     </div>
-    <div class="col-md-9">
-        <div class="text-center card-box">
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
             <div id="social-users">
-                <img src="/static/images/ninja.png" class="rounded-circle thumb-xl img-thumbnail m-b-10"
-                     alt="profile-image">
                 {% for provider, profile in profiles.items %}
                 <div id="{{ provider }}" class="card-box word-wrap card-box-custom">
                     <div class="text-left">
@@ -96,6 +99,9 @@ $(document).ready(function(){
 
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 </script>
 {% endblock %}
