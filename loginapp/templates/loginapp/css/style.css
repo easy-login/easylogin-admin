@@ -6616,6 +6616,7 @@ table.dataTable thead tr th {
     border: unset;
     background: transparent;
     cursor: pointer
+}
 
 .modal-custom-width{
     max-width:600px;
