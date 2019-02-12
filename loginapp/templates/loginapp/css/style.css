@@ -9,6 +9,7 @@ body {
   padding-bottom: 60px;
   font-size: 14px;
   position:relative;
+  min-height: 100vh;
 }
 
 html {
@@ -6639,12 +6640,11 @@ table.dataTable thead tr th {
 }
 
 .provider-menu{
-    padding-top: 0px !impokrtant;
+    left: 270px;
 }
 
 .provider-menu .list-group{
-    width: 23%;
-    max-width: 250px;
+    width: 250px;
 }
 
 .provider-menu .list-group > a{
@@ -6701,4 +6701,11 @@ table.dataTable thead tr th {
     display: inline-block;
     font-size: 18px;
     font-weight: 600;
+}
+
+:target {
+  display: block;
+  position: relative;
+  top: -140px;
+  visibility: hidden;
 }
