@@ -6614,8 +6614,7 @@ table.dataTable thead tr th {
 .button-icon{
     border: unset;
     background: transparent;
-    cursor: pointer;
-}
+    cursor: pointer
 
 .modal-custom-width{
     max-width:600px;
@@ -6640,7 +6639,7 @@ table.dataTable thead tr th {
 }
 
 .provider-menu{
-    padding-top: 0px !important;
+    padding-top: 0px !impokrtant;
 }
 
 .provider-menu .list-group{
