@@ -3,8 +3,6 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<!-- Sweet Alert css -->
-        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 <!-- Page title -->
@@ -144,6 +142,7 @@
                                 <option value="1">Premium</option>
                                 <option value="2">Premium (only Line)</option>
                                 <option value="3">Premium (only Amazon)</option>
+                                <option value="4">Premium (only Amazon and Line)</option>
                             </select>
                         </div>
                     </div>
@@ -274,31 +273,6 @@ function loadInitialUsersTable(){
         },
     }).draw();
 }
-function deleteConfirm(event){
-    event.preventDefault();
-    var form = event.target.closest('form');
-    swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                type: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: '#4fa7f3',
-                confirmButtonColor: '#98a6ad',
-                reverseButtons: true,
-                confirmButtonText: 'Yes, delete it!',
-                onOpen: function(ele) {
-                    $('.swal2-cancel').focus()
-                }
-            }).then(function () {
-            form.submit();
-                swal(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                );
-            });
-}
-
 function fillEditForm(e){
 
     var tds = $(e).parent().parent().parent().children()

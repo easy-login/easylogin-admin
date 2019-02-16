@@ -3,8 +3,6 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<!-- Sweet Alert css -->
-<link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css"/>
 <link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock %}
 <!-- Page title -->
@@ -167,9 +165,9 @@ function loadInitialStatisticTable(){
                     var social_id = data.split('|')[1];
                     var prohibited = data.split('|')[2];
                     if (prohibited != '1'){
-                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li>'
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirmPassword(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li>'
                     }else{
-                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon clickable del-info" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirm(event)"><i class="fas fa-trash-alt"></i></button></li>'
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon clickable del-info" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirmPassword(event)"><i class="fas fa-trash-alt"></i></button></li>'
                     }
                 }
             },
@@ -220,7 +218,7 @@ function showUserDetailModal(element){
     $('#social-user-modal').modal('show');
 }
 
-function deleteConfirm(event){
+function deleteConfirmPassword(event){
     event.preventDefault();
     var form = event.target.closest('form');
     swal({

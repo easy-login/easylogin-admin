@@ -3,8 +3,6 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<!-- Sweet Alert css -->
-        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 <!-- Page title -->
@@ -115,30 +113,6 @@ function loadInitialUsersTable(){
         searchPlaceholder: "App ID, App Name Or Owner"
         },
     }).draw();
-}
-function deleteConfirm(event){
-    event.preventDefault();
-    var form = event.target.closest('form');
-    swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                type: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: '#4fa7f3',
-                confirmButtonColor: '#98a6ad',
-                reverseButtons: true,
-                confirmButtonText: 'Yes, delete it!',
-                onOpen: function(ele) {
-                    $('.swal2-cancel').focus()
-                }
-            }).then(function () {
-            form.submit();
-                swal(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                );
-            });
 }
 </script>
 {% endblock %}

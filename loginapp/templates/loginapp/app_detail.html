@@ -2,10 +2,6 @@
 {% load static %}
 {% load widget_tweaks %}
 
-{% block css %}
-<!-- Sweet Alert css -->
-        <link href="{%static 'plugins/sweet-alert/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
-{% endblock %}
 <!-- Page title -->
 {% block topbar %}
 <!-- Page title -->
@@ -299,31 +295,6 @@ $.ajax({
     }
 })
 }
-function deleteConfirm(event){
-    event.preventDefault();
-    var form = event.target.form;
-    swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                type: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: '#4fa7f3',
-                confirmButtonColor: '#98a6ad',
-                reverseButtons: true,
-                confirmButtonText: 'Yes, delete it!',
-                onOpen: function(ele) {
-                    $('.swal2-cancel').focus()
-                }
-            }).then(function () {
-            form.submit();
-                swal(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                );
-            });
-
-}
 function generateKeyConfirm(event){
     //event.preventDefault();
     swal({
@@ -337,8 +308,10 @@ function generateKeyConfirm(event){
                 onOpen: function(ele) {
                     $('.swal2-cancel').focus()
                 }
-            }).then(function () {
-                getApiKey()
+            }).then(function (result) {
+                if (result.value) {
+                    getApiKey()
+                }
             });
 
 }
