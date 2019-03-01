@@ -45,7 +45,7 @@ def admin_list_users(request):
                         profile['total_apps'],
                         profile['level'],
                         profile['deleted'],
-                        str(profile['user_id']) + "|" + str(profile['level'])]
+                        str(profile['user_id']) + "|" + str(profile['level']) + "|" + str(profile['deleted'])]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')

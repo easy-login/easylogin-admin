@@ -102,9 +102,9 @@
                     <label for="id_username" class="col-md-3 col-form-label label-required">Username</label>
                     <div class="col-md-9">
                         {% if form.username.errors %}
-                        {% render_field form.username class='form-control parsley-error' placeholder='Username' %}
+                        {% render_field form.username class='form-control parsley-error' placeholder='Username' data-parsley-pattern='[a-zA-Z-_0-9]' data-parsley-error-message="This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _" %}
                         {% else %}
-                        {% render_field form.username class='form-control' placeholder='Username' %}
+                        {% render_field form.username class='form-control' placeholder='Username' data-parsley-pattern='[a-zA-Z-_0-9]' data-parsley-error-message="This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _" %}
                         {% endif %}
                         {% if form.username.errors %}
                         <ul class="parsley-errors-list filled">
@@ -254,7 +254,12 @@ function loadInitialUsersTable(){
                 'render': function (data, type, row){
                     var user_id = data.split("|")[0];
                     var level = data.split("|")[1];
-                    return '<li class="list-inline-item"><form method="POST" action="/users/'+user_id+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form><button class="text-primary button-icon clickable" type="submit"  data-toggle="modal" data-target="#edit-user-modal" data-level="'+level+'" data-userid="'+user_id+'" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button></li>'
+                    var deleted = data.split("|")[2];
+                    if (deleted == 0){
+                        return '<li class="list-inline-item"><form method="POST" action="/users/'+user_id+'/delete"> {% csrf_token %} <button class="text-danger button-icon clickable" onclick="deleteConfirm(event)" type="submit"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"></form><button class="text-primary button-icon clickable" data-toggle="modal" data-target="#edit-user-modal" data-level="'+level+'" data-userid="'+user_id+'" onclick="fillEditForm(this)"> <i class="fas fa-edit"></i></button></li>'
+                    }else{
+                        return '<li class="list-inline-item"> <button class="text-secondary button-icon"> <i class="fas fa-trash-alt"></i></button></li><li class="list-inline-item"><button class="text-secondary button-icon"> <i class="fas fa-edit"></i></button></li>'
+                    }
                 }
             },
             {
