@@ -7,7 +7,9 @@ from loginapp.models import App, User, AdminSetting
 from loginapp.forms import RegisterForm
 from loginapp.views import push_messages_error
 from loginapp.reports import get_list_admin_users, get_list_apps, get_register_report
+from loginapp.utils import validate_length, validate_not_special_characters
 import json
+import re
 
 
 def admin_list_users(request):
@@ -34,8 +36,10 @@ def admin_list_users(request):
         records_total, profiles = get_list_admin_users(page_length=page_length,
                                                        start_row=start_page, order_by=order_by,
                                                        search_value=search_value)
-
-        records_filtered = len(profiles)
+        if search_value:
+            records_filtered = len(profiles)
+        else:
+            records_filtered = records_total
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
@@ -101,13 +105,27 @@ def admin_update_user(request):
             return redirect('admin_users')
         user_id = request.POST['user_id']
         user = get_object_or_404(User, pk=user_id)
-        if request.POST.get('email', ''):
-            user.email = request.POST['email']
         if request.POST.get('username', ''):
+            if not validate_length(6, 20, request.POST['username']):
+                messages.error(request,
+                               'Username length is invalid. It should be between 6 and 20 characters long')
+                return redirect('admin_users')
+            if not validate_not_special_characters(request.POST['username']):
+                messages.error(request, 'Username seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _')
+                return redirect('admin_users')
             user.username = request.POST['username']
+        else:
+            messages.error(request, 'Username is required!')
+            return redirect('admin_users')
         if request.POST.get('password', ''):
+            if not validate_length(6, 20, request.POST['password']):
+                messages.error(request,
+                               'Username length is invalid. It should be between 6 and 20 characters long')
             user.set_password(request.POST['password'])
             update_session_auth_hash(request, user)
+        else:
+            messages.error(request, 'Password is required!')
+            return redirect('admin_users')
         if request.POST.get('level', ''):
             user.level = request.POST['level']
         user.save()
@@ -141,7 +159,10 @@ def admin_list_apps(request):
         records_total, profiles = get_list_apps(page_length=page_length, start_row=start_row, order_by=order_by,
                                                 search_value=search_value)
 
-        records_filtered = records_total
+        if search_value:
+            records_filtered = len(profiles)
+        else:
+            records_filtered = records_total
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1,
@@ -187,7 +208,10 @@ def admin_report_register(request):
         records_total, profiles = get_register_report(page_length=page_length, start_row=start_row, order_by=order_by,
                                                       search_value=search_value)
 
-        records_filtered = records_total
+        if search_value:
+            records_filtered = len(profiles)
+        else:
+            records_filtered = records_total
         data = []
         for id, profile in enumerate(profiles):
             row_data = [id + 1,

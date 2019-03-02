@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from django.forms import ModelChoiceField
 from django import forms
 from django.contrib.auth import password_validation
+from django.core.validators import RegexValidator
 
 from loginapp.models import User, App, Channel, Provider
 from loginapp import models
@@ -12,8 +13,9 @@ from urllib.parse import urlparse
 
 class RegisterForm(ModelForm):
     email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
-    username = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
-    password = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, widget=forms.PasswordInput, strip=False,
+    username = forms.CharField(max_length=20, min_length=6, required=True, validators=[
+        RegexValidator('^[a-zA-Z0-9_-]*$', message='This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _')])
+    password = forms.CharField(max_length=20, min_length=6, widget=forms.PasswordInput, strip=False,
                                required=True)
     first_name = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)
     last_name = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)

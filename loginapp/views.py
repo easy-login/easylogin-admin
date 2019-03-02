@@ -235,7 +235,10 @@ def user_report(request, app_id):
         records_total, profiles = get_user_report(app_id=app_id, search_value=search_value,
                                                   page_length=page_length, start_row=start_row,
                                                   order_by=order_by)
-        records_filtered = records_total
+        if search_value:
+            records_filtered = len(profiles)
+        else:
+            records_filtered = records_total
         data = []
         providers = Provider.provider_names()
         for id, profile in enumerate(profiles):

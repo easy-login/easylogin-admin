@@ -142,7 +142,8 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
         limit = offset + page_length
         if search_value:
             cursor.execute("""
-                SELECT 
+                SELECT
+                    SQL_CALC_FOUND_ROWS 
                     admins.id as user_id,
                     admins.username,
                     admins.email,
@@ -159,6 +160,7 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
         else:
             cursor.execute("""
                 SELECT 
+                    SQL_CALC_FOUND_ROWS
                     admins.id as user_id,
                     admins.username,
                     admins.email,
@@ -175,7 +177,8 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
         cursor.execute("""
                             SELECT FOUND_ROWS()
                         """)
-        records_total = cursor.fetchone()[0]
+        records_total = cursor.fetchone()
+        print(records_total)
         return records_total, rows
 
 
@@ -185,7 +188,7 @@ def get_list_apps(page_length, start_row, order_by, search_value):
         limit = offset + page_length
         if search_value:
             cursor.execute("""
-                SELECT a.id, a.name, o.username AS owner, 
+                SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username AS owner, 
                     COUNT(p.id) AS total_user, 
                     DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
@@ -200,7 +203,7 @@ def get_list_apps(page_length, start_row, order_by, search_value):
                                                   search_value, search_value, search_value))
         else:
             cursor.execute("""
-                SELECT a.id, a.name, o.username AS owner, 
+                SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username AS owner, 
                     COUNT(p.id) AS total_user, 
                     DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
@@ -225,7 +228,7 @@ def get_register_report(page_length, start_row, order_by, search_value):
         limit = offset + page_length
         if search_value:
             cursor.execute("""
-                SELECT a.id, a.name, o.username, 
+                SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username, 
                     DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
                     a.deleted,
@@ -241,7 +244,7 @@ def get_register_report(page_length, start_row, order_by, search_value):
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET, search_value,))
         else:
             cursor.execute("""
-                SELECT a.id, a.name, o.username, 
+                SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username, 
                     DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
                     a.deleted,
