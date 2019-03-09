@@ -153,7 +153,7 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
                     admins.level
                 FROM admins
                 LEFT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
-                WHERE admins.username=%s OR admins.id=%s 
+                WHERE admins.username=%s 
                 GROUP BY admins.id
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, search_value, search_value))

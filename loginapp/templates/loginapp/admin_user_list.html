@@ -181,9 +181,10 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="edit_id_password" class="col-md-3 col-form-label label-required">Password</label>
+                    <label for="edit_id_password" class="col-md-3 col-form-label">Change Password</label>
                     <div class="col-md-9">
-                       <input type="password" required name="password" data-parsley-length="[6,20]" placeholder="Password" class="form-control" id="edit_id_password">
+                       <input type="password" name="password" data-parsley-length="[6,20]" placeholder="Password" class="form-control" id="edit_id_password">
+                        <span class="font-13 text-muted">Leave blank if you don't want to change it</span>
                     </div>
                 </div>
                     <div class="form-group row">
@@ -227,7 +228,7 @@ function loadInitialUsersTable(){
     if ($.fn.DataTable.isDataTable('#users-table')) return;
 
     $('#users-table').DataTable({
-        'lengthMenu': [5,50,100],
+        'lengthMenu': [25,50,100],
         'autoWidth': false,
         'processing': true,
         'serverSide': true,
@@ -274,7 +275,7 @@ function loadInitialUsersTable(){
             }
         ],
         language: {
-        searchPlaceholder: "User ID Or Username"
+        searchPlaceholder: "Username"
         },
     }).draw();
 }

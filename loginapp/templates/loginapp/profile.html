@@ -90,9 +90,9 @@
                                 </div>
 
                             <div class="form-group row">
-                                <label for="id_username" class="col-md-2 col-form-label">Username</label>
+                                <label for="id_username" class="col-md-2 col-form-label label-required">Username</label>
                                 <div class="col-md-8">
-                                    {% render_field form.username class='form-control' placeholder='Username' value=request.user.username%}
+                                    {% render_field form.username class='form-control' placeholder='Username' value=request.user.username data-parsley-length="[6,20]" data-parsley-pattern='[a-zA-Z-_0-9]*' data-parsley-pattern-message="This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _" %}
                                     {% if form.username.errors %}
                                     <ul class="parsley-errors-list filled">
                                         {% for error in form.username.errors %}

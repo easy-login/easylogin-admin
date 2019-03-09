@@ -95,8 +95,6 @@ def profile(request):
         form = UpdateProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             user = form.save(commit=False)
-            email = form.cleaned_data.get('email')
-            user.email = email
             user.save()
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('profile')

@@ -6,15 +6,14 @@ from django.core.validators import RegexValidator
 
 from loginapp.models import User, App, Channel, Provider
 from loginapp import models
-from loginapp import utils
-
-from urllib.parse import urlparse
+from loginapp.utils import validate_length, validate_not_special_characters
 
 
 class RegisterForm(ModelForm):
     email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
     username = forms.CharField(max_length=20, min_length=6, required=True, validators=[
-        RegexValidator('^[a-zA-Z0-9_-]*$', message='This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _')])
+        RegexValidator('^[a-zA-Z0-9_-]*$',
+                       message='This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _')])
     password = forms.CharField(max_length=20, min_length=6, widget=forms.PasswordInput, strip=False,
                                required=True)
     first_name = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)
@@ -28,17 +27,9 @@ class RegisterForm(ModelForm):
         model._meta.get_field('username')._unique = False
         fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company', 'level')
 
-    # def clean(self):
-    #     cleaned_data = super(RegisterForm, self).clean()
-    #     try:
-    #         password = cleaned_data.get('password')
-    #         password_validation.validate_password(password, self.instance)
-    #     except forms.ValidationError as error:
-    #         self.add_error('password', error)
-
 
 class UpdateProfileForm(ModelForm):
-    email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
+    email = forms.EmailField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)
     username = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=True)
     first_name = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)
     last_name = forms.CharField(max_length=models.MAX_LENGTH_SHORT_FIELD, required=False)
@@ -49,7 +40,15 @@ class UpdateProfileForm(ModelForm):
     class Meta:
         model = User
         model._meta.get_field('username')._unique = False
-        fields = ('email', 'username', 'first_name', 'last_name', 'phone', 'address', 'company',)
+        fields = ('username', 'first_name', 'last_name', 'phone', 'address', 'company',)
+
+    def clean(self):
+        cleaned_data = super(UpdateProfileForm, self).clean()
+        username = cleaned_data.get('username')
+        if not validate_length(6, 20, username):
+            self.add_error('username', 'Username length is invalid. It should be between 6 and 20 characters long')
+        if not validate_not_special_characters(username):
+            self.add_error('username', 'Username seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _')
 
 
 class ChangePasswordForm(ModelForm):
