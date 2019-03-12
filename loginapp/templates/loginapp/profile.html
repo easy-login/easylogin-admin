@@ -78,7 +78,7 @@
                             <div class="form-group row">
                                     <label for="id_email" class="col-md-2 col-form-label">Email</label>
                                     <div class="col-md-8">
-                                        {% render_field form.email class='form-control' placeholder='Email' value=request.user.email%}
+                                        {% render_field disabled="" form.email class='form-control' placeholder='Email' value=request.user.email%}
                                         {% if form.email.errors %}
                                         <ul class="parsley-errors-list filled">
                                             {% for error in form.email.errors %}
