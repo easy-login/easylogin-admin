@@ -113,6 +113,7 @@
 
 <!-- Datatables Js-->
 <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
+<script src="{% static 'plugins/datatables/fnSetFilteringDelay.js' %} "></script>
 <script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
 <script type="text/javascript">
 var socialUserTable;
@@ -120,14 +121,13 @@ $(document).ready(function(){
     loadInitialStatisticTable()
 })
 function loadInitialStatisticTable(){
-    if ($.fn.DataTable.isDataTable('#statistic-table')) return;
+    $.fn.dataTable.ext.errMode = 'none';
 
-    socialUserTable = $('#statistic-table').DataTable({
+    var table = socialUserTable = $('#statistic-table').dataTable({
         'lengthMenu': [25,50,100],
         'autoWidth': false,
         'processing': true,
         'serverSide': true,
-        'deferLoading': 0,
         'ajax': {
               'url': '{% url 'statistic_login' app.id %}',
               'method': 'GET',
@@ -178,7 +178,9 @@ function loadInitialStatisticTable(){
         "drawCallback": function( settings ) {
             $('[data-toggle="tooltip"]').tooltip();
         },
-    }).draw();
+    });
+
+    table.fnSetFilteringDelay(700);
 }
 
 function showUserDetailModal(element){

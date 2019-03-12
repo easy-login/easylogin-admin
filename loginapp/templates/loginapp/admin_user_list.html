@@ -217,6 +217,7 @@
 
     <!-- Datatables Js-->
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
+    <script src="{% static 'plugins/datatables/fnSetFilteringDelay.js' %} "></script>
     <script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
 <!--My js-->
 <script type="text/javascript">
@@ -225,14 +226,13 @@ $(document).ready(function(){
     loadInitialUsersTable()
 })
 function loadInitialUsersTable(){
-    if ($.fn.DataTable.isDataTable('#users-table')) return;
+    $.fn.dataTable.ext.errMode = 'none';
 
-    $('#users-table').DataTable({
+    var table = $('#users-table').dataTable({
         'lengthMenu': [25,50,100],
         'autoWidth': false,
         'processing': true,
         'serverSide': true,
-        'deferLoading': 0,
         'ajax': {
               'url': '{% url 'admin_users'%}',
               'method': 'GET',
@@ -277,7 +277,9 @@ function loadInitialUsersTable(){
         language: {
         searchPlaceholder: "Username"
         },
-    }).draw();
+    });
+
+    table.fnSetFilteringDelay(700);
 }
 function fillEditForm(e){
 

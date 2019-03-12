@@ -156,7 +156,7 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
                 WHERE admins.username=%s 
                 GROUP BY admins.id
                 ORDER BY {} LIMIT {}, {}
-            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, search_value, search_value))
+            """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, search_value))
         else:
             cursor.execute("""
                 SELECT 
@@ -196,11 +196,11 @@ def get_list_apps(page_length, start_row, order_by, search_value):
                 FROM apps AS a
                 LEFT OUTER JOIN social_profiles AS p ON a.id = p.app_id
                 INNER JOIN admins AS o ON a.owner_id = o.id
-                WHERE a.id=%s OR a.name=%s OR o.username=%s
+                WHERE a.name=%s OR o.username=%s
                 GROUP BY a.id 
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET,
-                                                  search_value, search_value, search_value))
+                                                  search_value, search_value))
         else:
             cursor.execute("""
                 SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username AS owner, 

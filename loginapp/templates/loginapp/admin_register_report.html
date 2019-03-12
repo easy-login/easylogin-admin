@@ -72,6 +72,7 @@
 
     <!-- Datatables Js-->
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
+    <script src="{% static 'plugins/datatables/fnSetFilteringDelay.js' %} "></script>
     <script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
 <!--My js-->
 <script type="text/javascript">
@@ -80,14 +81,13 @@ $(document).ready(function(){
     loadInitialUsersTable()
 })
 function loadInitialUsersTable(){
-    if ($.fn.DataTable.isDataTable('#apps-table')) return;
+    $.fn.dataTable.ext.errMode = 'none';
 
-    $('#apps-table').DataTable({
+    var table = $('#apps-table').dataTable({
         'lengthMenu': [25,50,100],
         'autoWidth': false,
         'processing': true,
         'serverSide': true,
-        'deferLoading': 0,
         'ajax': {
               'url': '{% url 'admin_report'%}',
               'method': 'GET',
@@ -115,7 +115,9 @@ function loadInitialUsersTable(){
         language: {
         searchPlaceholder: "Owner"
         },
-    }).draw();
+    });
+
+    table.fnSetFilteringDelay(700);
 }
 </script>
 {% endblock %}
