@@ -85,7 +85,7 @@ class Provider(models.Model):
 class App(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    name = models.CharField(max_length=67)
+    name = models.CharField(max_length=20)
     api_key = models.CharField(max_length=127)
     callback_uris = models.URLField(max_length=2047)
     allowed_ips = models.CharField(max_length=127)

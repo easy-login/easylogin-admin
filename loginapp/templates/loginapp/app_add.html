@@ -29,10 +29,21 @@
     <div class="col-md-12">
         {% if messages %}
         {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
         <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <strong> {{ message }} </strong>
         </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
         {% endfor %}
         {% endif %}
     </div>

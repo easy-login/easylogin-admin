@@ -608,7 +608,7 @@ def push_messages_error(request, form):
         for validError in val:
             errors = validError.messages
             for error in errors:
-                messages.error(request, 'Update failed! ' + key + ': ' + error)
+                messages.error(request, 'Action failed! ' + key + ': ' + error)
 
 
 # link not found
