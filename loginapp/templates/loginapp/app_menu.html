@@ -1,3 +1,4 @@
+{% load custom_tags %}
 {% if request.user.is_superuser %}
 <li>
     <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
@@ -26,7 +27,11 @@
 </li>
 {% for app in apps %}
 <li class="has_sub">
-    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-layers"></i><span style="text-transform: capitalize;"> {{ app.name }} </span>
+    {% str_length app.name as name_length %}
+    <a href="javascript:void(0);" class="waves-effect">
+        <i class="mdi mdi-layers"></i>
+        <span style="text-transform: capitalize;" {% if name_length > 17 %} data-toggle="tooltip" data-placement="right" title="" data-original-title="{{ app.name }}"{% endif%}>
+            {{ app.name|slice:"0:17" }} </span>
         <i class="fa fa-angle-down menu-narrow"></i>
     </a>
     <ul class="list-unstyled">

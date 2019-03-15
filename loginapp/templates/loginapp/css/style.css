@@ -6710,3 +6710,7 @@ table.dataTable thead tr th {
   top: -140px;
   visibility: hidden;
 }
+
+.tooltip{
+    z-index:100000;
+}

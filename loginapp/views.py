@@ -238,9 +238,11 @@ def user_report(request, app_id):
         else:
             records_filtered = records_total
         data = []
+        order = start_row
         providers = Provider.provider_names()
         for id, profile in enumerate(profiles):
-            row_data = [id + 1,
+            order += 1;
+            row_data = [order,
                         profile['user_pk'],
                         str(profile['social_id']) + '|' + str(profile['prohibited']) + '|' + str(app_id),
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S'),
