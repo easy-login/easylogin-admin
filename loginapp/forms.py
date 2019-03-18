@@ -73,11 +73,8 @@ class ChangePasswordForm(ModelForm):
             raise forms.ValidationError({'confirm_password': [
                 "New password and confirm password does not match", ]
             })
-        else:
-            try:
-                password_validation.validate_password(new_password, self.instance)
-            except forms.ValidationError as error:
-                self.add_error('new_password', error)
+        if not validate_length(6, 20, new_password):
+            self.add_error('password', 'Password length is invalid. It should be between 6 and 20 characters long')
 
 
 # application, provider, channel

@@ -65,7 +65,7 @@
             <form class="form-horizontal m-t-20" method="post" action="">
                 {% csrf_token %}
                 <div class="form-group row ">
-                    <label for="id_old_password" class="col-md-4 col-form-label">Old Password</label>
+                    <label for="id_old_password" class="col-md-4 col-form-label label-required">Old Password</label>
                     <div class="col-md-8">
                         {% render_field form.old_password class='form-control' placeholder='Old Password' %}
                         {% if form.old_password.errors %}
@@ -79,12 +79,12 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="id_new_password" class="col-md-4 col-form-label">New Password</label>
+                    <label for="id_new_password" class="col-md-4 col-form-label label-required">New Password</label>
                     <div class="col-md-8">
                         {% if form.new_password.errors %}
-                        {{ form.new_password|attr:'class:form-control parsley-error'|attr:'placeholder:New Password' }}
+                        {{ form.new_password|attr:'class:form-control parsley-error'|attr:'placeholder:New Password'|attr:'data-parsley-length:[6,20]' }}
                         {% else %}
-                        {{ form.new_password|attr:'class:form-control'|attr:'placeholder:New Password' }}
+                        {{ form.new_password|attr:'class:form-control'|attr:'placeholder:New Password'|attr:'data-parsley-length:[6,20]' }}
                         {% endif %}
                         {% if form.new_password.errors %}
                         <ul class="parsley-errors-list filled">
@@ -97,9 +97,9 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="id_confirm_password" class="col-md-4 col-form-label">Confirm Password</label>
+                    <label for="id_confirm_password" class="col-md-4 col-form-label label-required">Confirm Password</label>
                     <div class="col-md-8">
-                        {% render_field form.confirm_password class='form-control' placeholder='Confirm Password' data-parsley-equalto='#id_new_password' %}
+                        {% render_field form.confirm_password class='form-control' placeholder='Confirm Password' data-parsley-equalto='#id_new_password' data-parsley-length="[6,20]" %}
                         {% if form.confirm_password.errors %}
                         <ul class="parsley-errors-list filled">
                             {% for error in form.confirm_password.errors %}

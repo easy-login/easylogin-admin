@@ -123,11 +123,9 @@ def admin_update_user(request):
             if not validate_length(6, 20, request.POST['password']):
                 messages.error(request,
                                'Username length is invalid. It should be between 6 and 20 characters long')
+                return redirect('admin_users')
             user.set_password(request.POST['password'])
             update_session_auth_hash(request, user)
-        else:
-            messages.error(request, 'Password is required!')
-            return redirect('admin_users')
         if request.POST.get('level', ''):
             user.level = request.POST['level']
         user.save()
