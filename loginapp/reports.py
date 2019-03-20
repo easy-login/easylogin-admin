@@ -95,7 +95,7 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
 def get_user_report(app_id, page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
         offset = start_row
-        limit = offset + page_length
+        limit = page_length
         if search_value:
             cursor.execute("""
                 SELECT SQL_CALC_FOUND_ROWS p.alias AS social_id, 
@@ -109,7 +109,7 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
                 WHERE p.app_id = %s AND p.deleted = 0 AND u.pk = %s 
                 GROUP BY alias, u.pk, prohibited
                 ORDER BY {} LIMIT {}, {}
-                """.format(order_by, offset, limit), (app_id, search_value,))
+                """.format(order_by, limit, offset), (app_id, search_value,))
         else:
             cursor.execute("""
                 SELECT SQL_CALC_FOUND_ROWS p.alias AS social_id, 
@@ -139,7 +139,7 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
 def get_list_admin_users(page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
         offset = start_row
-        limit = offset + page_length
+        limit = page_length
         if search_value:
             cursor.execute("""
                 SELECT
@@ -185,7 +185,7 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
 def get_list_apps(page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
         offset = start_row
-        limit = offset + page_length
+        limit = page_length
         if search_value:
             cursor.execute("""
                 SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username AS owner, 
@@ -225,7 +225,7 @@ def get_list_apps(page_length, start_row, order_by, search_value):
 def get_register_report(page_length, start_row, order_by, search_value):
     with connection.cursor() as cursor:
         offset = start_row
-        limit = offset + page_length
+        limit = page_length
         if search_value:
             cursor.execute("""
                 SELECT SQL_CALC_FOUND_ROWS a.id, a.name, o.username, 
