@@ -6714,3 +6714,23 @@ table.dataTable thead tr th {
 .tooltip{
     z-index:100000;
 }
+
+.header-title-custom{
+    font-weight: 600 !important;
+}
+
+.m-l-20{
+    margin-left:20px;
+}
+
+.m-r-20{
+    margin-right:20px;
+}
+
+.m-t-40{
+    margin-top:40px;
+}
+
+.m-b-40{
+    margin-bottom:40px;
+}

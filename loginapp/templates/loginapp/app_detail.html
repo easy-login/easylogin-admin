@@ -2,13 +2,17 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block css %}
+        <link href="{%static 'plugins/toastr/toastr.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 <!-- Page title -->
 {% block topbar %}
 <!-- Page title -->
-<li class="list-inline-item">
+<li class="list-inline-item m-l-20">
     <h4 class="page-title">Application</h4>
 </li>
-<ul class="list-unstyled topbar-right-menu float-right mb-0">
+<ul class="list-unstyled topbar-right-menu float-right mb-0 m-r-20">
     <li class="list-inline-item">
         <div class="dropdown app-list-select">
             <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
@@ -35,7 +39,7 @@
         {% if messages %}
         {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-        <div class="alert alert-success alert-dismissable">
+        <div class="alert alert-success alert-dismissable m-l-20 m-r-20">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <strong> {{ message }} </strong>
         </div>
@@ -44,7 +48,7 @@
 
         {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-        <div class="alert alert-danger alert-dismissable">
+        <div class="alert alert-danger alert-dismissable m-l-20 m-r-20">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <strong> {{ message }} </strong>
         </div>
@@ -53,19 +57,18 @@
         {% endif %}
     </div>
     <div class="col-md-12">
-        <div class="card-box">
-            <div class="p-20">
-                <div class="form-group row">
-                    <label class="col-md-2"><h5 class="text-danger font-600">App ID:</h5></label>
-                    <div class="col-md-8">
-                        <h5><span class="badge badge-secondary"> <strong>{{ app.id }}</strong></span></h5>
-                    </div>
-                </div>
-
-                <form class="form-horizontal m-t-20" method="post" action="">
+                <form class="form-horizontal" method="post" action="">
                     {% csrf_token %}
-
+                    <div class="card-box m-l-20 m-r-20">
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Basic Settings</h4>
+                        <div class="p-20">
                     <div class="form-group row">
+                        <label class="col-md-2"><h5 class="text-danger font-600">App ID:</h5></label>
+                        <div class="col-md-8">
+                            <h5><span class="badge badge-secondary"> <strong>{{ app.id }}</strong></span></h5>
+                        </div>
+                    </div>
+                    <div class="form-group row m-b-30">
                         <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
                         <div class="col-md-6">
                             {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
@@ -77,15 +80,17 @@
                             </ul>
                             {% endif %}
                         </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-danger btn-block waves-effect waves-light" type="button"
-                                    onclick="generateKeyConfirm()">
-                                Generate Key
+                        <div class="col-md-4">
+                            <button class="btn btn-danger waves-effect waves-light" type="button" onclick="getApiKey()">
+                            Generate a new key
+                                </button>
+                            <button class="btn btn-secondary waves-effect waves-light" type="button" onclick="copyApiKey()">
+                                Copy key
                             </button>
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row m-b-30">
                         <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
                         <div class="col-md-8">
                             {% render_field form.name class='form-control' placeholder='Name' value=app.name %}
@@ -113,16 +118,76 @@
                             {% endif %}
                         </div>
                     </div>
+                    </div>
+                    </div>
+                    <div class="card-box m-l-20 m-r-20 m-t-20">
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Advanced Settings</h4>
+                        <div class="p-20">
+                    <div id="multi-allowed-ips" class="m-b-30">
+                        {% with allowed_ips=app.allowed_ips_as_list %}
+                        <div class="form-group row ">
+                            <label class="col-md-2 col-form-label">Allowed IPs
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Allowed IPs is ..."></i></label>
+                            <div class="col-md-7">
+                                <input name="allowed_ips" data-parsley-trigger="change"
+                                       data-parsley-pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" class="form-control"
+                                       value="{{ allowed_ips.0 }}"
+                                       data-parsley-error-message="This value should be a valid IP"
+                                       placeholder="Allowed IPs" maxlength="127" type="text">
 
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button"
+                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                        {% for allowed_ip in allowed_ips|slice:"1:" %}
+                        <div class="form-group row ">
+                            <label class="col-md-2 col-form-label"></label>
+                            <div class="col-md-7">
+                                <input name="allowed_ips" data-parsley-trigger="change"
+                                       data-parsley-pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" class="form-control"
+                                       value="{{ allowed_ip }}" data-parsley-error-message="This value should be a valid IP"
+                                       placeholder="Allowed IPs" maxlength="127" type="text">
+
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button"
+                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
+                            </div>
+                            <div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div></div>
+                        {% endfor %}
+                        {% endwith %}
+                    </div>
+                            <div class="form-group row ">
+                        {% with options=app.get_options_as_list %}
+                        <label class="col-md-2 col-form-label"><span>Options</span>
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                               data-placement="right" title=""
+                               data-original-title="The customer site has an additional registration page that allows the end-user to verify the registration process before considered activate"></i></label>
+                        <div class="col-md-8 m-t-5">
+                            <div class="checkbox checkbox-pink">
+                                <input id="id_reg_page" name="option" type="checkbox" value="reg_page" {% if 'reg_page' in options %} checked {% endif %}>
+                                <label class="" for="id_reg_page">Additional Registration Page</label>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </div>
+                        </div>
+                    </div>
+                    <div class="card-box m-l-20 m-r-20 m-t-20">
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Web Settings</h4>
+                        <div class="p-20">
                     <div id="multi-callback-uri">
                         {% with callback_uris=app.callback_uris_as_list %}
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label"><span class="label-required">Callback URIs</span>
+                            <label class="col-md-2 col-form-label"><span>Callback URIs</span>
                             <i class="fas fa-question-circle" data-toggle="tooltip"
                                          data-placement="right" title="" data-original-title="Callback URIs is ..."></i></label>
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <input name="callback_uris" class="form-control" data-parsley-pattern="https?://.+"
-                                       placeholder="Callback URI" data-parsley-trigger="change" required=""
+                                       placeholder="Callback URI" data-parsley-trigger="change"
                                        maxlength="2047" data-parsley-error-message="This value should be a valid URI"
                                        value="{{ callback_uris.0 }}" type="text">
                             </div>
@@ -134,7 +199,7 @@
                         {% for callback_uri in callback_uris|slice:"1:" %}
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label"></label>
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <input name="callback_uris" class="form-control" data-parsley-pattern="https?://.+"
                                        placeholder="Callback URI" data-parsley-trigger="change" required=""
                                        maxlength="2047" data-parsley-error-message="This value should be a valid URI"
@@ -152,44 +217,11 @@
                         {% endfor %}
                         {% endwith %}
                     </div>
-
-                    <div id="multi-allowed-ips">
-                        {% with allowed_ips=app.allowed_ips_as_list %}
-                        <div class="form-group row ">
-                            <label class="col-md-2 col-form-label">Allowed IPs
-                            <i class="fas fa-question-circle" data-toggle="tooltip"
-                                         data-placement="right" title="" data-original-title="Allowed IPs is ..."></i></label>
-                            <div class="col-md-6">
-                                <input name="allowed_ips" data-parsley-trigger="change"
-                                       data-parsley-pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" class="form-control"
-                                       value="{{ allowed_ips.0 }}"
-                                       data-parsley-error-message="This value should be a valid IP"
-                                       placeholder="Allowed IPs" maxlength="127" type="text">
-
-                            </div>
-                            <div class="col-xs-1">
-                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button"
-                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
-                            </div>
                         </div>
-                        {% for allowed_ip in allowed_ips|slice:"1:" %}
-                        <div class="form-group row ">
-                            <label class="col-md-2 col-form-label"></label>
-                            <div class="col-md-6">
-                                <input name="allowed_ips" data-parsley-trigger="change"
-                                       data-parsley-pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" class="form-control"
-                                       value="{{ allowed_ip }}" data-parsley-error-message="This value should be a valid IP"
-                                       placeholder="Allowed IPs" maxlength="127" type="text">
-
-                            </div>
-                            <div class="col-xs-1">
-                                <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button"
-                                        onclick="duplicateInput(this)"><i class="fa fa-plus"></i></button>
-                            </div>
-                            <div class="col-xs-1 remove-input"><button class="btn btn-icon btn-danger m-b-5 m-l-10" type="button" onclick="removeItself(this)"> <i class="fa fa-minus"></i></button></div></div>
-                        {% endfor %}
-                        {% endwith %}
                     </div>
+                    <div class="card-box m-l-20 m-r-20 m-t-20">
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Shopify Settings</h4>
+                        <div class="p-20">
                     <div class="form-group row ">
                         {% with options=app.get_options_as_list %}
                         <label class="col-md-2 col-form-label"><span>Options</span>
@@ -197,10 +229,6 @@
                                data-placement="right" title=""
                                data-original-title="The customer site has an additional registration page that allows the end-user to verify the registration process before considered activate"></i></label>
                         <div class="col-md-8 m-t-5">
-                            <div class="checkbox checkbox-pink">
-                                <input id="id_reg_page" name="option" type="checkbox" value="reg_page" {% if 'reg_page' in options %} checked {% endif %}>
-                                <label class="" for="id_reg_page">Additional Registration Page</label>
-                            </div>
                             <div class="checkbox checkbox-pink">
                             <input id="id_shopify" name="option" type="checkbox" value="shopify" {% if 'shopify' in options %} checked {% endif %}>
                             <label class="" for="id_shopify">Enable for Shopify</label>
@@ -227,31 +255,27 @@
                         </div>
                         {% endwith %}
                     </div>
-
-                    <div class="form-group text-center m-t-40 row">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="form-group text-center m-t-20 m-b-40 m-r-10 row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-2">
                             <button class="btn btn-success btn-block waves-effect waves-light"
                                     type="submit">
                                 Update
                             </button>
                         </div>
+                        <div class="col-md-2">
+                        <form method="POST" action="{% url 'delete_app' app.id %}">
+                            {% csrf_token %}
+                                    <button class="btn btn-secondary btn-block waves-effect waves-light"
+                                            type="button" onclick="deleteConfirm(event)">
+                                        Delete This App
+                                    </button>
+                        </form>
+                    </div>
                     </div>
                 </form>
-                <form method="POST" action="{% url 'delete_app' app.id %}">
-                    {% csrf_token %}
-                     <div class="form-group text-center m-t-40 row">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-8">
-                            <button class="btn btn-secondary btn-block waves-effect waves-light"
-                                    type="button" onclick="deleteConfirm(event)">
-                                Delete This App
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -260,6 +284,7 @@
 {% block js %}
 <!-- Validation form-->
 <script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <!-- Sweet Alert Js  -->
 <script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
 <!--My js-->
@@ -282,7 +307,7 @@ function getApiKey(){
 //$('#img-loading').show()
 $.ajax({
     url: '{% url 'get_api_key' %}',
-    data: {},
+    data: {'app_id': {{app.id}} },
     type: 'get',
     cache: false,
     success: function(key){
@@ -294,6 +319,28 @@ $.ajax({
         //$('#img-loading').hide()
     }
 })
+}
+function copyApiKey(){
+    $('#id_api_key').select();
+    document.execCommand('copy');
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "500",
+        "hideDuration": "500",
+        "timeOut": "2000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toastr.success('API key has copied to clipboard!');
 }
 function generateKeyConfirm(event){
     //event.preventDefault();

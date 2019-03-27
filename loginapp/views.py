@@ -144,12 +144,18 @@ def add_app(request):
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
             options = request.POST.getlist('option')
-
+            api_key = request.session.get(request.POST.get('api_key', ''), '')
             if len(allowed_ips) > 0:
                 app.set_allowed_ips(allowed_ips)
-            if len(callback_uris) == 0:
+            if not api_key:
+                messages.error(request, 'Add failed app: API key is required!')
+            elif len(callback_uris) == 0:
                 messages.error(request, 'Add failed app: callback uris is required!')
             else:
+                app.api_key = api_key
+                del request.session[api_key]
+                request.session.modified = True
+
                 app.set_options(options)
                 app.set_callback_uris(callback_uris)
                 app.owner = request.user
@@ -178,12 +184,15 @@ def app_detail(request, app_id):
             callback_uris = request.POST.getlist('callback_uris')
             allowed_ips = request.POST.getlist('allowed_ips')
             options = request.POST.getlist('option')
+            api_key = request.session.get('app_id_'+str(app_id), '')
 
             if len(allowed_ips) > 0:
                 app_update.set_allowed_ips(allowed_ips)
             if len(callback_uris) == 0:
                 messages.error(request, 'Update failed app: callback uris is required!')
             else:
+                if api_key:
+                    app_update.api_key = api_key
                 app_update.set_options(options)
                 app_update.set_callback_uris(callback_uris)
                 app_update.save()
@@ -191,7 +200,9 @@ def app_detail(request, app_id):
                 return redirect('app_detail', app_id=app_id)
         else:
             push_messages_error(request, form)
-
+    if 'app_id_' + str(app_id) in request.session:
+        del request.session['app_id_' + str(app_id)]
+        request.session.modified = True
     form = AppForm()
     apps = App.get_all_app(user=request.user)
     return render(request, 'loginapp/app_detail.html',
@@ -598,7 +609,13 @@ def delete_channel(request, app_id, channel_id):
 @login_required
 def get_api_key(request):
     try:
-        return HttpResponse(generateApiKey(nbytes=48), content_type='text/plain')
+        key = generateApiKey(nbytes=48)
+        app_id = request.GET.get('app_id', '')
+        if request.GET.get('app_id', ''):
+            request.session['app_id_' + app_id] = key
+        else:
+            request.session[key] = key
+        return HttpResponse(key, content_type='text/plain')
     except Exception as e:
         return HttpResponse(e, status=404)
 
