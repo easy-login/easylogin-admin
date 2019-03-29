@@ -34,7 +34,7 @@
 {% endblock %}
 
 {% block content%}
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-12">
         {% if messages %}
         {% for message in messages %}
@@ -56,11 +56,11 @@
         {% endfor %}
         {% endif %}
     </div>
-    <div class="col-md-12">
+    <div class="col-md-12 max-width-1200">
                 <form class="form-horizontal" method="post" action="">
                     {% csrf_token %}
                     <div class="card-box m-l-20 m-r-20">
-                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Basic Settings</h4>
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i> Basic Settings</h4>
                         <div class="p-20">
                     <div class="form-group row">
                         <label class="col-md-2"><h5 class="text-danger font-600">App ID:</h5></label>
@@ -121,7 +121,7 @@
                     </div>
                     </div>
                     <div class="card-box m-l-20 m-r-20 m-t-20">
-                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Advanced Settings</h4>
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fa fa-cogs"></i> Advanced Settings</h4>
                         <div class="p-20">
                     <div id="multi-allowed-ips" class="m-b-30">
                         {% with allowed_ips=app.allowed_ips_as_list %}
@@ -177,7 +177,7 @@
                         </div>
                     </div>
                     <div class="card-box m-l-20 m-r-20 m-t-20">
-                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Web Settings</h4>
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fa fa-globe"></i> Web Settings</h4>
                         <div class="p-20">
                     <div id="multi-callback-uri">
                         {% with callback_uris=app.callback_uris_as_list %}
@@ -220,7 +220,7 @@
                         </div>
                     </div>
                     <div class="card-box m-l-20 m-r-20 m-t-20">
-                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i></i> Shopify Settings</h4>
+                        <h4 class="header-title-custom m-t-0 m-b-30"><img src="{% static 'images/shopify.png' %}" alt="" width="36" height="36"> Shopify Settings</h4>
                         <div class="p-20">
                     <div class="form-group row ">
                         {% with options=app.get_options_as_list %}
@@ -293,9 +293,9 @@ $(document).ready(function() {
     $('form').parsley();
     $('#id_shopify').change(function(){
                     if(this.checked){
-                        $('.shopify-form').show()
+                        $('.shopify-form').fadeIn(300, 'linear')
                     }else{
-                        $('.shopify-form').hide()
+                        $('.shopify-form').fadeOut(300, 'swing')
                     }
                 })
 
