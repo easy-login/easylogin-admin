@@ -16,7 +16,7 @@ from django.template import loader
 from django.conf import settings
 
 from loginapp.backends import AuthenticationWithEmailBackend
-from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm
+from loginapp.forms import RegisterForm, UpdateProfileForm, ChangePasswordForm, AppForm, ChannelForm, NewAppForm
 from loginapp.models import App, Provider, Channel, User
 from loginapp.reports import get_auth_report_per_provider, get_total_provider_report, \
     get_total_auth_report, get_user_report, get_social_users
@@ -137,27 +137,18 @@ def change_password_profile(request):
 @login_required
 def add_app(request):
     if request.method == 'POST':
-        form = AppForm(request.POST)
+        form = NewAppForm(request.POST)
         if form.is_valid():
             app = form.save(commit=False)
 
-            callback_uris = request.POST.getlist('callback_uris')
-            allowed_ips = request.POST.getlist('allowed_ips')
-            options = request.POST.getlist('option')
             api_key = request.session.get(request.POST.get('api_key', ''), '')
-            if len(allowed_ips) > 0:
-                app.set_allowed_ips(allowed_ips)
             if not api_key:
                 messages.error(request, 'Add failed app: API key is required!')
-            elif len(callback_uris) == 0:
-                messages.error(request, 'Add failed app: callback uris is required!')
             else:
                 app.api_key = api_key
                 del request.session[api_key]
                 request.session.modified = True
 
-                app.set_options(options)
-                app.set_callback_uris(callback_uris)
                 app.owner = request.user
                 app.save()
                 messages.success(request, 'App was successfully created!')
