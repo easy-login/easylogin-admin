@@ -166,5 +166,23 @@ STATICFILES_DIRS = [
 # time re-auth
 TIME_AUTH_SECONDS = os.getenv('TIME_AUTH_SECONDS', 300)
 
-# App SETTING
+# App SETTINGS
 # ADMIN_ENABLED = False
+
+EASY_ACCOUNT_LEVELS = {
+    '0': {
+        'name': 'Normal'
+    },
+    '1': {
+        'name': 'Premium (only Line)'
+    },
+    '2': {
+        'name': 'Premium (only Amazon)'
+    },
+    '3': {
+        'name': 'Premium (only Line & Amazon)'
+    },
+    '65535': {
+        'name': 'Premium'
+    }
+}
