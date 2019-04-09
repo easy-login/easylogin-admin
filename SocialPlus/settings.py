@@ -170,19 +170,19 @@ TIME_AUTH_SECONDS = os.getenv('TIME_AUTH_SECONDS', 300)
 # ADMIN_ENABLED = False
 
 EASY_ACCOUNT_LEVELS = {
-    '0': {
+    0: {
         'name': 'Normal'
     },
-    '1': {
+    1: {
         'name': 'Premium (only Line)'
     },
-    '2': {
+    2: {
         'name': 'Premium (only Amazon)'
     },
-    '3': {
+    3: {
         'name': 'Premium (only Line & Amazon)'
     },
-    '65535': {
+    65535: {
         'name': 'Premium'
     }
 }
