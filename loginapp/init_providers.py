@@ -183,6 +183,7 @@ if __name__ == '__main__':
 
     db = MySQLdb.connect(host='localhost', user='root', passwd='root', db='sociallogin')
     cursor = db.cursor()
+    cursor.execute("TRUNCATE providers")
     cursor.executemany("""
         INSERT INTO providers (name, version, required_permissions, basic_fields, advanced_fields, options) 
         VALUES (%s, %s, %s, %s, %s, %s)""", data)
