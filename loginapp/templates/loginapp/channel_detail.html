@@ -188,7 +188,7 @@
                                     <label class="col-form-label">Options</label>
                                     {% endif %}
                                     {% for field in provider.options_as_object %}
-                                    {% with with restrict_levels_satisfy=field.restrict_levels|bitwise_and:request.user.level %}
+                                    {% with restrict_levels_satisfy=field.restrict_levels|bitwise_and:request.user.level %}
                                     <div class="checkbox checkbox-pink">
                                         <input class="option{% if restrict_levels_satisfy > 0 %}-available{% endif %}" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
                                                type="checkbox" value="{{ field.key }}" disabled
