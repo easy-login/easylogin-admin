@@ -474,7 +474,7 @@ def add_channel(request):
             options_map = provider.options_as_restrict_map()
             for item in request.POST.getlist('option'):
                 if item in options_map:
-                    if request.user.level in options_map[item]:
+                    if request.user.level & options_map[item] > 0:
                         options += item + '|'
                 else:
                     options += item + '|'
@@ -540,10 +540,10 @@ def channel_detail(request, app_id, channel_id):
             permissions = permissions.union(set(required_permission.split('|')))
             options = ''
             options_map = provider.options_as_restrict_map()
-            print(request.POST.getlist('option'))
+
             for item in request.POST.getlist('option'):
                 if item in options_map:
-                    if request.user.level in options_map[item]:
+                    if request.user.level & options_map[item] > 0:
                         options += item + '|'
                 else:
                     options += item + '|'
