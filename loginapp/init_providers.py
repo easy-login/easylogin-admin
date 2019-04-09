@@ -87,14 +87,7 @@ providers = [
             "likes,User Likes,user_likes",
             "location,Location,user_location"
         ],
-        "options": [
-            {
-                "key": "extra_fields",
-                "name": "Get all extra fields",
-                "default": False,
-                "tooltip": "Get all extra fields that not included in basic and advanced fields"
-            }
-        ]
+        "options": []
     },
     {
         "name": "twitter",
@@ -121,21 +114,14 @@ providers = [
         "advanced_fields": [
             "email,Email,"
         ],
-        "options": [
-            {
-                "key": "extra_fields",
-                "name": "Get all extra fields",
-                "default": False,
-                "tooltip": "Get all extra fields that not included in basic and advanced fields"
-            }
-        ]
+        "options": []
     },
     {
         "name": "google",
         "version": ["v1"],
         "required_permissions": "openid|email",
         "basic_fields": [
-            "#,Primary Email,email",
+            "emailAddresses,Email,email",
             "names,Name,profile",
             "locales,Locale,profile",
             "nicknames,Nickname,profile",
@@ -144,7 +130,6 @@ providers = [
             "genders,Gender,profile"
         ],
         "advanced_fields": [
-            "emailAddresses,All Emails,https://www.googleapis.com/auth/user.emails.read",
             "phoneNumbers,Phone Number,https://www.googleapis.com/auth/user.phonenumbers.read",
             "addresses,Address,https://www.googleapis.com/auth/user.addresses.read",
             "birthdays,Birthday,https://www.googleapis.com/auth/user.birthday.read",
