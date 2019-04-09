@@ -6717,6 +6717,7 @@ table.dataTable thead tr th {
 
 .header-title-custom{
     font-weight: 600 !important;
+    font-size:22px !important;
 }
 
 .m-l-20{
@@ -6733,4 +6734,8 @@ table.dataTable thead tr th {
 
 .m-b-40{
     margin-bottom:40px;
+}
+
+.max-width-1200{
+    max-width:1200px;
 }

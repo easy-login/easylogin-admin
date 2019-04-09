@@ -20,3 +20,9 @@ def type_of(value):
 @register.filter
 def split_string(str_split, split_char="|"):
     return map(int, str_split.split(split_char))
+
+
+@register.filter
+def bitwise_and(value, arg):
+    if not value or not arg: return 0
+    return int(value) & int(arg)

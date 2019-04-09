@@ -103,6 +103,14 @@ class ProviderModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.name
 
+class NewAppForm(ModelForm):
+    name = forms.CharField(max_length=20, required=True)
+    api_key = forms.CharField(max_length=127, required=False)
+    description = forms.CharField(widget=forms.Textarea, required=False)
+
+    class Meta:
+        model = App
+        fields = ('name', 'description',)
 
 class ChannelForm(ModelForm):
     provider = forms.ChoiceField(choices=[], required=True)

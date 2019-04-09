@@ -29,7 +29,7 @@
 
 
 {% block content%}
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-12">
         {% if messages %}
         {% for message in messages %}
@@ -51,164 +51,76 @@
         {% endfor %}
         {% endif %}
     </div>
-    <div class="col-md-12">
-        <div class="card-box">
-            <div class="p-20">
-            <form class="form-horizontal m-t-20" method="post" action="">
-                {% csrf_token %}
-                <div class="form-group row m-b-30">
-                    <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
-                    <div class="col-md-6">
-                        {% if form.api_key.errors %}
-                        {% render_field form.api_key class='form-control parsley-error' readonly='readonly' placeholder='API Key' %}
-                        {% else %}
-                        {% render_field form.api_key class='form-control' readonly='readonly' placeholder='API Key' %}
-                        {% endif %}
-                        {% if form.api_key.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.api_key.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-danger waves-effect waves-light" type="button" onclick="getApiKey()">
-                            Generate a new key
-                        </button>
-                        <button class="btn btn-secondary waves-effect waves-light" type="button" onclick="copyApiKey()">
-                            Copy key
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group row m-b-30">
-                    <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
-                    <div class="col-md-8">
-                        {% if form.name.errors %}
-                        {% render_field form.name class='form-control parsley-error' placeholder='Name' %}
-                        {% else %}
-                        {% render_field form.name class='form-control' placeholder='Name' %}
-                        {% endif %}
-                        {% if form.name.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.name.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="form-group row m-b-30">
-                    <label for="id_description" class="col-md-2 col-form-label">Description</label>
-                    <div class="col-md-8">
-                        {% render_field form.description class='form-control' placeholder='Description' %}
-                        {% if form.description.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.description.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div id="multi-callback-uri" class="m-b-30">
-                <div class="form-group row">
-                    <label class="col-md-2 col-form-label"><span>Callback URIs</span>
-                        <i class="fas fa-question-circle" data-toggle="tooltip"
-                                         data-placement="right" title="" data-original-title="Callback URIs is ..."></i></label>
-                    <div class="col-md-6">
-                        {% if form.callback_uris.errors %}
-                        {% render_field form.callback_uris class='form-control parsley-error' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
-                        {% else %}
-                        {% render_field form.callback_uris class='form-control' placeholder='Callback URIs' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid URI" data-parsley-pattern='https?://.+' %}
-                        {% endif %}
-                        {% if form.callback_uris.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.callback_uris.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                    <div class="col-xs-1">
-                        <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-uri" type="button" onclick="duplicateInput(this)"> <i class="fa fa-plus"></i> </button>
-                    </div>
-                </div>
-                </div>
-
-                <div id="multi-allowed-ips" class="m-b-30">
-                <div class="form-group row ">
-                    <label class="col-md-2 col-form-label"><span>Allowed IPs </span>
-                    <i class="fas fa-question-circle" data-toggle="tooltip"
-                                         data-placement="right" title="" data-original-title="Allowed IPs is ..."></i></label>
-                    <div class="col-md-6">
-                        {% if form.allowed_ips.errors %}
-                        {% render_field form.allowed_ips class='form-control parsley-error' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$' %}
-                        {% else %}
-                        {% render_field form.allowed_ips class='form-control' placeholder='0.0.0.0' data-parsley-trigger="change" data-parsley-error-message="This value should be a valid IP" data-parsley-pattern='^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$' %}
-                        {% endif %}
-                        {% if form.allowed_ips.errors %}
-                        <ul class="parsley-errors-list filled">
-                            {% for error in form.allowed_ips.errors %}
-                            <li class="">{{ error }}</li>
-                            {% endfor%}
-                        </ul>
-                        {% endif %}
-                    </div>
-                    <div class="col-xs-1">
-                        <button class="btn btn-icon btn-secondary m-b-5 m-l-10 duplicate-ip" type="button" onclick="duplicateInput(this)"> <i class="fa fa-plus"></i> </button>
-                    </div>
-                </div>
-                </div>
-                <div class="form-group row m-b-30">
-                    <label class="col-md-2 col-form-label"><span>Options</span>
-                    <i class="fas fa-question-circle" data-toggle="tooltip"
-                                         data-placement="right" title=""
-                       data-original-title="The customer site has an additional registration page that allows the end-user to verify the registration process before considered activate"></i></label>
-                    <div class="col-md-8 m-t-5">
-                        <div class="checkbox checkbox-pink">
-                            <input id="id_reg_page" name="option" type="checkbox" value="reg_page">
-                            <label class="" for="id_reg_page">Additional Registration Page</label>
+   <div class="col-md-12 max-width-1200">
+       <form class="form-horizontal" method="post" action="">
+                    {% csrf_token %}
+                    <div class="card-box m-l-20 m-r-20">
+                        <h4 class="header-title-custom m-t-0 m-b-30"><i class="fas fa-cog"></i> Basic Settings</h4>
+                        <div class="p-20">
+                    <div class="form-group row m-b-30">
+                        <label for="id_api_key" class="col-md-2 col-form-label label-required">API Key</label>
+                        <div class="col-md-8">
+                            {% render_field form.api_key class='form-control' placeholder='API Key' readonly='readonly' value=app.api_key %}
+                            {% if form.api_key.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in form.api_key.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                            <div class="float-right m-t-10">
+                                <button class="btn btn-danger waves-effect waves-light" type="button"
+                                        onclick="getApiKey()">
+                                    Generate a new key
+                                </button>
+                                <button class="btn btn-secondary waves-effect waves-light" type="button"
+                                        onclick="copyApiKey()">
+                                    Copy key
+                                </button>
                         </div>
-                        <div class="checkbox checkbox-pink">
-                            <input id="id_shopify" name="option" type="checkbox" value="shopify">
-                            <label class="" for="id_shopify">Enable for Shopify</label>
-                        </div>
-                        <div class="shopify-form m-t-20" style="display:none;">
-                            <h4><strong>Install EasyLogin on your Shopify store</strong></h4>
-                            <div class="row form-group">
-                                <label class="text-muted col-md-12 col-form-label" for="id_store_url">Your store's
-                                    URL (e.g example.myshopify.com)</label>
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control" id="id_store_url" placeholder="URL">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-10"></div>
-                                <div class="col-md-2">
-                                    <button id="install-shopify" type="button" class="btn btn-primary pull-right">
-                                        Install
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group text-center m-t-40 row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        <button class="btn btn-success btn-block waves-effect waves-light"
-                                type="submit">
-                            Add
-                        </button>
+
+                    <div class="form-group row m-b-30">
+                        <label for="id_name" class="col-md-2 col-form-label label-required">Name</label>
+                        <div class="col-md-8">
+                            {% render_field form.name class='form-control' placeholder='Name' value=app.name %}
+                            {% if form.name.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in form.name.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-    </div>
+
+                    <div class="form-group row ">
+                        <label for="id_description" class="col-md-2 col-form-label">Description</label>
+                        <div class="col-md-8">
+                            <textarea name="description" rows="10" class="form-control" placeholder="Description"
+                                      id="id_description">{{ app.description }}</textarea>
+                            {% if form.description.errors %}
+                            <ul class="parsley-errors-list filled">
+                                {% for error in form.description.errors %}
+                                <li class="">{{ error }}</li>
+                                {% endfor%}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="form-group text-center m-t-20 m-b-40 m-r-10 row">
+                        <div class="col-md-10"></div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success btn-block waves-effect waves-light"
+                                    type="submit">
+                                Add a new app
+                            </button>
+                        </div>
+                    </div>
+                </form>
     </div>
     <div class="clearfix"></div>
 </div>
