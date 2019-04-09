@@ -21,7 +21,7 @@ providers = [
                 "name": "Add friend",
                 "default": False,
                 "tooltip": "Show checkbox add LINE user as friend after logged in",
-                "restrict_levels": "1|2"
+                "restrict_levels": 1
             }
         ]
     },
@@ -42,7 +42,7 @@ providers = [
                 "name": "Associate with Amazon Pay",
                 "default": False,
                 "tooltip": "Indicates that your app use Login and Pay with Amazon",
-                "restrict_levels": "1|3"  
+                "restrict_levels": 2
             }
         ]
     },
