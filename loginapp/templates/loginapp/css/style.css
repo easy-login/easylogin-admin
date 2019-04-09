@@ -6739,3 +6739,18 @@ table.dataTable thead tr th {
 .max-width-1200{
     max-width:1200px;
 }
+
+.badge-custom{
+    display: inline-block;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+
+    font-weight: 500;
+    padding: 3px 5px;
+    font-size: 12px;
+    margin-top: 1px;
+    color: #ffffff;
+}

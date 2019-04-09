@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth import update_session_auth_hash
+from django.conf import settings
 
 from loginapp.models import App, User, AdminSetting
 from loginapp.forms import RegisterForm
@@ -42,23 +43,27 @@ def admin_list_users(request):
             records_filtered = records_total
         data = []
         order = start_row
+        levels = settings.EASY_ACCOUNT_LEVELS
         for id, profile in enumerate(profiles):
             order = order + 1
+            level = '<span class="badge-custom" style="background-color:'+levels[profile['level']]['color']+'">'+levels[profile['level']]['name']+'</span>'
             row_data = [order,
                         profile['username'],
                         profile['email'],
                         profile['last_login'].strftime('%Y-%m-%d %H:%M:%S') if profile['last_login'] else 'Never',
                         profile['total_apps'],
-                        profile['level'],
+                        level,
                         profile['deleted'],
                         str(profile['user_id']) + "|" + str(profile['level']) + "|" + str(profile['deleted'])]
             data.append(row_data)
         json_data_table = {'recordsTotal': records_total, 'recordsFiltered': records_filtered, 'data': data}
+
         return HttpResponse(json.dumps(json_data_table, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         apps = App.get_all_app(request.user)
         form = RegisterForm()
-        return render(request, 'loginapp/admin_user_list.html', {'form': form, 'apps': apps})
+        levels = settings.EASY_ACCOUNT_LEVELS
+        return render(request, 'loginapp/admin_user_list.html', {'form': form, 'apps': apps, 'levels': levels})
 
 
 def admin_add_user(request):

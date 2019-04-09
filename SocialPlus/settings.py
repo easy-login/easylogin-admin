@@ -171,18 +171,23 @@ TIME_AUTH_SECONDS = os.getenv('TIME_AUTH_SECONDS', 300)
 
 EASY_ACCOUNT_LEVELS = {
     0: {
-        'name': 'Normal'
+        'name': 'Normal',
+        'color': '#6c757d'
     },
     1: {
-        'name': 'Premium (only Line)'
+        'name': 'Premium (only Line)',
+        'color': '#28a745'
     },
     2: {
-        'name': 'Premium (only Amazon)'
+        'name': 'Premium (only Amazon)',
+        'color': '#ffc107'
     },
     3: {
-        'name': 'Premium (only Line & Amazon)'
+        'name': 'Premium (only Line & Amazon)',
+        'color': '#0062cc'
     },
     65535: {
-        'name': 'Premium'
+        'name': 'Premium',
+        'color': '#dc3545'
     }
 }
