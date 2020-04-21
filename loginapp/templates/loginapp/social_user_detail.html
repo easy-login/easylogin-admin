@@ -1,0 +1,99 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_tags %}
+
+{% block css %}
+{% endblock %}
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Social Users</h4>
+</li>
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<style>
+    .content-page{
+        margin-left:520px;
+    }
+    .wrapper{
+        padding-top: 110px;
+    }
+</style>
+<div id="provider-menu" class="provider-menu position-fixed">
+    <div class="list-group">
+        {% for k, v in profiles.items %}
+        <a href="#{{ k }}" class="list-group-item active-css">{{ k }}<i class="fas fa-angle-right float-right"></i></a>
+        {% endfor %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
+            <div id="social-users">
+                {% for provider, profile in profiles.items %}
+                <div class="card-box word-wrap card-box-custom">
+                    <a id="{{ provider }}"></a>
+                    <div class="text-left">
+                        <img src="/static/images/social-icon/{{ provider }}.png"
+                             class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10"
+                             alt="provider-image">
+                        <p class="social-user-title">{{ provider }}</p>
+                    </div>
+
+                    <div class="p-20">
+                        {% for key, value in profile.items %}
+                        {% type_of value as type %}
+                        {% if type != 'dict' %}
+                        <div class="row" style="margin-bottom:15px;">
+                            <div class="col-md-3 text-right info-label"><p class="font-13"><strong>{{ key }} :</strong>
+                            </p></div>
+                            <div class="col-md-9 text-left info-value">{{ value }}</div>
+                        </div>
+                        {% elif type == 'dict' %}
+                        <div class="row" style="margin-bottom:15px;">
+                            <div class="col-md-3 text-right info-label"><p class="font-13"><strong>{{ key }} :</strong>
+                            </p></div>
+                            <div class="col-md-9 info-value"><p></p>
+                                {% for k, v in value.items %}
+                                <p class="font-13 text-left"><strong>{{ k }} :</strong> <span
+                                        class="m-l-15">{{ v }}</span></p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!--My js-->
+<script type="text/javascript">
+$(document).ready(function(){
+    $('body').scrollspy({ target: '#provider-menu', offset: 150 });
+
+    var url = window.location.pathname;
+    var urlSplit = url.split('/')
+    url = urlSplit.slice(0, urlSplit.length - 2).join('/')
+    url = url+'/'
+    var target = $('li.li-left-menu a[href="'+url+'"]');
+    target.parent().parent().parent().children().first().addClass('subdrop');
+    target.parent().parent().show(500);
+    target.parent().addClass('active');
+    target.addClass('active');
+})
+
+</script>
+{% endblock %}

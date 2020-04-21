@@ -1,0 +1,58 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+{% endblock %}
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Global Settings</h4>
+</li>
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-box">
+            <div class="p-20">
+                <h4 class="header-title m-t-0 m-b-30"><i class="fas fa-cog"></i>Admin Settings</h4>
+                <form class="form-horizontal" method="post" action="{% url 'admin_setting' %}">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="id_return_scoped_id" class="col-md-3 col-form-label">Allow client get
+                            provider-scoped ID</label>
+                        <div class="col-md-7">
+                            <select id="id_return_scoped_id" name="return_scoped_id" class="form-control">
+                                <option value="always" {%if settings.return_scoped_id == 'always'%}selected{% endif %}>Always Return</option>
+                                <option value="never" {%if settings.return_scoped_id == 'never'%}selected{% endif %}>Never Return</option>
+                                <option value="by_level" {%if settings.return_scoped_id == 'by_level'%}selected{% endif %}>By Account Level</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group text-center row m-t-40">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-2">
+                            <button class="btn btn-info btn-block waves-effect waves-light"
+                                    type="submit">
+                                Save Changed
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!--My js-->
+<script type="text/javascript">
+</script>
+{% endblock %}

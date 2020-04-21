@@ -1,0 +1,306 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+        <link href="{%static 'plugins/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+{% endblock %}
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Report App</h4>
+</li>
+<ul class="list-unstyled topbar-right-menu float-right mb-0">
+    <li class="list-inline-item">
+        <div class="app-list-select">
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
+                        data-toggle="dropdown" aria-expanded="false"><span style=" float: left;"><i class="mdi mdi-layers"></i></span>{{ app.name }}
+                </button>
+                <div class="dropdown-menu app-navigation">
+                    <!-- item-->
+                    {% for option in apps %}
+                    <a href="{% url 'report_app' option.id %}" class="dropdown-item">{{ option.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<div class="p-t-40 card-box table-responsive">
+    <div class="row m-b-20">
+         <div class="col-md-2 mt-20">
+             <select id="is-login" class="form-control">
+                 <option value="1">Login</option>
+                 <option value="2">Pending Registration</option>
+                 <option value="3">Done Registration</option>
+             </select>
+         </div>
+         <div class="col-md-3">
+             <select id="provider-select" class="form-control">
+                 <option value="all">All</option>
+                 {% for provider_name in provider_names %}
+                 <option value="{{ provider_name }}">{{ provider_name }}</option>
+                 {% endfor %}
+             </select>
+         </div>
+        <div class="col-md-3"></div>
+         <div class="col-md-4">
+             <div id="date-range" class="form-control">
+                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                 <span></span>
+             </div>
+         </div>
+    </div>
+             <canvas id="line-chart-report"></canvas>
+    <div class="clearfix"></div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="header-title m-t-0 m-b-30">Authorization Report</h4>
+            <canvas id="pie-login-chart-report"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="header-title m-t-0 m-b-30">Provider Report</h4>
+            <canvas id="pie-register-chart-report"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
+<!-- Chart JS -->
+<script src="{% static 'plugins/chart.js/Chart.bundle.min.js' %}"></script>
+<!-- Date Range Picker-->
+<script src="{% static 'plugins/moment/moment.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+<!--My js-->
+<script type="text/javascript">
+var chartColors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+}
+
+var appChart;
+
+function drawReportChart(data, maxy){
+var config = {
+        "type": "line",
+        "data": data,
+        options: {
+            responsive: true,
+            legend: {position: 'right'},
+            title: {
+                display: true,
+                text: $('#is-login').val() == '1'? 'User Login':'User Register',
+                position: 'bottom'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
+                    },
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        userCallback: function(label, index, labels) {
+                            if (Math.floor(label) === label) {
+                                return label;
+                            }
+                        },
+                    },
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: $('#is-login').val() == '1'? 'Number of login':'Number of register',
+                    }
+                }]
+            }
+        }
+    }
+
+    var ctx = document.getElementById('line-chart-report').getContext('2d');
+    appChart = new Chart(ctx, config);
+}
+var startDate = moment().subtract(7, 'days').format('YYYY-MM-DD');
+var endDate = moment().format('YYYY-MM-DD');
+function reloadChartData(){
+    var isLogin = $('#is-login').val();
+    var provider = $('#provider-select').val();
+
+    $.ajax({
+        url: '{% url 'report_app' app.id %}',
+        data: {
+            'chart_loading': 'true',
+            'auth_state' : isLogin,
+            'provider' : provider,
+            'endDate' : endDate,
+            'startDate' : startDate,
+        },
+        type: 'get',
+        cache: false,
+        success: function(data){
+            if (appChart !== undefined){
+                appChart.destroy()
+            }
+            drawReportChart(data.data, data.maxy)
+            //$('#img-loading').hide()
+        },
+        error: function(message){
+            alert("Failed load chart data")
+            //$('#img-loading').hide()
+        }
+    })
+}
+
+$(document).ready(function() {
+
+    $('#is-login').change(function(){
+        reloadChartData()
+    })
+    $('#provider-select').change(function(){
+        reloadChartData()
+    })
+    $('#date-range span').html(moment().subtract(7, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+
+    $('#date-range').daterangepicker({
+        format: 'MM/DD/YYYY',
+        startDate: moment().subtract(7, 'days'),
+        endDate: moment(),
+        showDropdowns: true,
+        showWeekNumbers: true,
+        timePicker: false,
+        timePickerIncrement: 1,
+        timePicker12Hour: true,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'left',
+        drops: 'down',
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-success',
+        cancelClass: 'btn-secondary',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Submit',
+            cancelLabel: 'Cancel',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    }, function(start, end, label) {
+        console.log(start.toISOString(), end.toISOString(), label);
+        $('#date-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        startDate = start.format('YYYY-MM-DD');
+        endDate = end.format('YYYY-MM-DD');
+
+        reloadChartData();
+    })
+
+    reloadChartData();
+
+    //pie login chart
+    var configPieLogin = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+					{% for value in total_data_auth %}
+						{{ value.1 }},
+					{% endfor %}
+					],
+					backgroundColor: [
+						'#f9c851',
+						'#ff5b5b',
+						'#10c469',
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+				{% for value in total_data_auth %}
+						'{{ value.0 }}',
+					{% endfor %}
+				]
+			},
+			options: {
+			    legend: {position: 'right'},
+				responsive: true
+			}
+		};
+
+		var ctx = document.getElementById('pie-login-chart-report').getContext('2d');
+		new Chart(ctx, configPieLogin);
+
+	//pie register chart
+    var configPieLogin = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: [
+					{% for value in total_data_provider %}
+						{{ value.1 }},
+					{% endfor %}
+					],
+					backgroundColor: [
+						{% for value in total_data_provider %}
+						    '{{ value.2 }}',
+						{% endfor %}
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+				    {% for value in total_data_provider %}
+						'{{ value.0 }}',
+					{% endfor %}
+				]
+			},
+			options: {
+			    legend: {position: 'right'},
+				responsive: true
+			}
+		};
+
+		var ctx = document.getElementById('pie-register-chart-report').getContext('2d');
+		new Chart(ctx, configPieLogin);
+})
+</script>
+{% endblock %}

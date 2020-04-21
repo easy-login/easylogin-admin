@@ -1,0 +1,351 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+<link href="{%static 'plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Users List</h4>
+</li>
+<ul class="list-unstyled topbar-right-menu float-right mb-0">
+    <li class="list-inline-item">
+        <div class="app-list-select">
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
+                        data-toggle="dropdown" aria-expanded="false"><span style=" float: left;"><i
+                        class="mdi mdi-layers"></i></span>{{ app.name }}
+                </button>
+                <div class="dropdown-menu app-navigation">
+                    <!-- item-->
+                    {% for option in apps %}
+                    <a href="{% url 'statistic_login' option.id %}" class="dropdown-item">{{ option.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<div class="row">
+    <div id="message-container" class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div class="col-md-12 m-b-20">
+        <div class="card-box table-responsive">
+            <table id="statistic-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th class="no-order">No</th>
+                    <th>User ID</th>
+                    <th class="social-user-detail">Social ID</th>
+                    <th>Last Login</th>
+                    <th>Login Count</th>
+                    {% for provider_name in provider_names %}
+                    <th class="no-order provider-datatable" style="text-transform: capitalize;">
+                        {% with src='/images/social-icon/'|add:provider_name|add:'.png'%}
+                        <img src="{% static src %}" alt="{{ provider_name }}" width="36" height="36"
+                             style="border-radius: 50%;">
+                        {% endwith %}
+                    </th>
+                    {% endfor %}
+                    <th class="no-order action-datatable">Action</th>
+                </tr>
+                </thead>
+            </table>
+            <input type="text" class="hidden" name="email" style="position: fixed;opacity: 0;left: 0;">
+        </div>
+    </div>
+    <!--social user detail modal-->
+    <div id="social-user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="social-user-detail"
+         style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-custom-width">
+            <div class="modal-content">
+                <div class="modal-header m-b-20">
+                    <h4 class="modal-title" id="social-user-detail">Social Users</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="text-center">
+                    <div id='social-users'>
+                        <img src="{% static '/images/ninja.png'%}"
+                             class="rounded-circle thumb-xl img-thumbnail m-b-10" alt="profile-image">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% endblock %}
+
+{% block js %}
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+
+<!-- Datatables Js-->
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %} "></script>
+<script src="{% static 'plugins/datatables/fnSetFilteringDelay.js' %} "></script>
+<script src="{% static 'plugins/datatables/dataTables.bootstrap4.min.js' %} "></script>
+<script type="text/javascript">
+var socialUserTable;
+$(document).ready(function(){
+    loadInitialStatisticTable()
+})
+function loadInitialStatisticTable(){
+    $.fn.dataTable.ext.errMode = 'none';
+
+    var table = socialUserTable = $('#statistic-table').dataTable({
+        'lengthMenu': [25,50,100],
+        'autoWidth': false,
+        'processing': true,
+        'serverSide': true,
+        'ajax': {
+              'url': '{% url 'statistic_login' app.id %}',
+              'method': 'GET',
+              'data': function(d){
+                d.flag_loading = 'load-data'
+              }
+        },
+        'order': [[ 1, 'asc' ]],
+        'columnDefs': [
+            {orderable: false, targets: 'no-order' },
+            {
+                'targets': 'provider-datatable',
+                'render': function ( data, type, row ) {
+                    if (data == 1) return '<span class="text-success"><i class="mdi mdi-24px mdi-check-circle"></i></span>'
+                    else return ''
+                }
+            },
+            {
+                'targets': 'social-user-detail',
+                'render': function ( data, type, row ) {
+                    var social_id = data.split('|')[0];
+                    var prohibited = data.split('|')[1]
+                    var app_id = data.split('|')[2]
+                    if (prohibited != '1'){
+                        return '<a class="clickable" href="/apps/'+app_id+'/users/'+social_id+'/">'+social_id+'</a>'
+                    }else{
+                        return '<span class="text-muted">'+social_id+'</span>'
+                    }
+                }
+            },
+            {
+                'targets': 'action-datatable',
+                'render': function (data, type, row){
+                    var app_id = data.split('|')[0];
+                    var social_id = data.split('|')[1];
+                    var prohibited = data.split('|')[2];
+                    if (prohibited != '1'){
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-danger button-icon clickable del-info" onclick="deleteConfirmPassword(event)" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirmPassword(event)"><i class="fas fa-trash-alt"></i></button></li>'
+                    }else{
+                        return '{% csrf_token %}<input type="hidden" value='+app_id+' name="app_id"><input type="hidden" value='+social_id+' name="social_id"><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user info" class="text-secondary button-icon clickable del-info" type="submit"> <i class="fas fa-user-slash"></i></button></li><li class="list-inline-item"><button data-toggle="tooltip" data-placement="bottom" data-original-title="Delete user" class="text-danger button-icon clickable del-user" onclick="deleteConfirmPassword(event)"><i class="fas fa-trash-alt"></i></button></li>'
+                    }
+                }
+            },
+        ],
+        language: {
+        searchPlaceholder: "User ID"
+        },
+        "drawCallback": function( settings ) {
+            $('[data-toggle="tooltip"]').tooltip();
+        },
+    });
+
+    table.fnSetFilteringDelay(700);
+}
+
+function showUserDetailModal(element){
+    $('.text-left').remove();
+    social_id = $(element).text();
+    $.ajax({
+        url: '',
+        data: {'social_id': social_id},
+        type: 'get',
+        cache: false,
+        success: function(data){
+            var html='';
+            Object.keys(data).forEach(function(key1){
+                 var html_detail='<div class="text-left card-box word-wrap"><img src="/static/images/social-icon/'+key1+'.png" class="rounded-circle thumb-md img-thumbnail m-b-10 m-t-10" alt="provider-image">';
+                 Object.keys(data[key1]).sort().forEach(function(key2){
+                    var value = '';
+                    if(typeof data[key1][key2] == 'object'){
+                        Object.keys(data[key1][key2]).forEach(function(key3){
+                            value += '<p class="font-13"><strong>'+key3+' :</strong> <span class="m-l-15">'+data[key1][key2][key3]+'</span></p>';
+                        })
+                        value = '<p></p>'+value;
+                    }else{
+                        value = data[key1][key2];
+                    }
+                    html_detail += '<div class="row"><div class="col-md-3"><p class="font-13"><strong>'+key2+' :</strong> </p></div><div class="col-md-9">'+value+'</div></div>';
+                 });
+                 html_detail += '</div>';
+                 html += html_detail;
+            });
+            $('#social-users').append(html);
+        },
+        error: function(data){
+            alert('get data error')
+        }
+
+    });
+    $('#social-user-modal').modal('show');
+}
+
+function deleteConfirmPassword(event){
+    event.preventDefault();
+    var form = event.target.closest('form');
+    swal({
+                title: 'Are you sure?',
+                text: "Re-enter your password to delete",
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#4fa7f3',
+                confirmButtonColor: '#98a6ad',
+                reverseButtons: true,
+                confirmButtonText: 'Yes, delete it!',
+                onOpen: function(ele) {
+                    $('.swal2-cancel').focus()
+                },
+                input: 'password',
+                inputPlaceholder: 'enter password to delete',
+                preConfirm: (password) => {
+                    return fetch('{% url 'password_confirmation' %}?',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'text/plain; charset=utf-8',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({'password':password})
+                    })
+                    .then(response => {
+                        if (!response.ok){
+                            throw new Error(response.statusText)
+                        }
+                        return response.json()
+                    })
+                    .then(json => {
+                        if (!json.authenticate_ok){
+                            throw new Error('Password Incorrect!')
+                        }
+                    })
+                    .catch(error => {
+                        swal.showValidationMessage(`${error}`)
+                    })
+                },
+                allowOutsideClick: () => !swal.isLoading()
+            }).then((result) => {
+                if(result.value){
+                    if($(event.target).attr('class').includes('del-user')){
+                        deleteSocialUser(event.target);
+                    }else if($(event.target).parent().attr('class').includes('del-user')){
+                        deleteSocialUser(event.target.parentNode);
+                    }else if($(event.target).attr('class').includes('del-info')){
+                        deleteUserInfo(event.target);
+                    }else if($(event.target).parent().attr('class').includes('del-info')){
+                        deleteUserInfo(event.target.parentNode);
+                    }
+                }
+            });
+}
+
+function deleteSocialUser(e){
+    var app_id = $(e).parent().parent().children('input[name="app_id"]').val();
+    var social_id = $(e).parent().parent().children('input[name="social_id"]').val();
+    var csrf_token = $(e).parent().parent().children('input[name="csrfmiddlewaretoken"]').val();
+    $.post('{% url "delete_user_social" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
+        if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').empty();
+            $('#message-container').append(html);
+        }else{
+            var html = '<div class="alert alert-success alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').empty();
+            $('#message-container').append(html);
+
+            socialUserTable.ajax.reload();
+        }
+    }).fail(function(data){
+        if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').empty();
+            $('#message-container').append(html);
+        }
+    })
+}
+
+function deleteUserInfo(e){
+    var app_id = $(e).parent().parent().children('input[name="app_id"]').val();
+    var social_id = $(e).parent().parent().children('input[name="social_id"]').val();
+    var csrf_token = $(e).parent().parent().children('input[name="csrfmiddlewaretoken"]').val();
+    $.post('{% url "delete_user_social_info" app.id %}', {app_id: app_id, social_id: social_id, csrfmiddlewaretoken: csrf_token}, function(data){
+        if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').empty();
+            $('#message-container').append(html);
+        }else{
+            var html = '<div class="alert alert-success alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').empty();
+            $('#message-container').append(html);
+
+            socialUserTable.ajax.reload()
+        }
+    }).fail(function(data){
+       if(data.status == 'failed'){
+            var html = '<div class="alert alert-danger alert-dismissable">\
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+            <strong> '+data.message+' </strong>\
+            </div>';
+            $('#message-container').empty();
+            $('#message-container').append(html);
+       }
+    })
+}
+</script>
+{% endblock %}

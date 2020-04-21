@@ -1,0 +1,304 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_tags %}
+
+<!-- Page title -->
+{% block topbar %}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Channel</h4>
+</li>
+<li class="list-inline-item">
+    <div class="create-app-button">
+        <a href="{% url 'channel_list' app.id %}"
+           class="btn btn-success btn-bordred w-md waves-effect waves-light m-b-5"><i
+                class="mdi mdi-keyboard-backspace"></i> <span>Back</span>
+        </a>
+    </div>
+</li>
+<ul class="list-unstyled topbar-right-menu float-right mb-0">
+    <li class="list-inline-item">
+        <div class="dropdown app-list-select ">
+            <button type="button" class="btn btn-primary btn-bordred dropdown-toggle waves-effect waves-light"
+                    data-toggle="dropdown" aria-expanded="false">
+                <span style="float: left;"><i class="fas fa-code-branch"></i></span>{{ channel.provider }}
+            </button>
+            <div class="dropdown-menu">
+                <!-- item-->
+                {% for option in channels %}
+                <a href="{% url 'channel_detail' app.id option.id %}" class="dropdown-item">{{ option.provider }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+</ul>
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div class="col-md-12">
+        <div class="card-box">
+                <form class="form-horizontal m-t-20" method="post" action="">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                            <div class="col-md-10">
+                                {% render_field form.app_id class='form-control' value=app.id %}
+                            </div>
+                        </div>
+
+                    <select name="provider"  value="{{ channel.provider }}" class="form-control" style="display:none">
+                        {% for provider_name in provider_names %}
+                        <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="form-group row">
+                            <label for="id_provider" class="col-md-2 col-form-label">Provider
+                            <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Provider is ..."></i></label>
+                            <div class="col-md-8">
+                                <select name="provider_disabled" id="id_provider" value="{{ channel.provider }}" class="form-control" disabled>
+                                    {% for provider_name in provider_names %}
+                                    <option value="{{ provider_name }}" {% if provider_name == channel.provider %} selected{% endif %}>{{ provider_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.provider.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in form.provider.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    <div class="form-group row">
+                        <label for="id_api_version" class="col-md-2 col-form-label">API Version</label>
+                        <div class="col-md-8">
+                            <select name="api_version" id="id_api_version" class="form-control">
+                                {% for provider in providers %}
+                                <option class="version-{{ provider.name }} api-version-option" value="{{ provider.id }}"
+                                        style="display: none">{{ provider.version }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="id_client_id" class="col-md-2 col-form-label"><span class="label-required">Client ID</span>
+                        <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Client ID is ..."></i></label>
+                            <div class="col-md-8">
+                                {% render_field form.client_id class='form-control' placeholder='Client ID' value=channel.client_id %}
+                                {% if form.client_id.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in form.client_id.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    <div class="form-group row">
+                        <label for="id_client_secret" class="col-md-2 col-form-label"><span class="label-required">Client Secret</span>
+                        <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="Client secret is ..."></i></label>
+                            <div class="col-md-8">
+                                {% render_field form.client_secret class='form-control' placeholder='Client Secret' value=channel.client_secret %}
+                                {% if form.client_secret.errors %}
+                                <ul class="parsley-errors-list filled">
+                                    {% for error in form.client_secret.errors %}
+                                    <li class="">{{ error }}</li>
+                                    {% endfor%}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    <div class="form-group row ">
+                        <div class="col-md-2"></div>
+                        {% with required_fields=channel.required_fields_as_list %}
+                        <div class="col-md-4">
+                            {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
+                                    <label class="col-form-label">Basic fields</label>
+                                    {% for field in provider.basic_fields_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input class="field" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled
+                                        {% if field.key in required_fields and provider.name == channel.provider %} checked {% endif %}>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        <div class="col-md-4">
+                                {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
+                                    <label class="col-form-label">Advanced fields</label>
+                                    {% for field in provider.advanced_fields_as_object %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input class="field" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="required_field"
+                                               type="checkbox" value="{{ field.key }}:{{ field.permission }}" disabled
+                                        {% if field.key in required_fields and provider.name == channel.provider %} checked {% endif %}>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}"> {{ field.name }} </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-md-2"></div>
+                        {% with options=channel.options_as_list %}
+                        <div class="col-md-6">
+                                {% for provider in providers %}
+                                <div class="provider-fields {{ provider.name }}-{{ provider.id }}" style="display: none">
+                                    {% if provider.options_as_object %}
+                                    <label class="col-form-label">Options</label>
+                                    {% endif %}
+                                    {% for field in provider.options_as_object %}
+                                    {% with restrict_levels_satisfy=field.restrict_levels|bitwise_and:request.user.level %}
+                                    <div class="checkbox checkbox-pink">
+                                        <input class="option{% if restrict_levels_satisfy > 0 %}-available{% endif %}" id="{{ provider.name }}-{{ provider.id }}-{{ field.key }}" name="option"
+                                               type="checkbox" value="{{ field.key }}" disabled
+                                        {% if field.key in options %} checked {% endif %}>
+                                        <label class="" for="{{ provider.name }}-{{ provider.id }}-{{ field.key }}">
+                                            {{ field.name }} </label>
+                                        {% if field.tooltip %} <i class="fas fa-question-circle" data-toggle="tooltip"
+                                         data-placement="right" title="" data-original-title="{{ field.tooltip }}"></i>
+                                        {% endif %}
+                                    </div>
+                                    {% endwith %}
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% endwith %}
+                    </div>
+                    <div class="form-group text-center m-t-40 row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <button class="btn btn-success btn-block waves-effect waves-light"
+                                    type="submit">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <form method="POST" action="{% url 'delete_channel' app.id channel.id %}">
+                 {% csrf_token %}
+                     <div class="form-group text-center m-t-40 row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <button id="sa-warning" href="{% url 'delete_channel' app.id channel.id %}"
+                               class="btn btn-secondary btn-block waves-effect waves-light" onclick="deleteConfirm(event)"
+                               type="submit">
+                                Delete This Channel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<!--/ meta -->
+{% endblock %}
+
+{% block js %}
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
+<!--My js-->
+<script type="text/javascript">
+$(document).ready(function() {
+    $('form').parsley();
+    $('.version-'+$('#id_provider').val()).show();
+    $('#id_api_version').val('{{ provider_id }}');
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+    $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
+    $('#id_provider').change(function(){
+        $('.api-version-option').hide();
+        $('.version-'+$('#id_provider').val()).show();
+        $('#id_api_version').val($('.version-'+$('#id_provider').val()).first().val());
+
+        $('.provider-fields').hide();
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+
+        $('.provider-fields input').prop('disabled', true)
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
+    })
+    $('#id_api_version').change(function(){
+        $('.provider-fields').hide();
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()).show();
+
+        $('.provider-fields input').prop('disabled', true)
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.field').prop('disabled', false);
+        $('.'+$('#id_provider').val()+'-'+$('#id_api_version').val()+' input.option-available').prop('disabled', false);
+    })
+
+    var url = window.location.pathname;
+    var urlSplit = url.split('/')
+    url = urlSplit.slice(0, urlSplit.length - 2).join('/')
+    url = url+'/'
+    console.info(url)
+    var target = $('li.li-left-menu a[href="'+url+'"]');
+    target.parent().parent().parent().children().first().addClass('subdrop');
+    target.parent().parent().show(500);
+    target.parent().addClass('active');
+    target.addClass('active');
+});
+
+function getApiKey(){
+//$('#img-loading').show()
+$.ajax({
+    url: '{% url 'get_api_key' %}',
+    data: {},
+    type: 'get',
+    cache: false,
+    success: function(key){
+        $('#id_api_key').val(key)
+        //$('#img-loading').hide()
+    },
+    error: function(message){
+        alert("get api-key failed!")
+        //$('#img-loading').hide()
+    }
+})
+}
+</script>
+{% endblock %}

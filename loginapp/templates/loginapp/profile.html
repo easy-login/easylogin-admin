@@ -1,0 +1,203 @@
+{% extends 'loginapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+<!-- Page title -->
+{% block topbar%}
+<!-- Page title -->
+<li class="list-inline-item">
+    <h4 class="page-title">Profile</h4>
+</li>
+{% endblock %}
+
+
+{% block sidemenu %}
+{% if request.user.is_superuser %}
+<li>
+    <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
+        <span> User Manager </span> </a>
+</li>
+<li>
+    <a href="{% url 'admin_report' %}" class="waves-effect"><i class="fas fa-registered"></i>
+        <span>  Application Manager </span> </a>
+</li>
+<li>
+    <a href="{% url 'admin_setting' %}" class="waves-effect"><i class="fas fa-cog"></i>
+        <span>System Settings</span> </a>
+</li>
+{% endif%}
+<li class="has_sub">
+    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-account"></i><span>My Profile</span>
+         <i class="fa fa-angle-down menu-narrow"></i>
+    </a>
+    <ul class="list-unstyled">
+        <li>
+            <a href="{% url 'profile' %}">Update Profile</a>
+        </li>
+        <li>
+            <a href="{% url 'change_password' %}">Change Password</a>
+        </li>
+    </ul>
+</li>
+<li>
+    <a href="{% url 'dashboard'%}" class="waves-effect"><i class="mdi mdi-apps"></i>
+        <span> My Apps </span> </a>
+</li>
+
+{% endblock %}
+{% block content%}
+        <div class="row card-box profile-info-name">
+            <div class="col-md-3">
+                <img src="{% if request.user.is_superuser %}{% static 'images/admin.png' %}{% else %}{% static 'images/ninja.png' %}{% endif %}"
+                     class="img-thumbnail" alt="{{ request.user.username }}">
+                <!--<h4 class="m-0">{{ request.user.username }}</h4>-->
+            </div>
+            <div class="col-md-9 profile-info-detail">
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <strong> {{ message }} </strong>
+                </div>
+                {% endif %}
+                {% endfor %}
+
+                {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <strong> {{ message }} </strong>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                    <div class="p-20">
+                        <form class="form-horizontal m-t-20" method="post" action="">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                    <label for="id_email" class="col-md-2 col-form-label">Email</label>
+                                    <div class="col-md-8">
+                                        {% render_field form.email class='form-control' placeholder='Email' disabled='' value=request.user.email %}
+                                        {% if form.email.errors %}
+                                        <ul class="parsley-errors-list filled">
+                                            {% for error in form.email.errors %}
+                                            <li class="">{{ error }}</li>
+                                            {% endfor%}
+                                        </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            <div class="form-group row">
+                                <label for="id_username" class="col-md-2 col-form-label label-required">Username</label>
+                                <div class="col-md-8">
+                                    {% render_field form.username class='form-control' placeholder='Username' value=request.user.username data-parsley-length="[6,20]" data-parsley-pattern='[a-zA-Z-_0-9]*' data-parsley-pattern-message="This value seem to invalid. Valid characters: 0-9, a-z, A-Z, -, _" %}
+                                    {% if form.username.errors %}
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.username.errors %}
+                                        <li class="">{{ error }}</li>
+                                        {% endfor%}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="id_phone" class="col-md-2 col-form-label">Phone</label>
+                                <div class="col-md-8">
+                                    {% render_field form.phone class='form-control' placeholder='Phone' value=request.user.phone type='tel' parsley-type="phone" %}
+                                    {% if form.phone.errors %}
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.phone.errors %}
+                                        <li class="">{{ error }}</li>
+                                        {% endfor%}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label for="id_first_name" class="col-md-2 col-form-label">First Name</label>
+                                <div class="col-md-8">
+                                    {% render_field form.first_name class='form-control' placeholder='First Name' value=request.user.first_name %}
+                                    {% if form.first_name.errors %}
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.first_name.errors %}
+                                        <li class="">{{ error }}</li>
+                                        {% endfor%}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <label for="id_last_name" class="col-md-2 col-form-label">Last Name</label>
+                                <div class="col-md-8">
+                                    {% render_field form.last_name class='form-control' placeholder='Last Name' value=request.user.last_name %}
+                                    {% if form.last_name.errors %}
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.last_name.errors %}
+                                        <li class="">{{ error }}</li>
+                                        {% endfor%}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="id_address" class="col-md-2 col-form-label">Address</label>
+                                <div class="col-md-8">
+                                    {% render_field form.address class='form-control' placeholder='Address' value=request.user.address %}
+                                    {% if form.address.errors %}
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.address.errors %}
+                                        <li class="">{{ error }}</li>
+                                        {% endfor%}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="id_company" class="col-md-2 col-form-label">Company</label>
+                                <div class="col-md-8">
+                                    {% render_field form.company class='form-control' placeholder='Company' value=request.user.company %}
+                                    {% if form.company.errors %}
+                                    <ul class="parsley-errors-list filled">
+                                        {% for error in form.company.errors %}
+                                        <li class="">{{ error }}</li>
+                                        {% endfor%}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group text-center m-t-40 row">
+                                <div class="col-md-10">
+                                    <button class="btn btn-success btn-block waves-effect waves-light"
+                                            type="submit">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+        <!--/ meta -->
+{% endblock %}
+
+{% block js %}
+<!-- Validation form-->
+<script type="text/javascript" src="{% static 'plugins/parsleyjs/dist/parsley.min.js' %}"></script>
+<script type="text/javascript">
+            $(document).ready(function() {
+                $('form').parsley();
+            });
+
+
+</script>
+{% endblock %}

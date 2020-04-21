@@ -1,0 +1,151 @@
+{% extends 'loginapp/base.html' %}
+<!-- Page title -->
+{% load static %}
+{% load custom_tags %}
+{% block topbar%}
+
+<li class="list-inline-item">
+    <div class="create-app-button">
+        <a href="{% url 'add_app' %}"
+           class="btn btn-success btn-bordred w-md waves-effect waves-light m-b-5"><i
+                class="mdi mdi-plus"></i> <span>Add Application</span>
+        </a>
+    </div>
+</li>
+<li class="list-inline-item float-right create-app-button">
+    <form class="form-inline" method="GET" action="{% url 'dashboard' %}">
+        <!--{% if request.user.is_superuser%}-->
+        <!--<div class="form-group select-user-id m-r-10">-->
+            <!--<label>User :</label>-->
+            <!--<select name="user_id" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">-->
+                <!--<option value="-1" selected>All</option>-->
+                <!--{% for option in users %}-->
+                <!--<option value="{{ option.id }}">{{ option.username }}</option>-->
+                <!--{% endfor %}-->
+            <!--</select>-->
+        <!--</div>-->
+        <!--{% endif %}-->
+        <div class="form-group select-order-by">
+            <label>Sort :</label>
+            <select name="order_by" class="form-control ml-2 form-control-sm" onchange="this.form.submit()">
+                <option value="-created_at">Date Created</option>
+                <option value="-modified_at">Date Modified</option>
+                <option value="name">Name</option>
+            </select>
+        </div>
+    </form>
+</li>
+
+
+{% endblock %}
+
+{% block sidemenu %}
+{% include 'loginapp/app_menu.html' %}
+{% endblock %}
+
+{% block content%}
+<div class="row">
+    <div class="col-md-12">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong> {{ message }} </strong>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% for app in apps1 %}
+    <div class="col-md-4">
+        <div class="card-box project-box p-b-0 zoom" style="word-wrap: break-word">
+            <div class="dropdown pull-right">
+                <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-dots-vertical"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <!-- item-->
+                    <a href="{% url 'app_detail' app.id %}" class="dropdown-item clickable">Edit</a>
+                    <!-- item-->
+                    <form method="POST" action="{% url 'delete_app' app.id %}">
+                        {% csrf_token %}
+                        <button class="dropdown-item clickable" onclick="deleteConfirm(event)" type="submit"
+                                style="cursor: pointer">Delete
+                        </button>
+                    </form>
+                    <!-- item-->
+                </div>
+            </div>
+            <h4 class="mt-0 app-title"><a class="clickable text-inverse" href="{% url 'report_app' app.id %}">{{ app.name }}</a>
+            </h4>
+            <p class="text-muted font-13 app-description" style="height:42px;">
+                {% str_length app.description as des_len %}
+                {% if des_len < 50 %}
+                    {{ app.description }}
+                {% else %}
+                    {{ app.description|slice:"0:50" }}...<a href="{% url 'app_detail' app.id %}" class="font-600 text-muted">view more</a>
+                {% endif %}
+            </p>
+            <div class="text-left m-t-20">
+                <p class="text-inverse">
+                    <strong>App ID: <span class="badge badge-secondary m-l-10" style="position:unset;">{{ app.id }}</span></strong>
+                </p>
+            </div>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <h3 class="mb-0">{{ app.get_number_of_channels }}</h3>
+                    <p class="text-danger">Channel</p>
+                </li>
+            </ul>
+            <hr>
+            <ul class="text-inverse list-inline m-b-0">
+                <li class="list-inline-item">
+                    <h5 class="m-b-5">Create Time</h5>
+                    <p class="text-muted"> {{ app.created_at|date:'N j,Y' }}
+                        <small class="text-muted">{{ app.created_at|date:'h:i a' }}</small>
+                    </p>
+                </li>
+
+                <li class="list-inline-item">
+                    <h5 class="m-b-5">Last Modify</h5>
+                    <p class="text-muted"> {{ app.modified_at|date:'N j,Y' }}
+                        <small class="text-muted">{{ app.modified_at|date:'h:i a' }}</small>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div><!-- end col-->
+    {% endfor %}
+</div>
+<!-- end row -->
+{% endblock %}
+
+{% block js %}
+<!-- Sweet Alert Js  -->
+<script src="{% static 'plugins/sweet-alert/sweetalert2.min.js' %} "></script>
+<script type="text/javascript">
+$(document).ready(function() {
+   {% if request.GET.order_by %}
+   $(".select-order-by select").val("{{ request.GET.order_by }}")
+   {% else %}
+   $(".select-order-by select").val("-modified_at")
+   {% endif %}
+
+   {% if request.GET.user_id %}
+   $(".select-user-id select").val("{{ request.GET.user_id }}")
+   {% else %}
+   $(".select-user-id select").val("-1")
+   {% endif %}
+});
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% load custom_tags %}
+{% if request.user.is_superuser %}
+<li>
+    <a href="{% url 'admin_users'%}" class="waves-effect"><i class="fas fa-users"></i>
+        <span>User Manager</span> </a>
+</li>
+<!--<li>-->
+    <!--<a href="{% url 'admin_apps' %}" class="waves-effect"><i class="fas fa-layer-group"></i>-->
+        <!--<span> Apps Manager </span> </a>-->
+<!--</li>-->
+<li>
+    <a href="{% url 'admin_report' %}" class="waves-effect"><i class="fas fa-registered"></i>
+        <span>Application Manager</span> </a>
+</li>
+<li>
+    <a href="{% url 'admin_setting' %}" class="waves-effect"><i class="fas fa-cog"></i>
+        <span>System Settings</span> </a>
+</li>
+{% endif %}
+<li>
+    <a href="{% url 'profile' %}" class="waves-effect"><i class="mdi mdi-account"></i><span> My Profile </span>
+    </a>
+</li>
+<li>
+    <a href="{% url 'dashboard'%}" class="waves-effect"><i class="mdi mdi-apps"></i>
+        <span> My Apps </span> </a>
+</li>
+{% for app in apps %}
+<li class="has_sub">
+    {% str_length app.name as name_length %}
+    <a href="javascript:void(0);" class="waves-effect">
+        <i class="mdi mdi-layers"></i>
+        <span style="text-transform: capitalize;" {% if name_length > 17 %} data-toggle="tooltip" data-placement="right" title="" data-original-title="{{ app.name }}"{% endif%}>
+            {{ app.name|slice:"0:17" }} </span>
+        <i class="fa fa-angle-down menu-narrow"></i>
+    </a>
+    <ul class="list-unstyled">
+        <li class="li-left-menu"><a href="{% url 'report_app' app.id %}">Dashboard</a></li>
+        <li class="li-left-menu"><a href="{% url 'statistic_login' app.id %}">Users List</a></li>
+        <li class="li-left-menu"><a href="{% url 'channel_list' app.id %}">Channels List</a></li>
+        <li class="li-left-menu"><a href="{% url 'app_detail' app.id %}">App Settings</a></li>
+    </ul>
+</li>
+{% endfor %}
