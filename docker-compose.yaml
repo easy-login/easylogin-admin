@@ -9,3 +9,5 @@ services:
       - "8000:7000"
     volumes:
       - ./:/app
+      - /var/www/admin-easylogin/static:/static
+    command: bash -c "python manage.py collectstatic && sh gunicorn.sh"
