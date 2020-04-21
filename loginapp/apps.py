@@ -17,7 +17,7 @@ class SocialPlusConfig(AppConfig):
 
         print('Creating admin account...')
         hasher = PBKDF2PasswordHasher()
-        hashed_pw = hasher.encode('Mirabo!23', uuid.uuid().hex)
+        hashed_pw = hasher.encode('Mirabo!23', uuid.uuid4().hex[:16])
 
         with connection.cursor() as cursor:
             cursor.execute("SELECT id FROM admins WHERE username = 'admin'")
