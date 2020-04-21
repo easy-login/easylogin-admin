@@ -9,17 +9,17 @@ ADD . /app
 
 # Install binary libraties
 RUN apt -y update
-RUN apt -y install gcc python3-dev libssl-dev mysql-client libmariadbclient-dev
+RUN apt -y install gcc python3-dev libssl-dev default-libmysqlclient-dev
 RUN mkdir -p /var/log/sociallogin
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
+# Make port 7000 available to the world outside this container
+EXPOSE 7000
 
 # Define environment variable
-ENV DEBUG True
+# ENV DEBUG True
 
 # Run wsgi.py when the container launches
 CMD ["sh", "prod.sh"]
