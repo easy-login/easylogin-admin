@@ -10,4 +10,4 @@ services:
     volumes:
       - ./:/app
       - /var/www/admin-easylogin/static:/static
-    command: bash -c "python manage.py collectstatic && sh gunicorn.sh"
+    command: bash -c "python manage.py collectstatic --no-input && sh gunicorn.sh"
