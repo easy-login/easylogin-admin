@@ -163,7 +163,6 @@ def init_providers(conn, cursor):
                 json.dumps(convert_fields(provider['advanced_fields'])),
                 json.dumps(provider.get('options', []))
             )
-            print(tup)
             data.append(tup)
     cursor.execute("TRUNCATE providers")
     cursor.executemany("""
