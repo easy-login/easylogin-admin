@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 't*l53fi#t&zy2fue6qzmqpuwy@4ebhfz)_^%fe!rf%vm$^&kz*')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.getenv('DJANGO_DEBUG', 'True')) != 'False'
+DEBUG = str(os.getenv('DJANGO_DEBUG', '0')) == '1'
 
 ALLOWED_HOSTS = ['*']
 
@@ -157,7 +157,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(BASE_DIR, 'static'))
+STATIC_ROOT = os.getenv('STATIC_ROOT', '/static')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'loginapp/templates/loginapp'),
