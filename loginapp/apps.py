@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 from django.apps import AppConfig
 from django.db import connection
@@ -25,9 +26,15 @@ class SocialPlusConfig(AppConfig):
                 row = cursor.fetchone()
                 if not row:
                     cursor.execute("""
-                        INSERT INTO admins (username, email, password, is_superuser, level, first_name, last_name)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
-                    """, ('admin', 'anhtn@mirabo.com.vn', hashed_pw, 1, 65535, 'Mirabo', 'Admin'))
+                        INSERT INTO admins (username, email, password, 
+                            is_superuser, is_active, deleted, is_staff, level,
+                            date_joined, first_name, last_name,
+                            phone, address, company)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, ('superadmin', 'anhtn@mirabo.com.vn', hashed_pw, 
+                        1, 1, 0, 0, 65535, 
+                        datetime.utcnow(), 'Super', 'Admin', 
+                        '0400666905', '1226-14, Kanda Konya-cho, Chiyoda-ku', 'mirabo'))
                     connection.commit()
         except Exception as e:
             print(e)
