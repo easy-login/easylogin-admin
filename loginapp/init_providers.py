@@ -151,7 +151,7 @@ def convert_fields(fields):
     return converted
 
 
-if __name__ == '__main__':
+def init_providers(conn, cursor):
     data = []
     for provider in providers:
         for version in provider['version']:
@@ -165,13 +165,25 @@ if __name__ == '__main__':
             )
             print(tup)
             data.append(tup)
-
-    db = MySQLdb.connect(host='localhost', user='root', passwd='root', db='sociallogin')
-    cursor = db.cursor()
     cursor.execute("TRUNCATE providers")
     cursor.executemany("""
         INSERT INTO providers (name, version, required_permissions, basic_fields, advanced_fields, options) 
         VALUES (%s, %s, %s, %s, %s, %s)""", data)
 
-    db.commit()
+    conn.commit()
+
+
+if __name__ == '__main__':
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    db = MySQLdb.connect(
+        db=os.getenv('DATABASE_NAME', 'easylogin'),
+        user=os.getenv('DATABASE_USER', 'root'),
+        passwd=os.getenv('DATABASE_PASSWORD', 'root'),
+        host=os.getenv('DATABASE_HOST', 'localhost'),   # Or an IP Address that your DB is hosted on
+        port=os.getenv('DATABASE_PORT', '3306')
+    )
+    cursor = db.cursor()
+    init_providers(db, cursor)
     db.close()

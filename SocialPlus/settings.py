@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'SocialPlus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DATABASE_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.getenv('DATABASE_NAME', 'sociallogin'),
+        'NAME': os.getenv('DATABASE_NAME', 'easylogin'),
         'USER': os.getenv('DATABASE_USER', 'root'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD', 'root'),
         'HOST': os.getenv('DATABASE_HOST', 'localhost'),   # Or an IP Address that your DB is hosted on
