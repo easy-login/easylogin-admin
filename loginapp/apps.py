@@ -24,7 +24,7 @@ class SocialPlusConfig(AppConfig):
             row = cursor.fetchone()
             if not row:
                 cursor.execute("""
-                    INSERT INTO admins (username, email, password, is_superuser, level, firstname, lastname)
+                    INSERT INTO admins (username, email, password, is_superuser, level, first_name, last_name)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, ('admin', 'anhtn@mirabo.com.vn', hashed_pw, 1, 65535, 'Mirabo', 'Admin'))
                 connection.commit()
