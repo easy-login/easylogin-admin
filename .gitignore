@@ -21,3 +21,4 @@ migrations/
 
 my.cnf
 .env
+.env.sh

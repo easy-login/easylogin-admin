@@ -8,8 +8,8 @@ WORKDIR /app
 ADD . /app
 
 # Install binary libraties
-RUN apt -y update
-RUN apt -y install gcc python3-dev libssl-dev default-libmysqlclient-dev
+RUN apt-get -y update
+RUN apt-get -y install gcc python3-dev libssl-dev default-libmysqlclient-dev
 RUN mkdir -p /var/log/sociallogin
 
 # Install any needed packages specified in requirements.txt
