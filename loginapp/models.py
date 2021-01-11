@@ -7,8 +7,8 @@ from django.shortcuts import get_object_or_404
 from urllib import parse
 import json
 
-# Model's constant
-MAX_LENGTH_SHORT_FIELD = 100
+# Model's constant7
+MAX_LENGTH_SHORT_FIELD = 127
 MAX_LENGTH_MEDIUM_FIELD = 255
 MAX_LENGTH_LONG_FIELD = 500
 
@@ -16,13 +16,13 @@ MAX_LENGTH_LONG_FIELD = 500
 # Create your models here.
 class User(AbstractUser):
     email = models.EmailField(unique=True, max_length=MAX_LENGTH_SHORT_FIELD)
-    username = models.CharField(unique=True, max_length=MAX_LENGTH_SHORT_FIELD)
-    phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
+    username = models.CharField(unique=True, max_length=64)
+    phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD, null=True)
     password = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-    first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-    last_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
-    address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD)
-    company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
+    first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD, null=True)
+    last_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD, null=True)
+    address = models.CharField(max_length=MAX_LENGTH_MEDIUM_FIELD, null=True)
+    company = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD, null=True)
     is_superuser = models.SmallIntegerField(default=0)
     is_active = models.SmallIntegerField(default=1)
     deleted = models.SmallIntegerField(default=0)
