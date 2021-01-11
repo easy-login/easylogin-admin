@@ -13,7 +13,7 @@ def get_total_auth_report(app_id):
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT is_login, status, count(id) 
-            FROM auth_logs 
+            FROM easylogin_auth_logs 
             WHERE app_id = %s and status IN ('succeeded', 'wait_reg')
             GROUP BY is_login, status""", (app_id,))
         rows = cursor.fetchall()
@@ -31,7 +31,7 @@ def get_total_provider_report(app_id):
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT provider, count(id) 
-            FROM auth_logs 
+            FROM easylogin_auth_logs 
             WHERE app_id = %s and status = 'succeeded'
             GROUP BY provider ORDER BY provider""", (app_id,))
         rows = cursor.fetchall()
@@ -70,7 +70,7 @@ def get_auth_report_per_provider(app_id, from_dt=None, to_dt=None, auth_state=1)
 
         cursor.execute("""
             SELECT provider, DATE(CONVERT_TZ(modified_at, '+00:00', %s)) as dt, COUNT(id) 
-            FROM auth_logs 
+            FROM easylogin_auth_logs 
             WHERE app_id = %s 
                 AND modified_at BETWEEN %s AND %s 
                 AND status = %s 
@@ -104,8 +104,8 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
                     SUM(p.login_count) AS login_total, 
                     GROUP_CONCAT(p.provider) AS linked_providers,
                     prohibited
-                FROM social_profiles p
-                LEFT JOIN users u ON u.id = p.user_id
+                FROM easylogin_social_profiles p
+                LEFT JOIN easylogin_users u ON u.id = p.user_id
                 WHERE p.app_id = %s AND p.deleted = 0 AND u.pk = %s 
                 GROUP BY alias, u.pk, prohibited
                 ORDER BY {} LIMIT {}, {}
@@ -118,8 +118,8 @@ def get_user_report(app_id, page_length, start_row, order_by, search_value):
                     SUM(p.login_count) AS login_total, 
                     GROUP_CONCAT(p.provider) AS linked_providers,
                     prohibited
-                FROM social_profiles p 
-                LEFT JOIN users u ON u.id = p.user_id
+                FROM easylogin_social_profiles p 
+                LEFT JOIN easylogin_users u ON u.id = p.user_id
                 WHERE p.app_id = %s AND p.deleted = 0
                 GROUP BY p.alias, u.pk, prohibited
                 ORDER BY {} LIMIT {}, {}
@@ -151,8 +151,9 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
                     DATE(CONVERT_TZ(admins.last_login, '+00:00', %s)) as last_login,
                     admins.deleted ,
                     admins.level
-                FROM admins
-                LEFT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
+                FROM easylogin_admins admins
+                LEFT JOIN easylogin_apps apps 
+                    ON admins.id = apps.owner_id AND apps.deleted = 0
                 WHERE admins.username=%s 
                 GROUP BY admins.id
                 ORDER BY {} LIMIT {}, {}
@@ -168,8 +169,9 @@ def get_list_admin_users(page_length, start_row, order_by, search_value):
                     DATE(CONVERT_TZ(admins.last_login, '+00:00', %s)) as last_login,
                     admins.deleted,
                     admins.level
-                FROM admins
-                LEFT JOIN apps ON admins.id = apps.owner_id AND apps.deleted = 0
+                FROM easylogin_admins admins
+                LEFT JOIN easylogin_apps apps
+                    ON admins.id = apps.owner_id AND apps.deleted = 0
                 GROUP BY admins.id
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET,))
@@ -193,9 +195,9 @@ def get_list_apps(page_length, start_row, order_by, search_value):
                     DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
                     a.deleted
-                FROM apps AS a
-                LEFT OUTER JOIN social_profiles AS p ON a.id = p.app_id
-                INNER JOIN admins AS o ON a.owner_id = o.id
+                FROM easylogin_apps AS a
+                LEFT OUTER JOIN easylogin_social_profiles AS p ON a.id = p.app_id
+                INNER JOIN easylogin_admins AS o ON a.owner_id = o.id
                 WHERE a.name=%s OR o.username=%s
                 GROUP BY a.id 
                 ORDER BY {} LIMIT {}, {}
@@ -208,9 +210,9 @@ def get_list_apps(page_length, start_row, order_by, search_value):
                     DATE(CONVERT_TZ(a.created_at, '+00:00', %s)) as created_at, 
                     DATE(CONVERT_TZ(a.modified_at, '+00:00', %s)) as modified_at, 
                     a.deleted
-                FROM apps AS a
-                LEFT OUTER JOIN social_profiles AS p ON a.id = p.app_id
-                INNER JOIN admins AS o ON a.owner_id = o.id
+                FROM easylogin_apps AS a
+                LEFT OUTER JOIN easylogin_social_profiles AS p ON a.id = p.app_id
+                INNER JOIN easylogin_admins AS o ON a.owner_id = o.id
                 GROUP BY a.id 
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
@@ -235,9 +237,9 @@ def get_register_report(page_length, start_row, order_by, search_value):
                     COUNT(p.id) AS total,
                     SUM(CASE WHEN verified = 0 THEN 1 ELSE 0 END) AS authorized,
                     SUM(CASE WHEN verified = 1 THEN 1 ELSE 0 END) AS register_done
-                FROM social_profiles AS p
-                INNER JOIN apps AS a ON p.app_id = a.id
-                INNER JOIN admins AS o ON a.owner_id = o.id
+                FROM easylogin_social_profiles AS p
+                INNER JOIN easylogin_apps AS a ON p.app_id = a.id
+                INNER JOIN easylogin_admins AS o ON a.owner_id = o.id
                 WHERE o.username = %s
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
@@ -251,9 +253,9 @@ def get_register_report(page_length, start_row, order_by, search_value):
                     COUNT(p.id) AS total,
                     SUM(CASE WHEN verified = 0 THEN 1 ELSE 0 END) AS authorized,
                     SUM(CASE WHEN verified = 1 THEN 1 ELSE 0 END) AS register_done
-                FROM social_profiles AS p
-                INNER JOIN apps AS a ON p.app_id = a.id
-                INNER JOIN admins AS o ON a.owner_id = o.id 
+                FROM easylogin_social_profiles AS p
+                INNER JOIN easylogin_apps AS a ON p.app_id = a.id
+                INNER JOIN easylogin_admins AS o ON a.owner_id = o.id 
                 GROUP BY p.app_id
                 ORDER BY {} LIMIT {}, {}
             """.format(order_by, offset, limit), (settings.TIME_ZONE_OFFSET, settings.TIME_ZONE_OFFSET))
