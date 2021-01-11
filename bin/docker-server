@@ -4,7 +4,6 @@ set -e
 python manage.py runserver 0.0.0.0:7000
 
 # gunicorn SocialPlus.wsgi:application \
-#     --config gunicorn.config.py \
 #     --log-file - \
 #     --log-level info \
 #     --access-logfile - \
