@@ -15,8 +15,8 @@ MAX_LENGTH_LONG_FIELD = 500
 
 # Create your models here.
 class User(AbstractUser):
-    email = models.EmailField(unique=True, null=True, max_length=MAX_LENGTH_SHORT_FIELD)
-    username = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
+    email = models.EmailField(unique=True, max_length=MAX_LENGTH_SHORT_FIELD)
+    username = models.CharField(unique=True, max_length=MAX_LENGTH_SHORT_FIELD)
     phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
     password = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
     first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
@@ -33,7 +33,7 @@ class User(AbstractUser):
         return User.objects.all() if user.is_superuser else []
 
     class Meta:
-        db_table = 'admins'
+        db_table = 'easylogin_admins'
 
 
 class Provider(models.Model):
@@ -72,7 +72,7 @@ class Provider(models.Model):
         return u'{0}'.format(self.name)
 
     class Meta:
-        db_table = 'providers'
+        db_table = 'easylogin_providers'
 
     @classmethod
     def provider_names(cls):
@@ -85,14 +85,14 @@ class Provider(models.Model):
 class App(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=127)
     api_key = models.CharField(max_length=127)
     callback_uris = models.URLField(max_length=2047)
-    allowed_ips = models.CharField(max_length=127)
+    allowed_ips = models.CharField(max_length=255)
     description = models.TextField()
     deleted = models.SmallIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    options = models.CharField(max_length=255)
+    options = models.CharField(max_length=1023)
 
     @staticmethod
     def get_all_app(user, owner_id=-1, order_by='name'):
@@ -149,7 +149,7 @@ class App(models.Model):
         return self.options.split("|")
 
     class Meta:
-        db_table = 'apps'
+        db_table = 'easylogin_apps'
 
 
 class Channel(models.Model):
@@ -171,15 +171,104 @@ class Channel(models.Model):
         return self.options.split('|')
 
     class Meta:
-        db_table = 'channels'
+        db_table = 'easylogin_channels'
         unique_together = ('app', 'provider')
 
 
 class AdminSetting(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    value = models.CharField(max_length=255)
+    name = models.CharField(max_length=64, unique=True)
+    value = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'system_settings'
+        db_table = 'easylogin_system_settings'
+
+
+class SocialUser(models.Model):
+    ref_id = models.CharField(max_length=128, db_column="pk", null=False)
+    deleted = models.SmallIntegerField(default=0)
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'easylogin_users'
+
+
+class SocialProfile(models.Model):
+    provider = models.CharField(max_length=15, null=False)
+    profile_id = models.CharField(max_length=40, db_column="pk", unique=True, null=False)
+    attrs = models.CharField(max_length=8191, null=False)
+    scope_id = models.CharField(max_length=255, null=False)
+    last_authorized_at = models.DateTimeField(null=True, db_column='authorized_at')
+    login_count = models.IntegerField(default=0, null=False)
+    verified = models.SmallIntegerField(default=0, null=False)
+    linked_at = models.DateTimeField(null=True)
+    alias = models.BigIntegerField(null=False)
+
+    deleted = models.SmallIntegerField(default=0)
+    prohibited = models.SmallIntegerField(default=0)
+
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
+    user = models.ForeignKey(SocialUser, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        db_table = 'easylogin_social_profiles'
+
+
+class Token(models.Model):
+    provider = models.CharField(max_length=15)
+    oa_version = models.SmallIntegerField()
+    token_type = models.CharField(max_length=15)
+    access_token = models.CharField(max_length=2047, null=True)
+    refresh_token = models.CharField(max_length=2047, null=True)
+    id_token = models.CharField(max_length=2047, null=True)
+    expires_at = models.DateTimeField(null=True)
+    oa1_token = models.CharField(max_length=1023, null=True)
+    oa1_secret = models.CharField(max_length=1023, null=True)
+
+    social_profile = models.ForeignKey(SocialProfile, db_column='social_id', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'easylogin_tokens'
+
+
+class AuthLog(models.Model):
+    provider = models.CharField(max_length=15)
+    callback_uri = models.CharField(max_length=2047)
+    callback_if_failed = models.CharField(max_length=2047, db_column='callback_failed', null=True)
+    nonce = models.CharField(max_length=32)
+    status = models.CharField(max_length=15)
+    is_login = models.SmallIntegerField()
+    intent = models.CharField(max_length=32, null=True)
+    platform = models.CharField(max_length=8)
+
+    oa1_token = models.CharField(max_length=1023, null=True)
+    oa1_secret = models.CharField(max_length=1023, null=True)
+
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
+    social_profile = models.ForeignKey(SocialProfile, db_column='social_id', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'easylogin_auth_logs'
+
+
+class AssociateLog(models.Model):
+    provider = models.CharField(max_length=15)
+    dst_social_id = models.BigIntegerField()
+    status = models.CharField(max_length=15)
+    nonce = models.CharField(max_length=32)
+
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'easylogin_associate_logs'
+
+
+class JournalLog(models.Model):
+    path = models.CharField(max_length=4095, null=True)
+    ua = models.CharField(max_length=1023, null=True)
+    ip = models.CharField(max_length=15, null=True)
+    ref_id = models.IntegerField()
+
+    class Meta:
+        db_table = 'easylogin_journal_logs'
