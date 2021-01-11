@@ -1,13 +1,44 @@
-version: '3'
+version: '3.5'
 services:
+  db:
+    image: 'mysql:5.7'
+    container_name: easylogin_db
+    environment:
+      MYSQL_HOST: '0.0.0.0'
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: easylogin
+      MYSQL_USER: easylogin
+      MYSQL_PASSWORD: easylogin
+    ports:
+      - '127.0.0.1:3306:3306'
+    volumes:
+      - /data/easylogin/mysql:/var/lib/mysql
+    networks: 
+      - easylogin
   web:
+    build: "."
     container_name: easyadmin
     image: easyadmin
-    build: "."
-    restart: always
     ports:
       - "8000:7000"
     volumes:
       - ./:/app
-      - /var/www/admin-easylogin/static:/static
-    command: bash -c "python manage.py collectstatic --no-input && sh gunicorn.sh"
+      - /data/easylogin/admin/static:/var/www/easyadmin/static
+    command: bash -c "./bin/docker-server"
+    environment: 
+      GUNICORN_CMD_ARGS: "-k gevent -w 2 -b 0.0.0.0:7000"
+      DEBUG: 1
+      SUPER_ADMIN_EMAIL: test@example.com
+      SUPER_ADMIN_PASSWORD: test
+      DATABASE_NAME: easylogin
+      DATABASE_USER: easylogin
+      DATABASE_PASSWORD: easylogin
+      DATABASE_HOST: db
+      STATIC_ROOT: /var/www/easyadmin/static
+      TIME_ZONE: 'Asia/Ho_Chi_Minh'
+      TIME_ZONE_OFFSET: '+07:00'
+    networks: 
+      - easylogin
+networks:
+  easylogin:
+    name: easylogin_default
