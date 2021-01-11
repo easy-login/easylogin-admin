@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 't*l53fi#t&zy2fue6qzmqpuwy@4ebhfz)_^%fe!rf%vm$^&kz*')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.getenv('DJANGO_DEBUG', '0')) == '1'
+DEBUG = bool(os.getenv('DEBUG', '0'))
 
 ALLOWED_HOSTS = ['*']
 
@@ -159,7 +159,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.getenv('STATIC_ROOT', '/static')
+STATIC_ROOT = os.getenv('STATIC_ROOT', './static')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'loginapp/templates/loginapp'),
@@ -193,3 +193,6 @@ EASY_ACCOUNT_LEVELS = {
         'color': '#dc3545'
     }
 }
+
+SUPER_ADMIN_EMAIL = os.getenv('SUPER_ADMIN_EMAIL', 'test@example.com')
+SUPER_ADMIN_PASSWORD = os.getenv('SUPER_ADMIN_PASSWORD', 'test')

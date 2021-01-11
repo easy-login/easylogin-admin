@@ -152,23 +152,25 @@ def convert_fields(fields):
 
 
 def init_providers(conn, cursor):
-    data = []
     for provider in providers:
         for version in provider['version']:
-            tup = (
-                provider['name'],
-                version,
-                provider['required_permissions'],
-                json.dumps(convert_fields(provider['basic_fields'])),
-                json.dumps(convert_fields(provider['advanced_fields'])),
-                json.dumps(provider.get('options', []))
-            )
-            data.append(tup)
-    cursor.execute("TRUNCATE providers")
-    cursor.executemany("""
-        INSERT INTO providers (name, version, required_permissions, basic_fields, advanced_fields, options) 
-        VALUES (%s, %s, %s, %s, %s, %s)""", data)
-
+            try:
+                print('Init provider {} version {}'.format(provider['name'], version))
+                tup = (
+                    provider['name'],
+                    version,
+                    provider['required_permissions'],
+                    json.dumps(convert_fields(provider['basic_fields'])),
+                    json.dumps(convert_fields(provider['advanced_fields'])),
+                    json.dumps(provider.get('options', []))
+                )
+                cursor.execute("""
+                    INSERT INTO easylogin_providers (
+                        name, version, required_permissions, 
+                        basic_fields, advanced_fields, options) 
+                    VALUES (%s, %s, %s, %s, %s, %s)""", tup)
+            except Exception as e:
+                print(e)
     conn.commit()
 
 
