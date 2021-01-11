@@ -24,7 +24,7 @@ services:
     volumes:
       - ./:/app
       - /data/easylogin/admin/static:/var/www/easyadmin/static
-    command: bash -c "./bin/docker-server"
+    command: bash -c "./bin/docker"
     environment: 
       GUNICORN_CMD_ARGS: "-k gevent -w 2 -b 0.0.0.0:7000"
       DEBUG: 1

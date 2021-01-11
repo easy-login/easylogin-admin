@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-./bin/docker-worker &
+./bin/docker-migrate &
 ./bin/docker-server
