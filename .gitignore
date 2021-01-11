@@ -17,8 +17,11 @@ htmlcov/
 
 dist/
 build/
-migrations/
+
+static
+staticfiles
 
 my.cnf
 .env
 .env.sh
+.env.local
