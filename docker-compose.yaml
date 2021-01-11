@@ -20,7 +20,7 @@ services:
     container_name: easyadmin
     image: easyadmin
     ports:
-      - "8000:7000"
+      - "7000:7000"
     volumes:
       - ./:/app
       - /data/easylogin/admin/static:/var/www/easyadmin/static
