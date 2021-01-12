@@ -73,6 +73,7 @@ class Provider(models.Model):
 
     class Meta:
         db_table = 'easylogin_providers'
+        unique_together = ('name', 'version')
 
     @classmethod
     def provider_names(cls):
