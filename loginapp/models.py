@@ -257,7 +257,7 @@ class AuthLog(models.Model):
     oa1_secret = models.CharField(max_length=1023, null=True)
 
     app = models.ForeignKey(App, on_delete=models.CASCADE)
-    social_profile = models.ForeignKey(SocialProfile, db_column='social_id', on_delete=models.CASCADE)
+    social_profile = models.ForeignKey(SocialProfile, null=True, db_column='social_id', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'easylogin_auth_logs'
