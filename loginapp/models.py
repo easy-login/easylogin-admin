@@ -177,6 +177,8 @@ class Channel(models.Model):
 
 
 class AdminSetting(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=64, unique=True)
     value = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -187,6 +189,8 @@ class AdminSetting(models.Model):
 
 
 class SocialUser(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     ref_id = models.CharField(max_length=128, db_column="pk", null=False)
     deleted = models.SmallIntegerField(default=0)
     app = models.ForeignKey(App, on_delete=models.CASCADE)
@@ -196,6 +200,8 @@ class SocialUser(models.Model):
 
 
 class SocialProfile(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     provider = models.CharField(max_length=15, null=False)
     profile_id = models.CharField(max_length=40, db_column="pk", unique=True, null=False)
     attrs = models.CharField(max_length=8191, null=False)
@@ -217,6 +223,8 @@ class SocialProfile(models.Model):
 
 
 class Token(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     provider = models.CharField(max_length=15)
     oa_version = models.SmallIntegerField()
     token_type = models.CharField(max_length=15)
@@ -234,6 +242,8 @@ class Token(models.Model):
 
 
 class AuthLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     provider = models.CharField(max_length=15)
     callback_uri = models.CharField(max_length=2047)
     callback_if_failed = models.CharField(max_length=2047, db_column='callback_failed', null=True)
@@ -254,6 +264,8 @@ class AuthLog(models.Model):
 
 
 class AssociateLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     provider = models.CharField(max_length=15)
     dst_social_id = models.BigIntegerField()
     status = models.CharField(max_length=15)
@@ -266,6 +278,8 @@ class AssociateLog(models.Model):
 
 
 class JournalLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     path = models.CharField(max_length=4095, null=True)
     ua = models.CharField(max_length=1023, null=True)
     ip = models.CharField(max_length=15, null=True)
