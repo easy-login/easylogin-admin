@@ -249,7 +249,7 @@ class AuthLog(models.Model):
     callback_if_failed = models.CharField(max_length=2047, db_column='callback_failed', null=True)
     nonce = models.CharField(max_length=32)
     status = models.CharField(max_length=15)
-    is_login = models.SmallIntegerField()
+    is_login = models.SmallIntegerField(null=True)
     intent = models.CharField(max_length=32, null=True)
     platform = models.CharField(max_length=8)
 
