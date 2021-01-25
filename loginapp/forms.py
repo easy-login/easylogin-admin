@@ -24,7 +24,6 @@ class RegisterForm(ModelForm):
 
     class Meta:
         model = User
-        model._meta.get_field('username')._unique = False
         fields = ('email', 'username', 'password', 'first_name', 'last_name', 'phone', 'address', 'company', 'level')
 
 
@@ -39,7 +38,6 @@ class UpdateProfileForm(ModelForm):
 
     class Meta:
         model = User
-        model._meta.get_field('username')._unique = False
         fields = ('username', 'first_name', 'last_name', 'phone', 'address', 'company',)
 
     def clean(self):
