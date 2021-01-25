@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, User
+from django.contrib.auth.models import AbstractUser, User
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
@@ -15,8 +15,8 @@ MAX_LENGTH_LONG_FIELD = 500
 
 # Create your models here.
 class User(AbstractUser):
+
     email = models.EmailField(unique=True, max_length=MAX_LENGTH_SHORT_FIELD)
-    username = models.CharField(unique=True, max_length=64)
     phone = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD, null=True)
     password = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD)
     first_name = models.CharField(max_length=MAX_LENGTH_SHORT_FIELD, null=True)
