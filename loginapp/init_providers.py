@@ -171,7 +171,6 @@ def init_providers(conn, cursor):
                     VALUES (%s, %s, %s, %s, %s, %s)""", tup)
             except Exception as e:
                 print(e)
-    conn.commit()
 
 
 if __name__ == '__main__':
@@ -186,6 +185,7 @@ if __name__ == '__main__':
         host=os.getenv('DATABASE_HOST', 'localhost'),   # Or an IP Address that your DB is hosted on
         port=os.getenv('DATABASE_PORT', '3306')
     )
-    cursor = db.cursor()
-    init_providers(db, cursor)
+    with db.cursor() as cursor:
+        init_providers(db, cursor)
+        db.commit()
     db.close()

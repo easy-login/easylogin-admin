@@ -14,10 +14,6 @@ class SocialPlusConfig(AppConfig):
 
     def ready(self):
         try:
-            print('App ready, run init_providers script')
-            with connection.cursor() as cursor:
-                init_providers(connection, cursor)
-
             print('Creating admin account if not exist...')
             hasher = PBKDF2PasswordHasher()
             hashed_pw = hasher.encode(settings.SUPER_ADMIN_PASSWORD, uuid.uuid4().hex[:16])
