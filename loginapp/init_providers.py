@@ -177,7 +177,8 @@ def init_providers(conn, cursor):
 if __name__ == '__main__':
     from dotenv import load_dotenv
     load_dotenv()
-    
+
+    import os
     db = MySQLdb.connect(
         db=os.getenv('DATABASE_NAME', 'easylogin'),
         user=os.getenv('DATABASE_USER', 'root'),

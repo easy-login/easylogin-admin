@@ -622,6 +622,6 @@ def push_messages_error(request, form):
 
 
 # link not found
-def error404(request):
+def error404_page(request, exception):
     template = loader.get_template('loginapp/page-404.html')
     return HttpResponse(template.render())

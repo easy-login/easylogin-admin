@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -28,7 +28,6 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 't*l53fi#t&zy2fue6qzmqpuwy@4ebhfz)_^
 DEBUG = bool(os.getenv('DEBUG', '0'))
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -77,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SocialPlus.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -87,11 +85,10 @@ DATABASES = {
         'NAME': os.getenv('DATABASE_NAME', 'easylogin'),
         'USER': os.getenv('DATABASE_USER', 'root'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD', 'root'),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),   # Or an IP Address that your DB is hosted on
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),  # Or an IP Address that your DB is hosted on
         'PORT': os.getenv('DATABASE_PORT', '3306'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -152,7 +149,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
